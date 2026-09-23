@@ -1,0 +1,120 @@
+generated: '2026-09-22'
+method: derived
+source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
+generator: derive-hosts.py
+summary:
+  hosts: 8
+  own: 0
+  other_domain: 0
+  platform: 1
+  roles:
+  - api
+  - identity
+  - other
+  - portal
+  - support
+hosts:
+- host: api.coevera.com
+  found_by:
+  - probed
+  - site-links
+  - namespace-probe
+  - contract-discovery
+  - well-known
+  types: []
+  serves: []
+  title: Coevera Accounts
+  status: 200
+  registrable_domain: coevera.com
+  role: api
+  relation: unknown
+- host: api.pipelinersales.com
+  found_by:
+  - contract-discovery
+  types: []
+  serves: []
+  registrable_domain: pipelinersales.com
+  role: api
+  relation: unknown
+- host: developers.pipelinersales.com
+  found_by:
+  - pointer
+  - apis[]
+  - probed
+  - docs-index
+  - contract-discovery
+  - well-known
+  - vendor-detect
+  types:
+  - DeveloperPortal
+  - Documentation
+  - APIReference
+  - GettingStarted
+  serves:
+  - docs
+  - cdn
+  - documentation
+  - hosting
+  vendor: cloudflare
+  registrable_domain: pipelinersales.com
+  role: portal
+  relation: unknown
+- host: help.coevera.com
+  found_by:
+  - docs-index
+  types: []
+  serves:
+  - docs
+  registrable_domain: coevera.com
+  role: support
+  relation: unknown
+- host: help.pipelinersales.com
+  found_by:
+  - pointer
+  - probed
+  - contract-discovery
+  - well-known
+  types:
+  - Support
+  serves: []
+  registrable_domain: pipelinersales.com
+  role: support
+  relation: unknown
+- host: pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com
+  found_by:
+  - docs-index
+  - spec-found
+  types: []
+  serves:
+  - docs
+  - spec
+  registrable_domain: amazonaws.com
+  role: other
+  relation: platform
+- host: us-east.api.pipelinersales.com
+  found_by:
+  - apis[]
+  types: []
+  serves:
+  - api
+  registrable_domain: pipelinersales.com
+  role: api
+  relation: unknown
+- host: www.coevera.com
+  found_by:
+  - pointer
+  - probed
+  - contract-discovery
+  - well-known
+  types:
+  - Compliance
+  - Blog
+  - Pricing
+  - TermsOfService
+  - PrivacyPolicy
+  - SignUp
+  - Login
+  serves: []
+  registrable_domain: coevera.com
+  role: identity
+  relation: unknown

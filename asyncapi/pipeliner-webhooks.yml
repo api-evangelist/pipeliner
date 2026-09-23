@@ -1,0 +1,144 @@
+generated: '2026-09-22'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developers.pipelinersales.com/api-docs/core-api-concepts/webhooks-real-time-updates.md
+sources:
+- https://developers.pipelinersales.com/api-docs/core-api-concepts/webhooks-real-time-updates.md
+- https://developers.pipelinersales.com/api-docs/core-api-concepts/webhooks-real-time-updates
+- https://help.coevera.com/en/articles/3959195-automatizer-using-webhook-actions
+- https://help.coevera.com/en/articles/3077592-in-app-and-email-notifications
+description: Pipeliner CRM webhooks deliver JSON payloads to a configured URL when the listed events occur.
+events:
+- event: Account.*
+  description: All Account related events
+- event: Account.Create
+  description: Account created
+- event: Account.Update
+  description: Account updated
+- event: Account.Delete
+  description: Account deleted
+- event: Account.DocumentLinked
+  description: Document linked to Account
+- event: Account.OwnerChanged
+  description: Account owner changed
+- event: Contact.*
+  description: All Contact related events
+- event: Contact.Create
+  description: Contact created
+- event: Contact.Update
+  description: Contact updated
+- event: Contact.Delete
+  description: Contact deleted
+- event: Contact.DocumentLinked
+  description: Document linked to Contact
+- event: Contact.OwnerChanged
+  description: Contact owner changed
+- event: Opportunity.*
+  description: All Opportunity related events
+- event: Opportunity.Create
+  description: Opportunity created
+- event: Opportunity.Update
+  description: Opportunity updated
+- event: Opportunity.Delete
+  description: Opportunity deleted
+- event: Opportunity.DocumentLinked
+  description: Document linked to Opportunity
+- event: Opportunity.OwnerChanged
+  description: Opportunity owner changed
+- event: Opportunity.Move
+  description: Opportunity sales step changed
+- event: Opportunity.Lost
+  description: Opportunity archived/lost
+- event: Opportunity.Won
+  description: Opportunity won
+- event: Opportunity.Qualify
+  description: Opportunity created from qualified Lead
+- event: Lead.*
+  description: All Lead related events
+- event: Lead.Create
+  description: Lead created
+- event: Lead.Update
+  description: Lead updated
+- event: Lead.Delete
+  description: Lead deleted
+- event: Lead.DocumentLinked
+  description: Document linked to Lead
+- event: Lead.OwnerChanged
+  description: Lead owner changed
+- event: Lead.Lost
+  description: Lead archived/lost
+- event: Lead.BackToLead
+  description: Opportunity reverted to Lead
+- event: Task.*
+  description: All Task related events
+- event: Task.Create
+  description: Task created
+- event: Task.Update
+  description: Task updated
+- event: Task.Delete
+  description: Task deleted
+- event: Task.DocumentLinked
+  description: Document linked to Task
+- event: Task.OwnerChanged
+  description: Task owner changed
+- event: Task.Comment
+  description: Comment added to Task
+- event: Email.*
+  description: All Email related events
+- event: Email.Create
+  description: Email created
+- event: Email.Update
+  description: Email updated
+- event: Email.Delete
+  description: Email deleted
+- event: Email.DocumentLinked
+  description: Document linked to Email
+- event: Appointment.*
+  description: All Appointment related events
+- event: Appointment.Create
+  description: Appointment created
+- event: Appointment.Update
+  description: Appointment updated
+- event: Appointment.Delete
+  description: Appointment deleted
+- event: Appointment.DocumentLinked
+  description: Document linked to Appointment
+- event: Appointment.OwnerChanged
+  description: Appointment owner changed
+- event: Appointment.Comment
+  description: Comment added to Appointment
+- event: Product.*
+  description: All Product related events
+- event: Product.Create
+  description: Product created
+- event: Product.Update
+  description: Product updated
+- event: Product.Delete
+  description: Product deleted
+- event: OpptyProductRelation.*
+  description: All Product Line Item related events
+- event: OpptyProductRelation.Create
+  description: Product Line Item created
+- event: OpptyProductRelation.Update
+  description: Product Line Item updated
+- event: OpptyProductRelation.Delete
+  description: Product Line Item deleted
+- event: CustomEntity.*
+  description: All Custom Entity related events
+- event: CustomEntity.Create
+  description: Custom Entity created
+- event: CustomEntity.Update
+  description: Custom Entity updated
+- event: CustomEntity.Delete
+  description: Custom Entity deleted
+- event: CustomEntity.DocumentLinked
+  description: Document linked to Custom Entity
+- event: CustomEntity.OwnerChanged
+  description: Custom Entity owner changed
+delivery:
+  signature: WebHook-Signature
+  content_type: application/json
+note: Delivery security uses optional HMAC‑SHA256 signature (key is the UUID provided in the 'signature' field) placed in the 'WebHook-Signature'
+  header. SSL verification can be disabled via the 'insecure_ssl' flag when registering the webhook. No retry policy is documented; therefore
+  retry information is absent.
+docs: https://developers.pipelinersales.com/api-docs/core-api-concepts/webhooks-real-time-updates.md

@@ -1,0 +1,3662 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Client API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Client
+paths:
+  /entities/Clients/{id}:
+    get:
+      description: Returns Client with given id
+      operationId: Clients.get
+      summary: Clients.get
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of Client to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Client data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Client with given id
+      operationId: Clients.delete
+      summary: Clients.delete
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of Client to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Client on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Client
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Client or Clients with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Client to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Client on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Clients.update
+      summary: Clients.update
+      tags:
+      - Client
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateClientInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Client
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Clients:
+    get:
+      description: Returns all defined Clients
+      operationId: Clients.list
+      summary: Clients.list
+      tags:
+      - Client
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Clients are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Clients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Client
+      operationId: Clients.create
+      summary: Clients.create
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Client on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Client
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createClientInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Client
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Clients/batch-delete:
+    post:
+      description: Removes Clients with given list of ids
+      operationId: Clients.batch_delete
+      summary: Clients.batch_delete
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Clients on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Clients. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Client to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Client.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Clients/batch-modify:
+    post:
+      description: Create or update an batch of Clients
+      operationId: Clients.batch_create_or_update
+      summary: Clients.batch_create_or_update
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Clients on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Clients. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Client
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchClientInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Clients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Clients/batch-restore:
+    post:
+      description: Restores Clients with given list of ids
+      operationId: Clients.batch_restore
+      summary: Clients.batch_restore
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Clients on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Clients. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Client to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Client.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientExcludedOppties/{id}:
+    get:
+      description: Returns ClientExcludedOppty with given id
+      operationId: ClientExcludedOppties.get
+      summary: ClientExcludedOppties.get
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientExcludedOppty to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ClientExcludedOppty data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientExcludedOppty'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ClientExcludedOppty with given id
+      operationId: ClientExcludedOppties.delete
+      summary: ClientExcludedOppties.delete
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientExcludedOppty to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppty on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ClientExcludedOppty
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ClientExcludedOppty or ClientExcludedOppties with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientExcludedOppty to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppty on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ClientExcludedOppties.update
+      summary: ClientExcludedOppties.update
+      tags:
+      - Client
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateClientExcludedOpptyInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ClientExcludedOppty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientExcludedOppty'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientExcludedOppties:
+    get:
+      description: Returns all defined ClientExcludedOppties
+      operationId: ClientExcludedOppties.list
+      summary: ClientExcludedOppties.list
+      tags:
+      - Client
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ClientExcludedOppties are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ClientExcludedOppties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientExcludedOppty'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ClientExcludedOppty
+      operationId: ClientExcludedOppties.create
+      summary: ClientExcludedOppties.create
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppty on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientExcludedOppty
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createClientExcludedOpptyInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ClientExcludedOppty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientExcludedOppty'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientExcludedOppties/batch-delete:
+    post:
+      description: Removes ClientExcludedOppties with given list of ids
+      operationId: ClientExcludedOppties.batch_delete
+      summary: ClientExcludedOppties.batch_delete
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppties on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientExcludedOppties. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientExcludedOppty to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ClientExcludedOppty.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientExcludedOppties/batch-modify:
+    post:
+      description: Create or update an batch of ClientExcludedOppties
+      operationId: ClientExcludedOppties.batch_create_or_update
+      summary: ClientExcludedOppties.batch_create_or_update
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppties on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientExcludedOppties. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientExcludedOppty
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchClientExcludedOpptyInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ClientExcludedOppties
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientExcludedOppties/batch-restore:
+    post:
+      description: Restores ClientExcludedOppties with given list of ids
+      operationId: ClientExcludedOppties.batch_restore
+      summary: ClientExcludedOppties.batch_restore
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientExcludedOppties on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientExcludedOppties. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientExcludedOppty to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ClientExcludedOppty.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientFavorites/{id}:
+    get:
+      description: Returns ClientFavorite with given id
+      operationId: ClientFavorites.get
+      summary: ClientFavorites.get
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientFavorite to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ClientFavorite data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientFavorite'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ClientFavorite with given id
+      operationId: ClientFavorites.delete
+      summary: ClientFavorites.delete
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientFavorite to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorite on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ClientFavorite
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ClientFavorite or ClientFavorites with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientFavorite to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorite on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ClientFavorites.update
+      summary: ClientFavorites.update
+      tags:
+      - Client
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateClientFavoriteInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ClientFavorite
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientFavorite'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientFavorites:
+    get:
+      description: Returns all defined ClientFavorites
+      operationId: ClientFavorites.list
+      summary: ClientFavorites.list
+      tags:
+      - Client
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ClientFavorites are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ClientFavorites
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientFavorite'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ClientFavorite
+      operationId: ClientFavorites.create
+      summary: ClientFavorites.create
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorite on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientFavorite
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createClientFavoriteInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ClientFavorite
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientFavorite'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientFavorites/batch-delete:
+    post:
+      description: Removes ClientFavorites with given list of ids
+      operationId: ClientFavorites.batch_delete
+      summary: ClientFavorites.batch_delete
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorites on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientFavorites. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientFavorite to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ClientFavorite.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientFavorites/batch-modify:
+    post:
+      description: Create or update an batch of ClientFavorites
+      operationId: ClientFavorites.batch_create_or_update
+      summary: ClientFavorites.batch_create_or_update
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorites on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientFavorites. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientFavorite
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchClientFavoriteInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ClientFavorites
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientFavorites/batch-restore:
+    post:
+      description: Restores ClientFavorites with given list of ids
+      operationId: ClientFavorites.batch_restore
+      summary: ClientFavorites.batch_restore
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientFavorites on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientFavorites. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientFavorite to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ClientFavorite.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientSettings/{id}:
+    get:
+      description: Returns ClientSetting with given id
+      operationId: ClientSettings.get
+      summary: ClientSettings.get
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientSetting to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ClientSetting data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientSetting'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientSettings:
+    get:
+      description: Returns all defined ClientSettings
+      operationId: ClientSettings.list
+      summary: ClientSettings.list
+      tags:
+      - Client
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ClientSettings are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ClientSettings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientSetting'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientStoryReads/{id}:
+    get:
+      description: Returns ClientStoryRead with given id
+      operationId: ClientStoryReads.get
+      summary: ClientStoryReads.get
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientStoryRead to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ClientStoryRead data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientStoryRead'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ClientStoryRead with given id
+      operationId: ClientStoryReads.delete
+      summary: ClientStoryReads.delete
+      tags:
+      - Client
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientStoryRead to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryRead on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ClientStoryRead
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ClientStoryRead or ClientStoryReads with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ClientStoryRead to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryRead on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ClientStoryReads.update
+      summary: ClientStoryReads.update
+      tags:
+      - Client
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateClientStoryReadInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ClientStoryRead
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientStoryRead'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientStoryReads:
+    get:
+      description: Returns all defined ClientStoryReads
+      operationId: ClientStoryReads.list
+      summary: ClientStoryReads.list
+      tags:
+      - Client
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ClientStoryReads are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ClientStoryReads
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientStoryRead'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ClientStoryRead
+      operationId: ClientStoryReads.create
+      summary: ClientStoryReads.create
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryRead on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientStoryRead
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createClientStoryReadInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ClientStoryRead
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ClientStoryRead'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientStoryReads/batch-delete:
+    post:
+      description: Removes ClientStoryReads with given list of ids
+      operationId: ClientStoryReads.batch_delete
+      summary: ClientStoryReads.batch_delete
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryReads on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientStoryReads. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientStoryRead to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ClientStoryRead.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientStoryReads/batch-modify:
+    post:
+      description: Create or update an batch of ClientStoryReads
+      operationId: ClientStoryReads.batch_create_or_update
+      summary: ClientStoryReads.batch_create_or_update
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryReads on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientStoryReads. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ClientStoryRead
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchClientStoryReadInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ClientStoryReads
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ClientStoryReads/batch-restore:
+    post:
+      description: Restores ClientStoryReads with given list of ids
+      operationId: ClientStoryReads.batch_restore
+      summary: ClientStoryReads.batch_restore
+      tags:
+      - Client
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ClientStoryReads on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ClientStoryReads. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ClientStoryRead to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ClientStoryRead.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    batchClientStoryReadInput:
+      properties:
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
+          type: boolean
+          example: false
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchClientExcludedOpptyInput:
+      properties:
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateClientFavoriteInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    ClientSetting:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User the setting belongs to.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Setting key (unique per user).
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        value:
+          type: object
+          description: Setting value, stored as a JSON document.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - value
+    batchClientInput:
+      properties:
+        default_unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the default sales unit.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user role.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the user.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        unit_membership:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnitClientRelation, see: ''updateSalesUnitClientRelationInput'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createClientExcludedOpptyInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_excluded
+      - oppty_id
+      - owner_id
+    createClientInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the default sales unit.
+        email:
+          type: string
+          example: string
+          description: Email. Readonly information from UserProfile.
+        first_name:
+          type: string
+          example: string
+          description: First name. Readonly information from UserProfile.
+          readOnly: true
+        last_active:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the user's most recent login or API request.
+          readOnly: true
+        last_name:
+          type: string
+          example: string
+          description: Last name. Readonly information from UserProfile.
+          readOnly: true
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user role.
+        middle_name:
+          type: string
+          example: string
+          description: Middle name. Readonly information from UserProfile.
+          readOnly: true
+        phone:
+          type: string
+          example: string
+          description: Phone number. Readonly information from UserProfile.
+          readOnly: true
+        position:
+          type: string
+          example: string
+          description: Job title or position of the user.
+        region:
+          type: string
+          example: string
+          description: Region. Readonly information from UserProfile.
+          readOnly: true
+        timezone:
+          type: string
+          example: string
+          description: Timezone offset (DEPRECATED)Readonly information from UserProfile.
+          readOnly: true
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        unit_membership:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnitClientRelation, see: ''createSalesUnitClientRelationInput'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+      required:
+      - default_unit_id
+      - email
+      - master_right_id
+      - unit_membership
+    ClientFavorite:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account marked as favorite, when this favorite points to an account.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        appointment:
+          type: string
+          format: uri
+          description: 'Appointment marked as favorite. Set when activity_id resolves to an Appointment.
+
+
+            Relation to Appointment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Appointment'' object for properties.'
+        task:
+          type: string
+          format: uri
+          description: 'Task marked as favorite. Set when activity_id resolves to a Task.
+
+
+            Relation to Task. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Task'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact marked as favorite, when this favorite points to a contact.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        custom_entity:
+          type: string
+          format: uri
+          description: 'Custom entity record marked as favorite, when this favorite points to a custom entity.
+
+
+            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email marked as favorite, when this favorite points to an email.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead marked as favorite. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity marked as favorite. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who marked the record as favorite.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        profile:
+          type: string
+          format: uri
+          description: 'Screen profile marked as favorite, when this favorite points to a profile.
+
+
+            Relation to Profile. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Profile'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project marked as favorite, when this favorite points to a project.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote marked as favorite, when this favorite points to a quote.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        report:
+          type: string
+          format: uri
+          description: 'Report marked as favorite, when this favorite points to a report.
+
+
+            Relation to Report. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Report'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - owner_id
+    createClientStoryReadInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
+          type: boolean
+          example: false
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - owner_id
+      - read_at
+    ClientExcludedOppty:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity excluded from the user''s forecast/quota calculations.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who excluded the opportunity from their forecast/quota.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - oppty
+      - owner
+      - is_excluded
+      - oppty_id
+      - owner_id
+    createClientFavoriteInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - owner_id
+    updateClientExcludedOpptyInput:
+      properties:
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    Client:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_unit:
+          type: string
+          format: uri
+          description: 'Default sales unit for the user. New records the user creates are assigned to this unit by default.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role assigned to the user. Determines what features and entities the user can access.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        default_unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the default sales unit.
+        email:
+          type: string
+          example: string
+          description: Email. Readonly information from UserProfile.
+        first_name:
+          type: string
+          example: string
+          description: First name. Readonly information from UserProfile.
+          readOnly: true
+        last_active:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the user's most recent login or API request.
+          readOnly: true
+        last_name:
+          type: string
+          example: string
+          description: Last name. Readonly information from UserProfile.
+          readOnly: true
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user role.
+        middle_name:
+          type: string
+          example: string
+          description: Middle name. Readonly information from UserProfile.
+          readOnly: true
+        phone:
+          type: string
+          example: string
+          description: Phone number. Readonly information from UserProfile.
+          readOnly: true
+        picture_url:
+          type: string
+          example: string
+          description: Picture name. Readonly information from UserProfile.
+          readOnly: true
+        position:
+          type: string
+          example: string
+          description: Job title or position of the user.
+        region:
+          type: string
+          example: string
+          description: Region. Readonly information from UserProfile.
+          readOnly: true
+        timezone:
+          type: string
+          example: string
+          description: Timezone offset (DEPRECATED)Readonly information from UserProfile.
+          readOnly: true
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        default_idp:
+          type: integer
+          format: int32
+          example: 1
+          description: default_idp retrieved from user, if enabled [HEAVY]
+        user_profile_id:
+          type: integer
+          format: int32
+          example: 1
+          description: ID of the associated user account [HEAVY]
+        unit_membership:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to SalesUnitClientRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnitClientRelation'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ClientFavorite. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ClientFavorite'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+        timezone_name:
+          type: string
+          example: string
+          description: IANA timezone name from UserProfile
+        name:
+          type: string
+          example: string
+          description: Display name of the user, formatted according to the user's name format preference.
+        formatted_name:
+          type: string
+          example: string
+          description: Display name of the user (alias of name).
+        unit_manager_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 01234567-abcd-dcba-ffff-000000000000
+          description: Ids of all sales units the user manages, expanded to include all descendant units in each managed subtree.
+        unit_member_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: 01234567-abcd-dcba-ffff-000000000000
+          description: Ids of sales units the user belongs to as a member only (not as a manager).
+        user_recalculation_state:
+          type: string
+          example: InProgress
+          enum:
+          - InProgress
+          - NoRecalculation
+          - Pending
+          description: 'State of the user''s row-level access recalculation: NoRecalculation (up to date), Pending (queued), or InProgress.'
+      required:
+      - is_delete_protected
+      - id
+      - default_unit
+      - master_right
+      - default_unit_id
+      - email
+      - master_right_id
+      - unit_membership
+      - formatted_name
+      - unit_manager_ids
+      - unit_member_ids
+    updateClientStoryReadInput:
+      properties:
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
+          type: boolean
+          example: false
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateClientInput:
+      properties:
+        default_unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the default sales unit.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user role.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the user.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        unit_membership:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnitClientRelation, see: ''updateSalesUnitClientRelationInput'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+    batchClientFavoriteInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    ClientStoryRead:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        appointment:
+          type: string
+          format: uri
+          description: 'Appointment that was read. Set when activity_id resolves to an Appointment.
+
+
+            Relation to Appointment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Appointment'' object for properties.'
+        task:
+          type: string
+          format: uri
+          description: 'Task that was read. Set when activity_id resolves to a Task.
+
+
+            Relation to Task. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Task'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email that was read. Set when message_id resolves to an Email.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        memo:
+          type: string
+          format: uri
+          description: 'Memo that was read. Set when message_id resolves to a Memo.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who read the activity or message.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
+          type: boolean
+          example: false
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - owner_id
+      - read_at

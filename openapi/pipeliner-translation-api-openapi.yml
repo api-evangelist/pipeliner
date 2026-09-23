@@ -1,0 +1,1076 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Translation API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Translation
+paths:
+  /entities/Translations/{id}:
+    get:
+      description: Returns Translation with given id
+      operationId: Translations.get
+      summary: Translations.get
+      tags:
+      - Translation
+      parameters:
+      - name: id
+        in: path
+        description: ID of Translation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Translation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Translation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Translation with given id
+      operationId: Translations.delete
+      summary: Translations.delete
+      tags:
+      - Translation
+      parameters:
+      - name: id
+        in: path
+        description: ID of Translation to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translation on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Translation
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Translation or Translations with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Translation to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translation on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Translations.update
+      summary: Translations.update
+      tags:
+      - Translation
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTranslationInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Translation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Translation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Translations:
+    get:
+      description: Returns all defined Translations
+      operationId: Translations.list
+      summary: Translations.list
+      tags:
+      - Translation
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Translations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Translations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Translation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Translation
+      operationId: Translations.create
+      summary: Translations.create
+      tags:
+      - Translation
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translation on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Translation
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTranslationInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Translation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Translation'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Translations/batch-delete:
+    post:
+      description: Removes Translations with given list of ids
+      operationId: Translations.batch_delete
+      summary: Translations.batch_delete
+      tags:
+      - Translation
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Translations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Translation to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Translation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Translations/batch-modify:
+    post:
+      description: Create or update an batch of Translations
+      operationId: Translations.batch_create_or_update
+      summary: Translations.batch_create_or_update
+      tags:
+      - Translation
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translations on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Translations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Translation
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTranslationInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Translations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Translations/batch-restore:
+    post:
+      description: Restores Translations with given list of ids
+      operationId: Translations.batch_restore
+      summary: Translations.batch_restore
+      tags:
+      - Translation
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Translations on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Translations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Translation to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Translation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Translation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type:
+          type: string
+          format: uri
+          description: 'Account type the form-level translation applies to.
+
+
+            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
+        appointment_type:
+          type: string
+          format: uri
+          description: 'Appointment type the form-level translation applies to.
+
+
+            Relation to AppointmentType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AppointmentType'' object for properties.'
+        contact_type:
+          type: string
+          format: uri
+          description: 'Contact type the form-level translation applies to.
+
+
+            Relation to ContactType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactType'' object for properties.'
+        data:
+          type: string
+          format: uri
+          description: 'Data option (dropdown/radio choice) this row translates. Set when label_type is Data.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        field:
+          type: string
+          format: uri
+          description: 'Field whose name/label this row translates. Set when label_type is Field, FormField, or FormDescription.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        lead_type:
+          type: string
+          format: uri
+          description: 'Lead type the form-level translation applies to.
+
+
+            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
+        oppty_product_relation_type:
+          type: string
+          format: uri
+          description: 'Opportunity product relation type the form-level translation applies to.
+
+
+            Relation to OpptyProductRelationType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpptyProductRelationType'' object for properties.'
+        oppty_type:
+          type: string
+          format: uri
+          description: 'Opportunity type the form-level translation applies to.
+
+
+            Relation to OpportunityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpportunityType'' object for properties.'
+        product_type:
+          type: string
+          format: uri
+          description: 'Product type the form-level translation applies to.
+
+
+            Relation to ProductType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductType'' object for properties.'
+        project_type:
+          type: string
+          format: uri
+          description: 'Project type the form-level translation applies to.
+
+
+            Relation to ProjectType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProjectType'' object for properties.'
+        task_type:
+          type: string
+          format: uri
+          description: 'Task type the form-level translation applies to.
+
+
+            Relation to TaskType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TaskType'' object for properties.'
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated data option.
+        de_de:
+          type: string
+          example: string
+          description: Translated text in German.
+        en_us:
+          type: string
+          example: string
+          description: Translated text in US English.
+        es_es:
+          type: string
+          example: string
+          description: Translated text in Spanish.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated field.
+        form_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Edit, 1 - Lost'
+          example: 0
+          enum:
+          - 0
+          - 1
+        label_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Field, 1 - Data, 2 - FormField, 3 - FormDescription'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity product relation type.
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        pt_br:
+          type: string
+          example: string
+          description: Translated text in Brazilian Portuguese.
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the translation is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - label_type
+    createTranslationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated data option.
+        de_de:
+          type: string
+          example: string
+          description: Translated text in German.
+        en_us:
+          type: string
+          example: string
+          description: Translated text in US English.
+        es_es:
+          type: string
+          example: string
+          description: Translated text in Spanish.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated field.
+        form_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Edit, 1 - Lost'
+          example: 0
+          enum:
+          - 0
+          - 1
+        label_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Field, 1 - Data, 2 - FormField, 3 - FormDescription'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity product relation type.
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        pt_br:
+          type: string
+          example: string
+          description: Translated text in Brazilian Portuguese.
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the translation is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - label_type
+    batchTranslationInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated data option.
+        de_de:
+          type: string
+          example: string
+          description: Translated text in German.
+        en_us:
+          type: string
+          example: string
+          description: Translated text in US English.
+        es_es:
+          type: string
+          example: string
+          description: Translated text in Spanish.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated field.
+        form_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Edit, 1 - Lost'
+          example: 0
+          enum:
+          - 0
+          - 1
+        label_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Field, 1 - Data, 2 - FormField, 3 - FormDescription'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity product relation type.
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        pt_br:
+          type: string
+          example: string
+          description: Translated text in Brazilian Portuguese.
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateTranslationInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated data option.
+        de_de:
+          type: string
+          example: string
+          description: Translated text in German.
+        en_us:
+          type: string
+          example: string
+          description: Translated text in US English.
+        es_es:
+          type: string
+          example: string
+          description: Translated text in Spanish.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the translated field.
+        form_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Edit, 1 - Lost'
+          example: 0
+          enum:
+          - 0
+          - 1
+        label_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Field, 1 - Data, 2 - FormField, 3 - FormDescription'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity product relation type.
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        pt_br:
+          type: string
+          example: string
+          description: Translated text in Brazilian Portuguese.
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status

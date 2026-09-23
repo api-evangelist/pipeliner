@@ -1,23 +1,1217 @@
 aid: pipeliner
 name: Pipeliner CRM
-description: 'Pipeliner CRM is a company surfaced via the API Evangelist harvest backlog (source: crm)
-  and added to the network as a stub for full-pipeline profiling.'
+description: Pipeliner CRM provides a visual sales pipeline and customer relationship management platform that helps businesses track leads, manage
+  contacts, and automate sales processes. The solution offers customizable pipelines, activity tracking, reporting, and integration capabilities,
+  enabling teams to improve productivity and close deals more efficiently. It serves a range of industries with a focus on sales automation and
+  pipeline visibility, delivering a cloud‑based CRM experience.
 url: https://raw.githubusercontent.com/api-evangelist/pipeliner/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:crm
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-22 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-09-22'
 modified: '2026-09-22'
 tags:
-- Company
-apis: []
+- CRM
+- Sales
+- Automation
+- Pipeline
+- Cloud
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
-- type: Website
-  url: https://pipelinersales.com/
+- type: AgenticAccess
+  url: agentic-access/pipeliner-agentic-access.yml
+- type: Spectral
+  url: rules/pipeliner-rules.yml
+- type: JSONLD
+  url: json-ld/pipeliner-context.jsonld
+- type: Vocabulary
+  url: vocabulary/pipeliner-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/pipeliner-webhooks.yml
+- type: DataModel
+  url: data-model/pipeliner-data-model.yml
+- type: Conventions
+  url: conventions/pipeliner-conventions.yml
+- type: Compliance
+  url: https://www.coevera.com/security/
+- type: TrustCenter
+  url: security/pipeliner-trust-center.yml
+- type: Security
+  url: security/pipeliner-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/pipeliner-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/pipeliner-domain-security.yml
+- type: Authentication
+  url: authentication/pipeliner-authentication.yml
+- type: ErrorCatalog
+  url: errors/pipeliner-problem-types.yml
+- type: Conformance
+  url: conformance/pipeliner-conformance.yml
+- type: SecurityTxt
+  url: well-known/pipeliner-help-security.txt
+- type: WellKnown
+  url: well-known/pipeliner-well-known.yml
+- type: Hosts
+  url: hosts/pipeliner-hosts.yml
+- type: Vendors
+  url: vendors/pipeliner-vendors.yml
+- type: DeveloperPortal
+  url: https://developers.pipelinersales.com/
+- type: Documentation
+  url: https://developers.pipelinersales.com/api-docs
+- type: APIReference
+  url: https://developers.pipelinersales.com/api-docs
+- type: GettingStarted
+  url: https://developers.pipelinersales.com/api-docs
+- type: Support
+  url: https://help.pipelinersales.com
+- type: Blog
+  url: https://www.coevera.com/blog/
+- type: Pricing
+  url: https://www.coevera.com/crm/pricing/
+- type: TermsOfService
+  url: https://www.coevera.com/terms/
+- type: PrivacyPolicy
+  url: https://www.coevera.com/privacy/
+- type: SignUp
+  url: https://www.coevera.com/sales-crm/sign-up-geolocation/
+- type: Login
+  url: https://www.coevera.com/log-in/
+apis:
+- aid: pipeliner:pipeliner-account-api
+  name: Pipeliner CRM Account API
+  description: The Account API from Pipeliner CRM — 68 operation(s) for account.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-account-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-activity-api
+  name: Pipeliner CRM Activity API
+  description: The Activity API from Pipeliner CRM — 79 operation(s) for activity.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Activity
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-activity-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-approval-api
+  name: Pipeliner CRM Approval API
+  description: The Approval API from Pipeliner CRM — 20 operation(s) for approval.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Approval
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-approval-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-call-api
+  name: Pipeliner CRM Call API
+  description: The Call API from Pipeliner CRM — 5 operation(s) for call.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Call
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-call-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-chat-api
+  name: Pipeliner CRM Chat API
+  description: The Chat API from Pipeliner CRM — 5 operation(s) for chat.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-chat-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-client-api
+  name: Pipeliner CRM Client API
+  description: The Client API from Pipeliner CRM — 22 operation(s) for client.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Client
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-client-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-company-email-api
+  name: Pipeliner CRM Company Email API
+  description: The Company Email API from Pipeliner CRM — 2 operation(s) for company email.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Company Email
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-company-email-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-contact-api
+  name: Pipeliner CRM Contact API
+  description: The Contact API from Pipeliner CRM — 83 operation(s) for contact.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Contact
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-contact-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-country-api
+  name: Pipeliner CRM Country API
+  description: The Country API from Pipeliner CRM — 5 operation(s) for country.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Country
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-country-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-currency-api
+  name: Pipeliner CRM Currency API
+  description: The Currency API from Pipeliner CRM — 15 operation(s) for currency.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Currency
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-currency-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-custom-entity-api
+  name: Pipeliner CRM Custom Entity API
+  description: The Custom Entity API from Pipeliner CRM — 17 operation(s) for custom entity.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Custom Entity
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-custom-entity-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-data-api
+  name: Pipeliner CRM Data API
+  description: The Data API from Pipeliner CRM — 5 operation(s) for data.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Data
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-data-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-document-api
+  name: Pipeliner CRM Document API
+  description: The Document API from Pipeliner CRM — 25 operation(s) for document.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Document
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-document-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-email-api
+  name: Pipeliner CRM Email API
+  description: The Email API from Pipeliner CRM — 50 operation(s) for email.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Email
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-email-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-email-sequence-api
+  name: Pipeliner CRM Email Sequence API
+  description: The Email Sequence API from Pipeliner CRM — 20 operation(s) for email sequence.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Email Sequence
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-email-sequence-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-entities-api
+  name: Pipeliner CRM Entities API
+  description: The Entities API from Pipeliner CRM — 2 operation(s) for entities.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Entities
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-entities-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-field-api
+  name: Pipeliner CRM Field API
+  description: The Field API from Pipeliner CRM — 15 operation(s) for field.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Field
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-field-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-forecast-api
+  name: Pipeliner CRM Forecast API
+  description: The Forecast API from Pipeliner CRM — 5 operation(s) for forecast.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Forecast
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-forecast-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-form-api
+  name: Pipeliner CRM Form API
+  description: The Form API from Pipeliner CRM — 15 operation(s) for form.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Form
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-form-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-import-api
+  name: Pipeliner CRM Import API
+  description: The Import API from Pipeliner CRM — 5 operation(s) for import.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Import
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-import-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-interface-api
+  name: Pipeliner CRM Interface API
+  description: The Interface API from Pipeliner CRM — 5 operation(s) for interface.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Interface
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-interface-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-lead-api
+  name: Pipeliner CRM Lead API
+  description: The Lead API from Pipeliner CRM — 5 operation(s) for lead.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Lead
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-lead-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-lead-opportunity-api
+  name: Pipeliner CRM Lead & Opportunity API
+  description: The Lead & Opportunity API from Pipeliner CRM — 104 operation(s) for lead & opportunity.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Lead & Opportunity
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-lead-opportunity-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-masterright-api
+  name: Pipeliner CRM Master Right API
+  description: The MasterRight API from Pipeliner CRM — 40 operation(s) for masterright.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - MasterRight
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-masterright-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-media-api
+  name: Pipeliner CRM Media API
+  description: The Media API from Pipeliner CRM — 5 operation(s) for media.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Media
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-media-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-memo-api
+  name: Pipeliner CRM Memo API
+  description: The Memo API from Pipeliner CRM — 10 operation(s) for memo.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Memo
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-memo-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-message-api
+  name: Pipeliner CRM Message API
+  description: The Message API from Pipeliner CRM — 15 operation(s) for message.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Message
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-message-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-note-api
+  name: Pipeliner CRM Note API
+  description: The Note API from Pipeliner CRM — 5 operation(s) for note.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Note
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-note-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-online-api
+  name: Pipeliner CRM Online API
+  description: The Online API from Pipeliner CRM — 35 operation(s) for online.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Online
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-online-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-opportunity-api
+  name: Pipeliner CRM Opportunity API
+  description: The Opportunity API from Pipeliner CRM — 10 operation(s) for opportunity.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Opportunity
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-opportunity-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-phone-api
+  name: Pipeliner CRM Phone API
+  description: The Phone API from Pipeliner CRM — 5 operation(s) for phone.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Phone
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-phone-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-pipeline-api
+  name: Pipeliner CRM Pipeline API
+  description: The Pipeline API from Pipeliner CRM — 5 operation(s) for pipeline.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Pipeline
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-pipeline-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-process-api
+  name: Pipeliner CRM Process API
+  description: The Process API from Pipeliner CRM — 20 operation(s) for process.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Process
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-process-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-product-api
+  name: Pipeliner CRM Product API
+  description: The Product API from Pipeliner CRM — 32 operation(s) for product.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Product
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-product-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-product-line-items-api
+  name: Pipeliner CRM Product Line Items API
+  description: The Product Line Items API from Pipeliner CRM — 5 operation(s) for product line items.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Product Line Items
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-product-line-items-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-profile-api
+  name: Pipeliner CRM Profile API
+  description: The Profile API from Pipeliner CRM — 11 operation(s) for profile.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Profile
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-profile-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-project-api
+  name: Pipeliner CRM Project API
+  description: The Project API from Pipeliner CRM — 37 operation(s) for project.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Project
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-project-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-quote-api
+  name: Pipeliner CRM Quote API
+  description: The Quote API from Pipeliner CRM — 45 operation(s) for quote.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Quote
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-quote-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-report-api
+  name: Pipeliner CRM Report API
+  description: The Report API from Pipeliner CRM — 13 operation(s) for report.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Report
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-report-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-salesrole-api
+  name: Pipeliner CRM Sales Role API
+  description: The SalesRole API from Pipeliner CRM — 5 operation(s) for salesrole.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - SalesRole
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-salesrole-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-salesunit-api
+  name: Pipeliner CRM Sales Unit API
+  description: The SalesUnit API from Pipeliner CRM — 7 operation(s) for salesunit.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - SalesUnit
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-salesunit-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-step-api
+  name: Pipeliner CRM Step API
+  description: The Step API from Pipeliner CRM — 15 operation(s) for step.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Step
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-step-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-tag-api
+  name: Pipeliner CRM Tag API
+  description: The Tag API from Pipeliner CRM — 10 operation(s) for tag.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Tag
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-tag-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-target-api
+  name: Pipeliner CRM Target API
+  description: The Target API from Pipeliner CRM — 10 operation(s) for target.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Target
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-target-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-text-api
+  name: Pipeliner CRM Text API
+  description: The Text API from Pipeliner CRM — 15 operation(s) for text.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Text
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-text-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-timeframe-api
+  name: Pipeliner CRM Timeframe API
+  description: The Timeframe API from Pipeliner CRM — 2 operation(s) for timeframe.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Timeframe
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-timeframe-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-translation-api
+  name: Pipeliner CRM Translation API
+  description: The Translation API from Pipeliner CRM — 5 operation(s) for translation.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Translation
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-translation-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-type-api
+  name: Pipeliner CRM Type API
+  description: The Type API from Pipeliner CRM — 2 operation(s) for type.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Type
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-type-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-unsubscribed-api
+  name: Pipeliner CRM Unsubscribed API
+  description: The Unsubscribed API from Pipeliner CRM — 5 operation(s) for unsubscribed.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Unsubscribed
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-unsubscribed-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-webhook-api
+  name: Pipeliner CRM Webhook API
+  description: The Webhook API from Pipeliner CRM — 10 operation(s) for webhook.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Webhook
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-webhook-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+- aid: pipeliner:pipeliner-webresource-api
+  name: Pipeliner CRM Webresource API
+  description: The Webresource API from Pipeliner CRM — 5 operation(s) for webresource.
+  humanURL: https://developers.pipelinersales.com/api-docs
+  baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+  tags:
+  - Webresource
+  properties:
+  - type: OpenAPI
+    url: openapi/pipeliner-webresource-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/pipeliner-master-right-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-create-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-batch-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-update-master-right-input-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-opportunity-schema.json
+  - type: JSONSchema
+    url: json-schema/pipeliner-appointment-schema.json
+x-enrichment:
+  date: '2026-09-22'
+  status: enriched
+  artifacts_added: 27
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local

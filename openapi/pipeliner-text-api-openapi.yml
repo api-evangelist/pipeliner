@@ -1,0 +1,2561 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Text API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Text
+paths:
+  /entities/TextMessages/{id}:
+    get:
+      description: Returns TextMessage with given id
+      operationId: TextMessages.get
+      summary: TextMessages.get
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessage to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: TextMessage data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessage'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes TextMessage with given id
+      operationId: TextMessages.delete
+      summary: TextMessages.delete
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessage to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessage on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted TextMessage
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies TextMessage or TextMessages with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessage to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessage on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: TextMessages.update
+      summary: TextMessages.update
+      tags:
+      - Text
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTextMessageInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting TextMessage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessage'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessages:
+    get:
+      description: Returns all defined TextMessages
+      operationId: TextMessages.list
+      summary: TextMessages.list
+      tags:
+      - Text
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted TextMessages are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of TextMessages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TextMessage'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new TextMessage
+      operationId: TextMessages.create
+      summary: TextMessages.create
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessage on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessage
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTextMessageInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created TextMessage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessage'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessages/batch-delete:
+    post:
+      description: Removes TextMessages with given list of ids
+      operationId: TextMessages.batch_delete
+      summary: TextMessages.batch_delete
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessages on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessages. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessage to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted TextMessage.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessages/batch-modify:
+    post:
+      description: Create or update an batch of TextMessages
+      operationId: TextMessages.batch_create_or_update
+      summary: TextMessages.batch_create_or_update
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessages on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessages. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessage
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTextMessageInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated TextMessages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessages/batch-restore:
+    post:
+      description: Restores TextMessages with given list of ids
+      operationId: TextMessages.batch_restore
+      summary: TextMessages.batch_restore
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessages on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessages. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessage to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored TextMessage.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversations/{id}:
+    get:
+      description: Returns TextMessageConversation with given id
+      operationId: TextMessageConversations.get
+      summary: TextMessageConversations.get
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: TextMessageConversation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes TextMessageConversation with given id
+      operationId: TextMessageConversations.delete
+      summary: TextMessageConversations.delete
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversation to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversation on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted TextMessageConversation
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies TextMessageConversation or TextMessageConversations with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversation to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversation on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: TextMessageConversations.update
+      summary: TextMessageConversations.update
+      tags:
+      - Text
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTextMessageConversationInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting TextMessageConversation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversations:
+    get:
+      description: Returns all defined TextMessageConversations
+      operationId: TextMessageConversations.list
+      summary: TextMessageConversations.list
+      tags:
+      - Text
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted TextMessageConversations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of TextMessageConversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TextMessageConversation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new TextMessageConversation
+      operationId: TextMessageConversations.create
+      summary: TextMessageConversations.create
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversation on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessageConversation
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTextMessageConversationInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created TextMessageConversation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversation'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversations/batch-delete:
+    post:
+      description: Removes TextMessageConversations with given list of ids
+      operationId: TextMessageConversations.batch_delete
+      summary: TextMessageConversations.batch_delete
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessageConversation to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted TextMessageConversation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversations/batch-modify:
+    post:
+      description: Create or update an batch of TextMessageConversations
+      operationId: TextMessageConversations.batch_create_or_update
+      summary: TextMessageConversations.batch_create_or_update
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversations on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessageConversation
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTextMessageConversationInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated TextMessageConversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversations/batch-restore:
+    post:
+      description: Restores TextMessageConversations with given list of ids
+      operationId: TextMessageConversations.batch_restore
+      summary: TextMessageConversations.batch_restore
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversations on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessageConversation to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored TextMessageConversation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversationRelationses/{id}:
+    get:
+      description: Returns TextMessageConversationRelations with given id
+      operationId: TextMessageConversationRelationses.get
+      summary: TextMessageConversationRelationses.get
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversationRelations to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: TextMessageConversationRelations data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversationRelations'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes TextMessageConversationRelations with given id
+      operationId: TextMessageConversationRelationses.delete
+      summary: TextMessageConversationRelationses.delete
+      tags:
+      - Text
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversationRelations to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted TextMessageConversationRelations
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies TextMessageConversationRelations or TextMessageConversationRelationses with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of TextMessageConversationRelations to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelations on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: TextMessageConversationRelationses.update
+      summary: TextMessageConversationRelationses.update
+      tags:
+      - Text
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTextMessageConversationRelationsInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting TextMessageConversationRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversationRelations'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversationRelationses:
+    get:
+      description: Returns all defined TextMessageConversationRelationses
+      operationId: TextMessageConversationRelationses.list
+      summary: TextMessageConversationRelationses.list
+      tags:
+      - Text
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted TextMessageConversationRelationses are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of TextMessageConversationRelationses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TextMessageConversationRelations'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new TextMessageConversationRelations
+      operationId: TextMessageConversationRelationses.create
+      summary: TextMessageConversationRelationses.create
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelations on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessageConversationRelations
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTextMessageConversationRelationsInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created TextMessageConversationRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TextMessageConversationRelations'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversationRelationses/batch-delete:
+    post:
+      description: Removes TextMessageConversationRelationses with given list of ids
+      operationId: TextMessageConversationRelationses.batch_delete
+      summary: TextMessageConversationRelationses.batch_delete
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelationses on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversationRelationses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessageConversationRelations to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted TextMessageConversationRelations.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversationRelationses/batch-modify:
+    post:
+      description: Create or update an batch of TextMessageConversationRelationses
+      operationId: TextMessageConversationRelationses.batch_create_or_update
+      summary: TextMessageConversationRelationses.batch_create_or_update
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelationses on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversationRelationses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TextMessageConversationRelations
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTextMessageConversationRelationsInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated TextMessageConversationRelationses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TextMessageConversationRelationses/batch-restore:
+    post:
+      description: Restores TextMessageConversationRelationses with given list of ids
+      operationId: TextMessageConversationRelationses.batch_restore
+      summary: TextMessageConversationRelationses.batch_restore
+      tags:
+      - Text
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TextMessageConversationRelationses on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TextMessageConversationRelationses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TextMessageConversationRelations to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored TextMessageConversationRelations.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    createTextMessageInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        chat_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the chat conversation.
+        content:
+          type: string
+          example: string
+          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
+        datetime_sent:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the message was sent.
+        direction:
+          type: integer
+          description: 'Direction of the message (Incoming, Outgoing).
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        message_sid:
+          type: string
+          example: string
+          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
+        score:
+          type: integer
+          format: int32
+          example: 1
+          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
+        status:
+          type: integer
+          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
+
+
+            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the message (e.g. MMS attachments).
+      required:
+      - content
+      - direction
+    updateTextMessageInput:
+      properties:
+        chat_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the chat conversation.
+        content:
+          type: string
+          example: string
+          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
+        datetime_sent:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the message was sent.
+        direction:
+          type: integer
+          description: 'Direction of the message (Incoming, Outgoing).
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        message_sid:
+          type: string
+          example: string
+          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
+        score:
+          type: integer
+          format: int32
+          example: 1
+          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
+        status:
+          type: integer
+          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
+
+
+            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the message (e.g. MMS attachments).
+    createTextMessageConversationRelationsInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - text_message_conversation_id
+    updateTextMessageConversationInput:
+      properties:
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sender phone.
+        recipient_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched account.
+        recipient_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched contact.
+        recipient_phone_number:
+          type: string
+          example: string
+          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
+          description: Messages exchanged in the conversation, ordered by send time.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Accounts linked to this conversation.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Contacts linked to this conversation.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Projects linked to this conversation.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Leads linked to this conversation.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Opportunities linked to this conversation.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Quotes linked to this conversation.
+    TextMessageConversation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        phone:
+          type: string
+          format: uri
+          description: 'Coevera phone number used as the sender side of the conversation.
+
+
+            Relation to Phone. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Phone'' object for properties.'
+        recipient_account:
+          type: string
+          format: uri
+          description: 'Account record matched to the recipient phone, when one exists.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        recipient_contact:
+          type: string
+          format: uri
+          description: 'Contact record matched to the recipient phone, when one exists.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sender phone.
+        recipient_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched account.
+        recipient_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched contact.
+        recipient_phone_number:
+          type: string
+          example: string
+          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        messages:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessage. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessage'' object for properties.'
+          description: Messages exchanged in the conversation, ordered by send time.
+        account_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Accounts linked to this conversation.
+        contact_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Contacts linked to this conversation.
+        project_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Projects linked to this conversation.
+        lead_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Leads linked to this conversation.
+        opportunity_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Opportunities linked to this conversation.
+        quote_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TextMessageConversationRelations. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversationRelations'' object for properties.'
+          description: Quotes linked to this conversation.
+      required:
+      - is_delete_protected
+      - id
+      - phone
+      - phone_id
+    TextMessage:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        chat_conversation:
+          type: string
+          format: uri
+          description: 'Internal AI chat conversation this message belongs to, when applicable.
+
+
+            Relation to ChatConversation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ChatConversation'' object for properties.'
+        text_message_conversation:
+          type: string
+          format: uri
+          description: 'Conversation this message belongs to. Empty for messages produced by AI chat that do not belong to a thread of customer conversation.
+
+
+            Relation to TextMessageConversation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversation'' object for properties.'
+        chat_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the chat conversation.
+        content:
+          type: string
+          example: string
+          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
+        datetime_sent:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the message was sent.
+        direction:
+          type: integer
+          description: 'Direction of the message (Incoming, Outgoing).
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        message_sid:
+          type: string
+          example: string
+          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
+        score:
+          type: integer
+          format: int32
+          example: 1
+          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
+        status:
+          type: integer
+          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
+
+
+            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        attachments:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the message (e.g. MMS attachments).
+        content_as_html:
+          type: string
+          example: string
+          description: HTML-rendered version of the message body, ready for display in chat UIs.
+        data:
+          type: string
+          format: binary
+          example: blob
+          description: Structured AI payload of the message (examples or suggestions). Empty for regular text messages.
+        topic_prompts:
+          type: string
+          format: binary
+          example: blob
+          description: List of suggested follow-up prompts produced by the AI for this message. Empty when the AI did not produce prompts.
+      required:
+      - is_delete_protected
+      - id
+      - content
+      - direction
+      - content_as_html
+      - data
+      - topic_prompts
+    batchTextMessageConversationInput:
+      properties:
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sender phone.
+        recipient_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched account.
+        recipient_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched contact.
+        recipient_phone_number:
+          type: string
+          example: string
+          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
+          description: Messages exchanged in the conversation, ordered by send time.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Accounts linked to this conversation.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Contacts linked to this conversation.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Projects linked to this conversation.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Leads linked to this conversation.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Opportunities linked to this conversation.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Quotes linked to this conversation.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createTextMessageConversationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sender phone.
+        recipient_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched account.
+        recipient_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched contact.
+        recipient_phone_number:
+          type: string
+          example: string
+          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessage, see: ''createTextMessageInput'' object for properties.'
+          description: Messages exchanged in the conversation, ordered by send time.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Accounts linked to this conversation.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Contacts linked to this conversation.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Projects linked to this conversation.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Leads linked to this conversation.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Opportunities linked to this conversation.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''createTextMessageConversationRelationsInput'' object for properties.'
+          description: Quotes linked to this conversation.
+      required:
+      - phone_id
+    updateTextMessageConversationRelationsInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchTextMessageInput:
+      properties:
+        chat_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the chat conversation.
+        content:
+          type: string
+          example: string
+          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
+        datetime_sent:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the message was sent.
+        direction:
+          type: integer
+          description: 'Direction of the message (Incoming, Outgoing).
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        message_sid:
+          type: string
+          example: string
+          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
+        score:
+          type: integer
+          format: int32
+          example: 1
+          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
+        status:
+          type: integer
+          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
+
+
+            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the message (e.g. MMS attachments).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    TextMessageConversationRelations:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the conversation is linked to, or empty when not linked.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the conversation is linked to, or empty when not linked.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the conversation is linked to. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the conversation is linked to. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project the conversation is linked to.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the conversation is linked to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        text_message_conversation:
+          type: string
+          format: uri
+          description: 'Conversation this link belongs to.
+
+
+            Relation to TextMessageConversation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversation'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - text_message_conversation
+      - text_message_conversation_id
+    batchTextMessageConversationRelationsInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

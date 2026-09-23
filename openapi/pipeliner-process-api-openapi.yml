@@ -1,0 +1,3010 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Process API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Process
+paths:
+  /entities/Processes/{id}:
+    get:
+      description: Returns Process with given id
+      operationId: Processes.get
+      summary: Processes.get
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of Process to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Process data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Process'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Process with given id
+      operationId: Processes.delete
+      summary: Processes.delete
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of Process to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Process on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Process
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Process or Processes with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Process to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Process on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Processes.update
+      summary: Processes.update
+      tags:
+      - Process
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProcessInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Process
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Process'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Processes:
+    get:
+      description: Returns all defined Processes
+      operationId: Processes.list
+      summary: Processes.list
+      tags:
+      - Process
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Processes are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Processes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Process'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Process
+      operationId: Processes.create
+      summary: Processes.create
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Process on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Process
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProcessInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Process
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Process'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Processes/batch-delete:
+    post:
+      description: Removes Processes with given list of ids
+      operationId: Processes.batch_delete
+      summary: Processes.batch_delete
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Processes on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Processes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Process to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Process.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Processes/batch-modify:
+    post:
+      description: Create or update an batch of Processes
+      operationId: Processes.batch_create_or_update
+      summary: Processes.batch_create_or_update
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Processes on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Processes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Process
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProcessInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Processes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Processes/batch-restore:
+    post:
+      description: Restores Processes with given list of ids
+      operationId: Processes.batch_restore
+      summary: Processes.batch_restore
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Processes on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Processes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Process to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Process.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogs/{id}:
+    get:
+      description: Returns ProcessActivityLog with given id
+      operationId: ProcessActivityLogs.get
+      summary: ProcessActivityLogs.get
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLog to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProcessActivityLog data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLog'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProcessActivityLog with given id
+      operationId: ProcessActivityLogs.delete
+      summary: ProcessActivityLogs.delete
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLog to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLog on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProcessActivityLog
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProcessActivityLog or ProcessActivityLogs with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLog to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLog on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProcessActivityLogs.update
+      summary: ProcessActivityLogs.update
+      tags:
+      - Process
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProcessActivityLogInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProcessActivityLog
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLog'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogs:
+    get:
+      description: Returns all defined ProcessActivityLogs
+      operationId: ProcessActivityLogs.list
+      summary: ProcessActivityLogs.list
+      tags:
+      - Process
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProcessActivityLogs are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProcessActivityLogs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProcessActivityLog'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProcessActivityLog
+      operationId: ProcessActivityLogs.create
+      summary: ProcessActivityLogs.create
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLog on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessActivityLog
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProcessActivityLogInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProcessActivityLog
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLog'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogs/batch-delete:
+    post:
+      description: Removes ProcessActivityLogs with given list of ids
+      operationId: ProcessActivityLogs.batch_delete
+      summary: ProcessActivityLogs.batch_delete
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogs on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogs. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessActivityLog to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProcessActivityLog.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogs/batch-modify:
+    post:
+      description: Create or update an batch of ProcessActivityLogs
+      operationId: ProcessActivityLogs.batch_create_or_update
+      summary: ProcessActivityLogs.batch_create_or_update
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogs on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogs. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessActivityLog
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProcessActivityLogInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProcessActivityLogs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogs/batch-restore:
+    post:
+      description: Restores ProcessActivityLogs with given list of ids
+      operationId: ProcessActivityLogs.batch_restore
+      summary: ProcessActivityLogs.batch_restore
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogs on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogs. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessActivityLog to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProcessActivityLog.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogLines/{id}:
+    get:
+      description: Returns ProcessActivityLogLine with given id
+      operationId: ProcessActivityLogLines.get
+      summary: ProcessActivityLogLines.get
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLogLine to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProcessActivityLogLine data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLogLine'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProcessActivityLogLine with given id
+      operationId: ProcessActivityLogLines.delete
+      summary: ProcessActivityLogLines.delete
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLogLine to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLine on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProcessActivityLogLine
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProcessActivityLogLine or ProcessActivityLogLines with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessActivityLogLine to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLine on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProcessActivityLogLines.update
+      summary: ProcessActivityLogLines.update
+      tags:
+      - Process
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProcessActivityLogLineInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProcessActivityLogLine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLogLine'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogLines:
+    get:
+      description: Returns all defined ProcessActivityLogLines
+      operationId: ProcessActivityLogLines.list
+      summary: ProcessActivityLogLines.list
+      tags:
+      - Process
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProcessActivityLogLines are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProcessActivityLogLines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProcessActivityLogLine'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProcessActivityLogLine
+      operationId: ProcessActivityLogLines.create
+      summary: ProcessActivityLogLines.create
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLine on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessActivityLogLine
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProcessActivityLogLineInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProcessActivityLogLine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessActivityLogLine'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogLines/batch-delete:
+    post:
+      description: Removes ProcessActivityLogLines with given list of ids
+      operationId: ProcessActivityLogLines.batch_delete
+      summary: ProcessActivityLogLines.batch_delete
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLines on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessActivityLogLine to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProcessActivityLogLine.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogLines/batch-modify:
+    post:
+      description: Create or update an batch of ProcessActivityLogLines
+      operationId: ProcessActivityLogLines.batch_create_or_update
+      summary: ProcessActivityLogLines.batch_create_or_update
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLines on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessActivityLogLine
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProcessActivityLogLineInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProcessActivityLogLines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessActivityLogLines/batch-restore:
+    post:
+      description: Restores ProcessActivityLogLines with given list of ids
+      operationId: ProcessActivityLogLines.batch_restore
+      summary: ProcessActivityLogLines.batch_restore
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessActivityLogLines on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessActivityLogLine to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProcessActivityLogLine.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessTemplates/{id}:
+    get:
+      description: Returns ProcessTemplate with given id
+      operationId: ProcessTemplates.get
+      summary: ProcessTemplates.get
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessTemplate to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProcessTemplate data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessTemplate'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProcessTemplate with given id
+      operationId: ProcessTemplates.delete
+      summary: ProcessTemplates.delete
+      tags:
+      - Process
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessTemplate to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplate on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProcessTemplate
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProcessTemplate or ProcessTemplates with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProcessTemplate to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplate on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProcessTemplates.update
+      summary: ProcessTemplates.update
+      tags:
+      - Process
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProcessTemplateInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProcessTemplate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessTemplate'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessTemplates:
+    get:
+      description: Returns all defined ProcessTemplates
+      operationId: ProcessTemplates.list
+      summary: ProcessTemplates.list
+      tags:
+      - Process
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProcessTemplates are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProcessTemplates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProcessTemplate'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProcessTemplate
+      operationId: ProcessTemplates.create
+      summary: ProcessTemplates.create
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplate on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessTemplate
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProcessTemplateInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProcessTemplate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProcessTemplate'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessTemplates/batch-delete:
+    post:
+      description: Removes ProcessTemplates with given list of ids
+      operationId: ProcessTemplates.batch_delete
+      summary: ProcessTemplates.batch_delete
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplates on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessTemplates. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessTemplate to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProcessTemplate.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessTemplates/batch-modify:
+    post:
+      description: Create or update an batch of ProcessTemplates
+      operationId: ProcessTemplates.batch_create_or_update
+      summary: ProcessTemplates.batch_create_or_update
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplates on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessTemplates. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProcessTemplate
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProcessTemplateInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProcessTemplates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProcessTemplates/batch-restore:
+    post:
+      description: Restores ProcessTemplates with given list of ids
+      operationId: ProcessTemplates.batch_restore
+      summary: ProcessTemplates.batch_restore
+      tags:
+      - Process
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProcessTemplates on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProcessTemplates. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProcessTemplate to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProcessTemplate.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ProcessActivityLogLine:
+      properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        process_activity_log:
+          type: string
+          format: uri
+          description: 'Activity log run this line belongs to.
+
+
+            Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - formatted_text
+      - is_delete_protected
+      - id
+      - process_activity_log
+      - process_activity_log_id
+      - sort_order
+    createProcessActivityLogLineInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - process_activity_log_id
+      - sort_order
+    updateProcessActivityLogLineInput:
+      properties:
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    ProcessActivityLog:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        actor:
+          type: string
+          format: uri
+          description: 'User who triggered the run, or empty for runs triggered by automation.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        application:
+          type: string
+          format: uri
+          description: 'Application context the run was triggered in.
+
+
+            Relation to Application. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Application'' object for properties.'
+        process:
+          type: string
+          format: uri
+          description: 'Process whose execution this log records.
+
+
+            Relation to Process. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Process'' object for properties.'
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        lines:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProcessActivityLogLine. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLogLine'' object for properties.'
+          description: Activity log lines describing each step taken in this run (visible only).
+        record_name:
+          type: string
+          example: string
+          description: Name of the trigger record (extracted from the first log line) for display in activity log lists.
+      required:
+      - is_delete_protected
+      - id
+      - application
+      - process
+      - application_id
+      - process_id
+      - start_time
+      - status
+    batchProcessTemplateInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createProcessTemplateInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+      required:
+      - name
+      - settings
+    updateProcessInput:
+      properties:
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+    ProcessTemplate:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+        action_types:
+          type: array
+          items:
+            type: string
+            example: ArchiveRecord
+            enum:
+            - ArchiveRecord
+            - CreateRecord
+            - ManualTrigger
+            - RecordChangedTrigger
+            - ScheduledTrigger
+            - SendEmail
+            - SendWebhook
+            - UpdateRecord
+          description: Action-type icons present in the template schema, used for filtering templates by capability (e.g. SendEmail, CreateRecord, Webhook).
+      required:
+      - is_delete_protected
+      - id
+      - name
+      - settings
+    batchProcessInput:
+      properties:
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createProcessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+      required:
+      - name
+      - owner_id
+      - type
+    batchProcessActivityLogInput:
+      properties:
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createProcessActivityLogInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - application_id
+      - process_id
+      - start_time
+      - status
+    updateProcessTemplateInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+    Process:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the process.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        deactivation_reason:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoReason, 1 - Manual, 2 - TooManyErrors, 3 - DisabledFeature'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the process actively responds to its trigger; when false, the process is paused. Toggle via enable/disable mutations.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
+          description: Activity log runs (one per process execution) recorded for this process.
+        tags:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TagRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TagRelation'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        activity:
+          type: object
+          description: Activity timeline for the last 24 hours showing per-hour counts of successful, warning, and error process runs.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - type
+      - activity
+    batchProcessActivityLogLineInput:
+      properties:
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProcessActivityLogInput:
+      properties:
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5

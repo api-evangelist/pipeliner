@@ -1,0 +1,942 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Interface API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Interface
+paths:
+  /entities/InterfacePreviews/{id}:
+    get:
+      description: Returns InterfacePreview with given id
+      operationId: InterfacePreviews.get
+      summary: InterfacePreviews.get
+      tags:
+      - Interface
+      parameters:
+      - name: id
+        in: path
+        description: ID of InterfacePreview to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: InterfacePreview data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/InterfacePreview'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes InterfacePreview with given id
+      operationId: InterfacePreviews.delete
+      summary: InterfacePreviews.delete
+      tags:
+      - Interface
+      parameters:
+      - name: id
+        in: path
+        description: ID of InterfacePreview to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreview on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted InterfacePreview
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies InterfacePreview or InterfacePreviews with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of InterfacePreview to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreview on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: InterfacePreviews.update
+      summary: InterfacePreviews.update
+      tags:
+      - Interface
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateInterfacePreviewInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting InterfacePreview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/InterfacePreview'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/InterfacePreviews:
+    get:
+      description: Returns all defined InterfacePreviews
+      operationId: InterfacePreviews.list
+      summary: InterfacePreviews.list
+      tags:
+      - Interface
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted InterfacePreviews are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of InterfacePreviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterfacePreview'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new InterfacePreview
+      operationId: InterfacePreviews.create
+      summary: InterfacePreviews.create
+      tags:
+      - Interface
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreview on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new InterfacePreview
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createInterfacePreviewInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created InterfacePreview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/InterfacePreview'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/InterfacePreviews/batch-delete:
+    post:
+      description: Removes InterfacePreviews with given list of ids
+      operationId: InterfacePreviews.batch_delete
+      summary: InterfacePreviews.batch_delete
+      tags:
+      - Interface
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreviews on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for InterfacePreviews. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity InterfacePreview to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted InterfacePreview.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/InterfacePreviews/batch-modify:
+    post:
+      description: Create or update an batch of InterfacePreviews
+      operationId: InterfacePreviews.batch_create_or_update
+      summary: InterfacePreviews.batch_create_or_update
+      tags:
+      - Interface
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreviews on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for InterfacePreviews. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new InterfacePreview
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchInterfacePreviewInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated InterfacePreviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/InterfacePreviews/batch-restore:
+    post:
+      description: Restores InterfacePreviews with given list of ids
+      operationId: InterfacePreviews.batch_restore
+      summary: InterfacePreviews.batch_restore
+      tags:
+      - Interface
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of InterfacePreviews on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for InterfacePreviews. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity InterfacePreview to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored InterfacePreview.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    createInterfacePreviewInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+          readOnly: true
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+          readOnly: true
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+          readOnly: true
+        custom_entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+          readOnly: true
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+          readOnly: true
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+          readOnly: true
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+          readOnly: true
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+          readOnly: true
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+          readOnly: true
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+          readOnly: true
+        is_published:
+          type: boolean
+          example: false
+          description: True when the interface preview is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the type the interface preview is configured for, derived from whichever of the per-entity-type relations is set.
+          readOnly: true
+      required:
+      - card_field_ids
+      - charts
+      - detail_tabs
+      - detail_widgets
+      - field_ids
+      - settings
+      - entity_type_id
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateInterfacePreviewInput:
+      properties:
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchInterfacePreviewInput:
+      properties:
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    InterfacePreview:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type:
+          type: string
+          format: uri
+          description: 'Account type the interface preview applies to.
+
+
+            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
+        appointment_type:
+          type: string
+          format: uri
+          description: 'Appointment type the interface preview applies to.
+
+
+            Relation to AppointmentType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AppointmentType'' object for properties.'
+        contact_type:
+          type: string
+          format: uri
+          description: 'Contact type the interface preview applies to.
+
+
+            Relation to ContactType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactType'' object for properties.'
+        custom_entity_type:
+          type: string
+          format: uri
+          description: 'Custom entity type the interface preview applies to.
+
+
+            Relation to CustomEntityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntityType'' object for properties.'
+        lead_type:
+          type: string
+          format: uri
+          description: 'Lead type the interface preview applies to.
+
+
+            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
+        oppty_type:
+          type: string
+          format: uri
+          description: 'Opportunity type the interface preview applies to.
+
+
+            Relation to OpportunityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpportunityType'' object for properties.'
+        product_type:
+          type: string
+          format: uri
+          description: 'Product type the interface preview applies to.
+
+
+            Relation to ProductType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductType'' object for properties.'
+        project_type:
+          type: string
+          format: uri
+          description: 'Project type the interface preview applies to.
+
+
+            Relation to ProjectType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProjectType'' object for properties.'
+        quote_type:
+          type: string
+          format: uri
+          description: 'Quote type the interface preview applies to.
+
+
+            Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
+        task_type:
+          type: string
+          format: uri
+          description: 'Task type the interface preview applies to.
+
+
+            Relation to TaskType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TaskType'' object for properties.'
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+          readOnly: true
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+          readOnly: true
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+          readOnly: true
+        custom_entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+          readOnly: true
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+          readOnly: true
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+          readOnly: true
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+          readOnly: true
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+          readOnly: true
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+          readOnly: true
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+          readOnly: true
+        is_published:
+          type: boolean
+          example: false
+          description: True when the interface preview is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the type the interface preview is configured for, derived from whichever of the per-entity-type relations is set.
+          readOnly: true
+        entity_type:
+          type: integer
+          description: 'Entity kind the interface preview applies to (Account, Lead, Opportunity, Contact, Task, Appointment, Project, Quote, CustomEntity, or Product). Derived from whichever of the per-entity-type relations is set.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - card_field_ids
+      - charts
+      - detail_tabs
+      - detail_widgets
+      - field_ids
+      - settings
+      - entity_type_id
+      - entity_type

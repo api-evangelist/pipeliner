@@ -1,0 +1,4639 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Product API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Product
+paths:
+  /entities/Products/{id}:
+    get:
+      description: Returns Product with given id
+      operationId: Products.get
+      summary: Products.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of Product to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Product data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Product with given id
+      operationId: Products.delete
+      summary: Products.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of Product to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Product on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Product
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Product or Products with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Product to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Product on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Products.update
+      summary: Products.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Products:
+    get:
+      description: Returns all defined Products
+      operationId: Products.list
+      summary: Products.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Products are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Product
+      operationId: Products.create
+      summary: Products.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Product on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Product
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Products/batch-delete:
+    post:
+      description: Removes Products with given list of ids
+      operationId: Products.batch_delete
+      summary: Products.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Products on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Products. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Product to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Product.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Products/batch-modify:
+    post:
+      description: Create or update an batch of Products
+      operationId: Products.batch_create_or_update
+      summary: Products.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Products on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Products. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Product
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Products/batch-restore:
+    post:
+      description: Restores Products with given list of ids
+      operationId: Products.batch_restore
+      summary: Products.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Products on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Products. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Product to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Product.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductCategories/{id}:
+    get:
+      description: Returns ProductCategory with given id
+      operationId: ProductCategories.get
+      summary: ProductCategories.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductCategory to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductCategory data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductCategory'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProductCategory with given id
+      operationId: ProductCategories.delete
+      summary: ProductCategories.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductCategory to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategory on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProductCategory
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProductCategory or ProductCategories with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductCategory to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategory on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProductCategories.update
+      summary: ProductCategories.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductCategoryInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProductCategory
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductCategory'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductCategories:
+    get:
+      description: Returns all defined ProductCategories
+      operationId: ProductCategories.list
+      summary: ProductCategories.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductCategories are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductCategories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCategory'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProductCategory
+      operationId: ProductCategories.create
+      summary: ProductCategories.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategory on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductCategory
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductCategoryInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProductCategory
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductCategory'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductCategories/batch-delete:
+    post:
+      description: Removes ProductCategories with given list of ids
+      operationId: ProductCategories.batch_delete
+      summary: ProductCategories.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategories on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductCategories. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductCategory to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProductCategory.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductCategories/batch-modify:
+    post:
+      description: Create or update an batch of ProductCategories
+      operationId: ProductCategories.batch_create_or_update
+      summary: ProductCategories.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategories on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductCategories. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductCategory
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductCategoryInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProductCategories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductCategories/batch-restore:
+    post:
+      description: Restores ProductCategories with given list of ids
+      operationId: ProductCategories.batch_restore
+      summary: ProductCategories.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductCategories on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductCategories. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductCategory to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProductCategory.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductDataExRelations/{id}:
+    get:
+      description: Returns ProductDataExRelation with given id
+      operationId: ProductDataExRelations.get
+      summary: ProductDataExRelations.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductDataExRelation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductDataExRelation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductDataExRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductDataExRelations:
+    get:
+      description: Returns all defined ProductDataExRelations
+      operationId: ProductDataExRelations.list
+      summary: ProductDataExRelations.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductDataExRelations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductDataExRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDataExRelation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPipelineRelations/{id}:
+    get:
+      description: Returns ProductPipelineRelation with given id
+      operationId: ProductPipelineRelations.get
+      summary: ProductPipelineRelations.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPipelineRelation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductPipelineRelation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPipelineRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProductPipelineRelation with given id
+      operationId: ProductPipelineRelations.delete
+      summary: ProductPipelineRelations.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPipelineRelation to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelation on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProductPipelineRelation
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProductPipelineRelation or ProductPipelineRelations with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPipelineRelation to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelation on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProductPipelineRelations.update
+      summary: ProductPipelineRelations.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductPipelineRelationInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProductPipelineRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPipelineRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPipelineRelations:
+    get:
+      description: Returns all defined ProductPipelineRelations
+      operationId: ProductPipelineRelations.list
+      summary: ProductPipelineRelations.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductPipelineRelations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductPipelineRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductPipelineRelation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProductPipelineRelation
+      operationId: ProductPipelineRelations.create
+      summary: ProductPipelineRelations.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelation on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPipelineRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductPipelineRelationInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProductPipelineRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPipelineRelation'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPipelineRelations/batch-delete:
+    post:
+      description: Removes ProductPipelineRelations with given list of ids
+      operationId: ProductPipelineRelations.batch_delete
+      summary: ProductPipelineRelations.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPipelineRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPipelineRelation to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProductPipelineRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPipelineRelations/batch-modify:
+    post:
+      description: Create or update an batch of ProductPipelineRelations
+      operationId: ProductPipelineRelations.batch_create_or_update
+      summary: ProductPipelineRelations.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelations on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPipelineRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPipelineRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductPipelineRelationInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProductPipelineRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPipelineRelations/batch-restore:
+    post:
+      description: Restores ProductPipelineRelations with given list of ids
+      operationId: ProductPipelineRelations.batch_restore
+      summary: ProductPipelineRelations.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPipelineRelations on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPipelineRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPipelineRelation to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProductPipelineRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceLists/{id}:
+    get:
+      description: Returns ProductPriceList with given id
+      operationId: ProductPriceLists.get
+      summary: ProductPriceLists.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceList to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductPriceList data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceList'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProductPriceList with given id
+      operationId: ProductPriceLists.delete
+      summary: ProductPriceLists.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceList to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceList on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProductPriceList
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProductPriceList or ProductPriceLists with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceList to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceList on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProductPriceLists.update
+      summary: ProductPriceLists.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductPriceListInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProductPriceList
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceList'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceLists:
+    get:
+      description: Returns all defined ProductPriceLists
+      operationId: ProductPriceLists.list
+      summary: ProductPriceLists.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductPriceLists are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductPriceLists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductPriceList'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProductPriceList
+      operationId: ProductPriceLists.create
+      summary: ProductPriceLists.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceList on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPriceList
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductPriceListInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProductPriceList
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceList'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceLists/batch-delete:
+    post:
+      description: Removes ProductPriceLists with given list of ids
+      operationId: ProductPriceLists.batch_delete
+      summary: ProductPriceLists.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceLists on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceLists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPriceList to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProductPriceList.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceLists/batch-modify:
+    post:
+      description: Create or update an batch of ProductPriceLists
+      operationId: ProductPriceLists.batch_create_or_update
+      summary: ProductPriceLists.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceLists on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceLists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPriceList
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductPriceListInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProductPriceLists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceLists/batch-restore:
+    post:
+      description: Restores ProductPriceLists with given list of ids
+      operationId: ProductPriceLists.batch_restore
+      summary: ProductPriceLists.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceLists on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceLists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPriceList to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProductPriceList.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceListPrices/{id}:
+    get:
+      description: Returns ProductPriceListPrice with given id
+      operationId: ProductPriceListPrices.get
+      summary: ProductPriceListPrices.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceListPrice to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductPriceListPrice data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceListPrice'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProductPriceListPrice with given id
+      operationId: ProductPriceListPrices.delete
+      summary: ProductPriceListPrices.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceListPrice to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrice on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProductPriceListPrice
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProductPriceListPrice or ProductPriceListPrices with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductPriceListPrice to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrice on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProductPriceListPrices.update
+      summary: ProductPriceListPrices.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductPriceListPriceInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProductPriceListPrice
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceListPrice'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceListPrices:
+    get:
+      description: Returns all defined ProductPriceListPrices
+      operationId: ProductPriceListPrices.list
+      summary: ProductPriceListPrices.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductPriceListPrices are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductPriceListPrices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductPriceListPrice'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProductPriceListPrice
+      operationId: ProductPriceListPrices.create
+      summary: ProductPriceListPrices.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrice on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPriceListPrice
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductPriceListPriceInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProductPriceListPrice
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductPriceListPrice'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceListPrices/batch-delete:
+    post:
+      description: Removes ProductPriceListPrices with given list of ids
+      operationId: ProductPriceListPrices.batch_delete
+      summary: ProductPriceListPrices.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrices on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceListPrices. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPriceListPrice to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProductPriceListPrice.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceListPrices/batch-modify:
+    post:
+      description: Create or update an batch of ProductPriceListPrices
+      operationId: ProductPriceListPrices.batch_create_or_update
+      summary: ProductPriceListPrices.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrices on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceListPrices. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductPriceListPrice
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductPriceListPriceInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProductPriceListPrices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductPriceListPrices/batch-restore:
+    post:
+      description: Restores ProductPriceListPrices with given list of ids
+      operationId: ProductPriceListPrices.batch_restore
+      summary: ProductPriceListPrices.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductPriceListPrices on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductPriceListPrices. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductPriceListPrice to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProductPriceListPrice.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductTypes/{id}:
+    get:
+      description: Returns ProductType with given id
+      operationId: ProductTypes.get
+      summary: ProductTypes.get
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductType to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ProductType data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductType'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ProductType with given id
+      operationId: ProductTypes.delete
+      summary: ProductTypes.delete
+      tags:
+      - Product
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductType to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductType on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ProductType
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ProductType or ProductTypes with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ProductType to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductType on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ProductTypes.update
+      summary: ProductTypes.update
+      tags:
+      - Product
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateProductTypeInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ProductType
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductType'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductTypes:
+    get:
+      description: Returns all defined ProductTypes
+      operationId: ProductTypes.list
+      summary: ProductTypes.list
+      tags:
+      - Product
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ProductTypes are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ProductTypes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductType'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ProductType
+      operationId: ProductTypes.create
+      summary: ProductTypes.create
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductType on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductType
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createProductTypeInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ProductType
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ProductType'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductTypes/batch-delete:
+    post:
+      description: Removes ProductTypes with given list of ids
+      operationId: ProductTypes.batch_delete
+      summary: ProductTypes.batch_delete
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductTypes on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductTypes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductType to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ProductType.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductTypes/batch-modify:
+    post:
+      description: Create or update an batch of ProductTypes
+      operationId: ProductTypes.batch_create_or_update
+      summary: ProductTypes.batch_create_or_update
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductTypes on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductTypes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ProductType
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchProductTypeInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ProductTypes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ProductTypes/batch-restore:
+    post:
+      description: Restores ProductTypes with given list of ids
+      operationId: ProductTypes.batch_restore
+      summary: ProductTypes.batch_restore
+      tags:
+      - Product
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ProductTypes on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ProductTypes. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ProductType to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ProductType.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ProductPriceListPrice:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency:
+          type: string
+          format: uri
+          description: 'Currency the price value is denominated in.
+
+
+            Relation to Currency. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Currency'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product the price applies to.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        product_price_list:
+          type: string
+          format: uri
+          description: 'Price list the price belongs to.
+
+
+            Relation to ProductPriceList. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductPriceList'' object for properties.'
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - currency
+      - product
+      - product_price_list
+      - currency_id
+      - product_id
+      - product_price_list_id
+      - settings
+    batchProductTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Product:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_exchange_rates_list:
+          type: string
+          format: uri
+          description: 'Currency exchange rate list used to convert monetary fields linked to this product. Empty to inherit the team space default.
+
+
+            Relation to CurrencyExchangeRatesList. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CurrencyExchangeRatesList'' object for properties.'
+        picture:
+          type: string
+          format: uri
+          description: 'Product picture.
+
+
+            Relation to CloudObject. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObject'' object for properties.'
+        product_category:
+          type: string
+          format: uri
+          description: 'Product category this product belongs to. Categories form a hierarchy used in the catalog browser.
+
+
+            Relation to ProductCategory. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductCategory'' object for properties.'
+        product_type:
+          type: string
+          format: uri
+          description: 'Product type that classifies this product. Product types are configurable per team space and drive which form, fields and product-line behavior apply.
+
+
+            Relation to ProductType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductType'' object for properties.'
+        allowed_pipelines:
+          type: integer
+          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this product.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the product.
+        name:
+          type: string
+          example: string
+          description: Name of the product, shown in catalogues and pickers.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product picture document.
+        product_category_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product category.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        sku:
+          type: string
+          example: string
+          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
+        unit_symbol:
+          type: string
+          example: string
+          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_pipeline_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProductPipelineRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductPipelineRelation'' object for properties.'
+          description: Deprecated pipeline connection.
+        product_pipelines:
+          type: object
+          properties:
+            pipelines:
+              type: array
+              items:
+                type: string
+                description: An id of pipeline entity.
+                format: uuid
+            allowed_pipelines:
+              type: integer
+              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+                Integer enum value: 1 - All, 2 - Selected'
+              example: 1
+              enum:
+              - 1
+              - 2
+          required:
+          - pipelines
+          - allowed_pipelines
+          description: Configuration of Pipelines where the Product can be used.
+        formatted_name:
+          type: string
+          example: string
+          description: Display version of the product name, used in lists and references.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product line-item type derived from product_type. Used as a filter when listing relations on opportunities and quotes. Read-only.
+      required:
+      - is_delete_protected
+      - id
+      - product_type
+      - name
+      - formatted_name
+      - oppty_product_relation_type_id
+    createProductTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_readonly
+      - name
+    createProductPriceListInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''createProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+      required:
+      - name
+    batchProductCategoryInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Product, see: ''updateProductInput'' object for properties.'
+          description: All Products in this category.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProductCategoryInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Product, see: ''updateProductInput'' object for properties.'
+          description: All Products in this category.
+    createProductPriceListPriceInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - currency_id
+      - product_id
+      - product_price_list_id
+      - settings
+    ProductCategory:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        parent:
+          type: string
+          format: uri
+          description: 'Parent category in the catalog hierarchy. Empty for top-level categories.
+
+
+            Relation to ProductCategory. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductCategory'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+          description: All Products in this category.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    createProductPipelineRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - pipeline_id
+      - product_id
+    createProductCategoryInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Product, see: ''createProductInput'' object for properties.'
+          description: All Products in this category.
+      required:
+      - name
+    updateProductPriceListInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+    ProductPriceList:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProductPriceListPrice. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductPriceListPrice'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    createProductInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Product picture.
+
+
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+        allowed_pipelines:
+          type: integer
+          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this product.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the product.
+        name:
+          type: string
+          example: string
+          description: Name of the product, shown in catalogues and pickers.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product picture document.
+        product_category_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product category.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        sku:
+          type: string
+          example: string
+          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
+        unit_symbol:
+          type: string
+          example: string
+          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_pipeline_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPipelineRelation, see: ''createProductPipelineRelationInput'' object for properties.'
+          description: Deprecated pipeline connection.
+        product_pipelines:
+          type: object
+          properties:
+            pipelines:
+              type: array
+              items:
+                type: string
+                description: An id of pipeline entity.
+                format: uuid
+            allowed_pipelines:
+              type: integer
+              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+                Integer enum value: 1 - All, 2 - Selected'
+              example: 1
+              enum:
+              - 1
+              - 2
+          required:
+          - pipelines
+          - allowed_pipelines
+          description: Configuration of Pipelines where the Product can be used.
+        picture_source_url:
+          type: string
+          example: string
+          description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
+      required:
+      - name
+    batchProductPriceListInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProductPriceListPriceInput:
+      properties:
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateProductPipelineRelationInput:
+      properties:
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    ProductType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        oppty_product_relation_type:
+          type: string
+          format: uri
+          description: 'Opportunity / quote line-item type paired with this product type. Drives the form used when adding products of this type as line items.
+
+
+            Relation to OpptyProductRelationType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpptyProductRelationType'' object for properties.'
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the paired opportunity/quote line-item type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - oppty_product_relation_type
+      - is_readonly
+      - name
+      - oppty_product_relation_type_id
+    batchProductInput:
+      properties:
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Product picture.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        allowed_pipelines:
+          type: integer
+          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this product.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the product.
+        name:
+          type: string
+          example: string
+          description: Name of the product, shown in catalogues and pickers.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product picture document.
+        product_category_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product category.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        sku:
+          type: string
+          example: string
+          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
+        unit_symbol:
+          type: string
+          example: string
+          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_pipeline_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPipelineRelation, see: ''updateProductPipelineRelationInput'' object for properties.'
+          description: Deprecated pipeline connection.
+        product_pipelines:
+          type: object
+          properties:
+            pipelines:
+              type: array
+              items:
+                type: string
+                description: An id of pipeline entity.
+                format: uuid
+            allowed_pipelines:
+              type: integer
+              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+                Integer enum value: 1 - All, 2 - Selected'
+              example: 1
+              enum:
+              - 1
+              - 2
+          required:
+          - pipelines
+          - allowed_pipelines
+          description: Configuration of Pipelines where the Product can be used.
+        picture_source_url:
+          type: string
+          example: string
+          description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateProductInput:
+      properties:
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Product picture.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        allowed_pipelines:
+          type: integer
+          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this product.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the product.
+        name:
+          type: string
+          example: string
+          description: Name of the product, shown in catalogues and pickers.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product picture document.
+        product_category_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product category.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        sku:
+          type: string
+          example: string
+          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
+        unit_symbol:
+          type: string
+          example: string
+          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_pipeline_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPipelineRelation, see: ''updateProductPipelineRelationInput'' object for properties.'
+          description: Deprecated pipeline connection.
+        product_pipelines:
+          type: object
+          properties:
+            pipelines:
+              type: array
+              items:
+                type: string
+                description: An id of pipeline entity.
+                format: uuid
+            allowed_pipelines:
+              type: integer
+              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+                Integer enum value: 1 - All, 2 - Selected'
+              example: 1
+              enum:
+              - 1
+              - 2
+          required:
+          - pipelines
+          - allowed_pipelines
+          description: Configuration of Pipelines where the Product can be used.
+        picture_source_url:
+          type: string
+          example: string
+          description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
+    ProductDataExRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        data:
+          type: string
+          format: uri
+          description: 'External data record (Data entity) holding the enrichment payload.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product this enrichment record applies to.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the external data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the enrichment record originates from.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - data
+      - product
+      - data_id
+      - data_set_id
+      - product_id
+    ProductPipelineRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        pipeline:
+          type: string
+          format: uri
+          description: 'Pipeline in which the product can be added as a line item.
+
+
+            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product available in the linked pipeline.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - pipeline
+      - product
+      - pipeline_id
+      - product_id
+    batchProductPriceListPriceInput:
+      properties:
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchProductPipelineRelationInput:
+      properties:
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProductTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.

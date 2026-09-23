@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/pipeliner/main/json-schema/pipeliner-appointment-schema.json",
+  "title": "Appointment",
+  "x-generated": "2026-09-22",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/pipeliner-openapi.json#/components/schemas/Appointment",
+  "properties": {
+    "is_delete_protected": {
+      "type": "boolean",
+      "description": "Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.",
+      "readOnly": true
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of entity.",
+      "readOnly": true
+    },
+    "active_reminder": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the next pending reminder configured for the activity (reminder time, due date or end date as applicable). Empty when no reminder is pending."
+    },
+    "media_transcription_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the linked Media record holding the activity's call recording / transcription, when available."
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Specifies if the entity is considered deleted.",
+      "readOnly": true
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification time.",
+      "readOnly": true
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation time.",
+      "readOnly": true
+    },
+    "activity_type": {
+      "type": "string",
+      "format": "uri",
+      "description": "Appointment type that classifies this appointment. Drives form layout and icon.\n\nRelation to AppointmentType. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'AppointmentType' object for properties."
+    },
+    "currency_exchange_rates_list": {
+      "type": "string",
+      "format": "uri",
+      "description": "Currency exchange rate list used to convert monetary fields linked to this appointment. Empty to inherit the team space default.\n\nRelation to CurrencyExchangeRatesList. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'CurrencyExchangeRatesList' object for properties."
+    },
+    "owner": {
+      "type": "string",
+      "format": "uri",
+      "description": "Sales user who owns this appointment.\n\nRelation to Client. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Client' object for properties."
+    },
+    "recurrence_master": {
+      "type": "string",
+      "format": "uri",
+      "description": "Master appointment of the recurring series this occurrence belongs to. Empty for standalone appointments and for the master itself.\n\nRelation to Appointment. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Appointment' object for properties."
+    },
+    "schedule": {
+      "type": "string",
+      "format": "uri",
+      "description": "Appointment schedule (booking link) this appointment was created through, or empty for appointments created directly.\n\nRelation to AppointmentSchedule. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'AppointmentSchedule' object for properties."
+    },
+    "unit": {
+      "type": "string",
+      "format": "uri",
+      "description": "Sales unit this appointment is assigned to. Determines which team members can see the record under unit-based sharing.\n\nRelation to SalesUnit. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'SalesUnit' object for properties."
+    },
+    "activity_type_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the appointment type."
+    },
+    "currency_exchange_rates_list_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the currency exchange rate list applied to this appointment."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free-form description of the appointment."
+    },
+    "duration": {
+      "type": "number",
+      "format": "double",
+      "description": "Duration of the appointment, derived from start/end dates."
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End timestamp of the appointment."
+    },
+    "invitees_can_edit": {
+      "type": "boolean",
+      "description": "True when invitees are allowed to edit the appointment. Defaults to false."
+    },
+    "is_recurrence_active": {
+      "type": "boolean",
+      "description": "True when the recurrence series is still generating new occurrences. Read-only."
+    },
+    "is_recurrence_exception": {
+      "type": "boolean",
+      "description": "True when this occurrence has been modified independently of the recurring series. Read-only."
+    },
+    "location": {
+      "type": "string",
+      "description": "Free-text physical location of the appointment."
+    },
+    "meeting_url": {
+      "type": "object",
+      "description": "Online meeting link associated with the appointment (join URL plus meeting type, e.g. Zoom, Teams). Empty when the appointment has no online meeting attached."
+    },
+    "occurence_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Original date of this occurrence in the recurring series. Set automatically."
+    },
+    "organizer": {
+      "type": "string",
+      "description": "Email of the user organising the appointment. Set automatically and used as the reply-to address in invitation emails."
+    },
+    "owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the appointment owner."
+    },
+    "recurrence_master_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the master appointment."
+    },
+    "recurrence_rule": {
+      "type": "string",
+      "description": "iCalendar RRULE string describing the recurrence pattern (e.g. \"FREQ=WEEKLY;BYDAY=MO,WE\"). Empty for non-recurring appointments."
+    },
+    "recurrence_tzid": {
+      "type": "string",
+      "description": "IANA timezone the recurrence rule is evaluated in."
+    },
+    "schedule_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the appointment schedule."
+    },
+    "schedule_tzid": {
+      "type": "string",
+      "description": "IANA timezone the appointment was booked in (e.g. \"Europe/Bratislava\"). Used to evaluate availability against the schedule."
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start timestamp of the appointment."
+    },
+    "subject": {
+      "type": "string",
+      "description": "Short summary line shown in calendars and lists."
+    },
+    "table_name": {
+      "type": "string",
+      "description": "Discriminator identifying the concrete record type — always \"appointment\" for Appointment records. Read-only; useful when consuming polymorphic Activity results.",
+      "readOnly": true
+    },
+    "unit_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the sales unit."
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Revision when entity was lastly changed."
+    },
+    "status": {
+      "type": "integer",
+      "description": "Current status of the appointment (NotStarted, InProgress, Completed, Canceled). Read-only; derived from the start/end times and the deleted flag.\n\nInteger enum value: 1 - NotStarted, 2 - InProgress, 3 - Waiting, 4 - Completed, 5 - Deferred, 6 - Canceled",
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "account_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Accounts this appointment is linked to."
+    },
+    "contact_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Contacts this appointment is linked to."
+    },
+    "lead_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Leads this appointment is linked to."
+    },
+    "opportunity_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Opportunities this appointment is linked to."
+    },
+    "project_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Projects this appointment is linked to, including the per-objective ordering."
+    },
+    "quote_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Quotes this appointment is linked to."
+    },
+    "custom_entity_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityRelation' object for properties."
+      },
+      "description": "Custom entity records this appointment is linked to."
+    },
+    "invitees_contacts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to AppointmentContactInviteesRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'AppointmentContactInviteesRelation' object for properties."
+      },
+      "description": "Non-user invitees on this appointment, identified by email. Contacts are auto-linked when their email matches an existing Contact record."
+    },
+    "invitees_clients": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to AppointmentClientInviteesRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'AppointmentClientInviteesRelation' object for properties."
+      },
+      "description": "Internal-user invitees on this appointment."
+    },
+    "exchange_entity_id": {
+      "type": "string",
+      "description": "External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine."
+    },
+    "gapi_entity_id": {
+      "type": "string",
+      "description": "External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine."
+    },
+    "o365_entity_id": {
+      "type": "string",
+      "description": "External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine."
+    },
+    "has_3rd_party_mapping": {
+      "type": "boolean",
+      "description": "True when this appointment is mirrored to an external calendar (Office 365, Exchange, Google). Read-only."
+    },
+    "reminder": {
+      "type": "string",
+      "format": "uri",
+      "description": "Reminder set by the current authenticated user for this appointment. Per-user; empty when no reminder has been set.\n\nRelation to AppointmentReminder. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'AppointmentReminder' object for properties."
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'CloudObjectRelation' object for properties."
+      },
+      "description": "Documents linked to this appointment."
+    },
+    "comments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ActivityComment. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ActivityComment' object for properties."
+      },
+      "description": "Comments authored on this appointment."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to TagRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'TagRelation' object for properties."
+      },
+      "description": "Tag labels applied to this appointment."
+    },
+    "formatted_name": {
+      "type": "string",
+      "description": "Display name of the appointment (alias of subject)."
+    },
+    "recurrence": {
+      "type": "object",
+      "description": "Recurrence configuration for recurring appointments (parsed RRULE plus exception metadata). Empty for one-off appointments."
+    },
+    "modified_by_user": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the most recent modification made by an end user (excluding system changes). Read-only; computed by Coevera."
+    }
+  },
+  "required": [
+    "is_delete_protected",
+    "id",
+    "activity_type",
+    "owner",
+    "unit",
+    "end_date",
+    "owner_id",
+    "subject",
+    "table_name",
+    "status",
+    "has_3rd_party_mapping",
+    "formatted_name"
+  ]
+}

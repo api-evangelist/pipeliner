@@ -1,0 +1,296 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Type API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Type
+paths:
+  /entities/Types/{id}:
+    get:
+      description: Returns Type with given id
+      operationId: Types.get
+      summary: Types.get
+      tags:
+      - Type
+      parameters:
+      - name: id
+        in: path
+        description: ID of Type to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Type data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Type'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Types:
+    get:
+      description: Returns all defined Types
+      operationId: Types.list
+      summary: Types.list
+      tags:
+      - Type
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Types are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Type'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    Type:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          example: string
+          description: Unique identifier of entity.
+          readOnly: true
+        primitive_type:
+          type: string
+          example: blob
+          enum:
+          - blob
+          - bool
+          - date
+          - datetime
+          - decimal
+          - double
+          - dynamic
+          - enum
+          - int
+          - list
+          - object
+          - string
+          - uuid
+          - tsvector
+          description: Field whose values are strictly defined with an enumeration of values.
+          readOnly: true
+        validator:
+          type: object
+          description: Validation rules applied to values of this type (e.g. max length, regex, allowed enum values), as a JSON document.
+          readOnly: true
+        flag:
+          type: integer
+          format: int32
+          example: 1
+          description: "This field is bit flag which determinate purpose of the field and his abilities on form, following options are allowed\n            CUSTOM_ALLOWED = 1  # field of this type can be created as new custom field\n            CALC_ALLOWED = 2  # field can have calculation formula defined\n            DEFAULT_ALLOWED = 4  # field can have default value defined\n            MOBILE_ALLOWED = 8  # field can be displayed on form \n            FIELD_MAP_REQUIRED = 16  # Obsolete\n            FORM_FORBIDDEN = 32  # field of this type can't be located on form\n            READONLY_ALLOWED = 64  # field can be defined as readonly on form\n            ONLY_MAIN_FORM = 128  # field can be only at FORM_EDIT form not on e.g FORM_LOST \n            ALLOWED_IN_CALC_FORMULA = 256  # field can be used within calculation expression\n            MUST_BE_ON_FORM = 512 # field of this type can't be removed from form"
+          readOnly: true
+        default_value:
+          type: string
+          example: string
+          description: Default value applied to fields of this type when no value is supplied at create-time. Empty when the type has no default.
+          readOnly: true
+        relation_type:
+          type: integer
+          description: 'Cardinality of the relation when the type represents a relation (e.g. one-to-one, many-to-one).
+
+
+            Integer enum value: 0 - NO_RELATION, 1 - MANY_TO_ONE_SCALAR, 2 - MANY_TO_MANY_VECTOR'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          readOnly: true
+        container_size:
+          type: integer
+          format: int32
+          example: 1
+          description: Maximum length or capacity for fields of this type (e.g. string max-length).
+          readOnly: true
+        is_groupable:
+          type: boolean
+          example: false
+          description: True when fields of this type can be used as a grouping column in reports.
+          readOnly: true
+        is_filterable:
+          type: boolean
+          example: false
+          description: True when fields of this type can be used in filters.
+          readOnly: true
+        is_sortable:
+          type: boolean
+          example: false
+          description: True when fields of this type can be used to sort records.
+          readOnly: true
+        is_selectable:
+          type: boolean
+          example: false
+          description: True when fields of this type can be selected in queries.
+          readOnly: true
+      required:
+      - is_delete_protected
+      - id
+      - primitive_type
+      - flag
+      - relation_type
+      - container_size
+      - is_groupable
+      - is_filterable
+      - is_sortable
+      - is_selectable

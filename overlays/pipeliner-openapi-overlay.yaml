@@ -1,0 +1,7 @@
+generated: "2026-09-22"
+method: derived
+source: "openapi/pipeliner-openapi.json"
+idempotency:
+  coverage: none
+  scope: []
+actions: []

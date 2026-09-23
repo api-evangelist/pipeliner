@@ -1,0 +1,1668 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Tag API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Tag
+paths:
+  /entities/Tags/{id}:
+    get:
+      description: Returns Tag with given id
+      operationId: Tags.get
+      summary: Tags.get
+      tags:
+      - Tag
+      parameters:
+      - name: id
+        in: path
+        description: ID of Tag to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Tag data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Tag with given id
+      operationId: Tags.delete
+      summary: Tags.delete
+      tags:
+      - Tag
+      parameters:
+      - name: id
+        in: path
+        description: ID of Tag to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tag on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Tag
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Tag or Tags with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Tag to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tag on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Tags.update
+      summary: Tags.update
+      tags:
+      - Tag
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTagInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Tags:
+    get:
+      description: Returns all defined Tags
+      operationId: Tags.list
+      summary: Tags.list
+      tags:
+      - Tag
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Tags are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Tag
+      operationId: Tags.create
+      summary: Tags.create
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tag on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Tag
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTagInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Tag'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Tags/batch-delete:
+    post:
+      description: Removes Tags with given list of ids
+      operationId: Tags.batch_delete
+      summary: Tags.batch_delete
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tags on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Tags. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Tag to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Tag.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Tags/batch-modify:
+    post:
+      description: Create or update an batch of Tags
+      operationId: Tags.batch_create_or_update
+      summary: Tags.batch_create_or_update
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tags on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Tags. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Tag
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTagInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Tags/batch-restore:
+    post:
+      description: Restores Tags with given list of ids
+      operationId: Tags.batch_restore
+      summary: Tags.batch_restore
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Tags on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Tags. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Tag to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Tag.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TagRelations/{id}:
+    get:
+      description: Returns TagRelation with given id
+      operationId: TagRelations.get
+      summary: TagRelations.get
+      tags:
+      - Tag
+      parameters:
+      - name: id
+        in: path
+        description: ID of TagRelation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: TagRelation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TagRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes TagRelation with given id
+      operationId: TagRelations.delete
+      summary: TagRelations.delete
+      tags:
+      - Tag
+      parameters:
+      - name: id
+        in: path
+        description: ID of TagRelation to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelation on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted TagRelation
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies TagRelation or TagRelations with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of TagRelation to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelation on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: TagRelations.update
+      summary: TagRelations.update
+      tags:
+      - Tag
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTagRelationInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting TagRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TagRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TagRelations:
+    get:
+      description: Returns all defined TagRelations
+      operationId: TagRelations.list
+      summary: TagRelations.list
+      tags:
+      - Tag
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted TagRelations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of TagRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TagRelation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new TagRelation
+      operationId: TagRelations.create
+      summary: TagRelations.create
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelation on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TagRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createTagRelationInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created TagRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/TagRelation'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TagRelations/batch-delete:
+    post:
+      description: Removes TagRelations with given list of ids
+      operationId: TagRelations.batch_delete
+      summary: TagRelations.batch_delete
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TagRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TagRelation to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted TagRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TagRelations/batch-modify:
+    post:
+      description: Create or update an batch of TagRelations
+      operationId: TagRelations.batch_create_or_update
+      summary: TagRelations.batch_create_or_update
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelations on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TagRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new TagRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchTagRelationInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated TagRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/TagRelations/batch-restore:
+    post:
+      description: Restores TagRelations with given list of ids
+      operationId: TagRelations.batch_restore
+      summary: TagRelations.batch_restore
+      tags:
+      - Tag
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of TagRelations on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for TagRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity TagRelation to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored TagRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Tag:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        creator:
+          type: string
+          format: uri
+          description: 'User who created the tag.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        supported_entities:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          - 128
+          - 256
+          - 512
+          - 1024
+          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - color
+      - name
+    updateTagInput:
+      properties:
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateTagRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createTagRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - tag_id
+    batchTagInput:
+      properties:
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createTagInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        supported_entities:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          - 128
+          - 256
+          - 512
+          - 1024
+          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - color
+      - name
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchTagRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    TagRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the tag is attached to, or empty when not attached to an account.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        appointment:
+          type: string
+          format: uri
+          description: 'Appointment the tag is attached to, or empty when not attached to an appointment.
+
+
+            Relation to Appointment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Appointment'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the tag is attached to, or empty when not attached to a contact.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        custom_entity:
+          type: string
+          format: uri
+          description: 'Custom entity record the tag is attached to, or empty when not attached to a custom entity record.
+
+
+            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email the tag is attached to, or empty when not attached to an email.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the tag is attached to, or empty when not attached to a lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the tag is attached to, or empty when not attached to an opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        process:
+          type: string
+          format: uri
+          description: 'Sales process the tag is attached to, or empty when not attached to a process.
+
+
+            Relation to Process. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Process'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project the tag is attached to, or empty when not attached to a project.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the tag is attached to, or empty when not attached to a quote.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        tag:
+          type: string
+          format: uri
+          description: 'Tag being attached to the record.
+
+
+            Relation to Tag. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Tag'' object for properties.'
+        task:
+          type: string
+          format: uri
+          description: 'Task the tag is attached to, or empty when not attached to a task.
+
+
+            Relation to Task. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Task'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - tag
+      - tag_id

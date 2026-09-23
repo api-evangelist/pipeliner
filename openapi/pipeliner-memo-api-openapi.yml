@@ -1,0 +1,1721 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Memo API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Memo
+paths:
+  /entities/Memos/{id}:
+    get:
+      description: Returns Memo with given id
+      operationId: Memos.get
+      summary: Memos.get
+      tags:
+      - Memo
+      parameters:
+      - name: id
+        in: path
+        description: ID of Memo to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Memo data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Memo'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Memo with given id
+      operationId: Memos.delete
+      summary: Memos.delete
+      tags:
+      - Memo
+      parameters:
+      - name: id
+        in: path
+        description: ID of Memo to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memo on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Memo
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Memo or Memos with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Memo to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memo on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Memos.update
+      summary: Memos.update
+      tags:
+      - Memo
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateMemoInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Memo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Memo'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Memos:
+    get:
+      description: Returns all defined Memos
+      operationId: Memos.list
+      summary: Memos.list
+      tags:
+      - Memo
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Memos are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Memos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Memo'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Memo
+      operationId: Memos.create
+      summary: Memos.create
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memo on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Memo
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createMemoInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Memo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Memo'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Memos/batch-delete:
+    post:
+      description: Removes Memos with given list of ids
+      operationId: Memos.batch_delete
+      summary: Memos.batch_delete
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memos on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Memos. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Memo to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Memo.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Memos/batch-modify:
+    post:
+      description: Create or update an batch of Memos
+      operationId: Memos.batch_create_or_update
+      summary: Memos.batch_create_or_update
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memos on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Memos. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Memo
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchMemoInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Memos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Memos/batch-restore:
+    post:
+      description: Restores Memos with given list of ids
+      operationId: Memos.batch_restore
+      summary: Memos.batch_restore
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Memos on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Memos. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Memo to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Memo.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/MemoComments/{id}:
+    get:
+      description: Returns MemoComment with given id
+      operationId: MemoComments.get
+      summary: MemoComments.get
+      tags:
+      - Memo
+      parameters:
+      - name: id
+        in: path
+        description: ID of MemoComment to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: MemoComment data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/MemoComment'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes MemoComment with given id
+      operationId: MemoComments.delete
+      summary: MemoComments.delete
+      tags:
+      - Memo
+      parameters:
+      - name: id
+        in: path
+        description: ID of MemoComment to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComment on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted MemoComment
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies MemoComment or MemoComments with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of MemoComment to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComment on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: MemoComments.update
+      summary: MemoComments.update
+      tags:
+      - Memo
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateMemoCommentInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting MemoComment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/MemoComment'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/MemoComments:
+    get:
+      description: Returns all defined MemoComments
+      operationId: MemoComments.list
+      summary: MemoComments.list
+      tags:
+      - Memo
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted MemoComments are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of MemoComments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MemoComment'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new MemoComment
+      operationId: MemoComments.create
+      summary: MemoComments.create
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComment on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new MemoComment
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createMemoCommentInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created MemoComment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/MemoComment'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/MemoComments/batch-delete:
+    post:
+      description: Removes MemoComments with given list of ids
+      operationId: MemoComments.batch_delete
+      summary: MemoComments.batch_delete
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComments on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for MemoComments. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity MemoComment to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted MemoComment.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/MemoComments/batch-modify:
+    post:
+      description: Create or update an batch of MemoComments
+      operationId: MemoComments.batch_create_or_update
+      summary: MemoComments.batch_create_or_update
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComments on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for MemoComments. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new MemoComment
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchMemoCommentInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated MemoComments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/MemoComments/batch-restore:
+    post:
+      description: Restores MemoComments with given list of ids
+      operationId: MemoComments.batch_restore
+      summary: MemoComments.batch_restore
+      tags:
+      - Memo
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of MemoComments on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for MemoComments. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity MemoComment to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored MemoComment.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    createMemoCommentInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - comment
+      - memo_id
+      - owner_id
+    MemoComment:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        memo:
+          type: string
+          format: uri
+          description: 'Memo this comment belongs to.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who authored the comment.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - memo
+      - owner
+      - comment
+      - memo_id
+      - owner_id
+    createMemoInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo author.
+        subject:
+          type: string
+          example: string
+          description: Short summary line of the memo.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingSalesUnitRelation, see: ''createMessageSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this memo.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingClientRelation, see: ''createMessageSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this memo.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Accounts this memo is linked to.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Contacts this memo is linked to.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Projects this memo is linked to.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Leads this memo is linked to.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Quotes this memo is linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Opportunities this memo is linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''createMessageRelationInput'' object for properties.'
+          description: Custom entity records this memo is linked to.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this memo.
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MemoComment, see: ''createMemoCommentInput'' object for properties.'
+          description: Comments authored on this memo.
+      required:
+      - owner_id
+      - subject
+    batchMemoInput:
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo author.
+        subject:
+          type: string
+          example: string
+          description: Short summary line of the memo.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingSalesUnitRelation, see: ''updateMessageSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this memo.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingClientRelation, see: ''updateMessageSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this memo.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Accounts this memo is linked to.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Contacts this memo is linked to.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Projects this memo is linked to.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Leads this memo is linked to.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Quotes this memo is linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Opportunities this memo is linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Custom entity records this memo is linked to.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this memo.
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MemoComment, see: ''updateMemoCommentInput'' object for properties.'
+          description: Comments authored on this memo.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateMemoCommentInput:
+      properties:
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Memo:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who authored the memo.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo author.
+        subject:
+          type: string
+          example: string
+          description: Short summary line of the memo.
+        table_name:
+          type: string
+          example: string
+          description: Discriminator identifying the concrete record type — always "memo" for Memo records. Read-only; useful when consuming polymorphic Message results.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageSharingSalesUnitRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageSharingSalesUnitRelation'' object for properties.'
+          description: Sales units that have been granted shared access to this memo.
+        sharing_clients:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageSharingClientRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageSharingClientRelation'' object for properties.'
+          description: Users that have been granted shared access to this memo.
+        account_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Accounts this memo is linked to.
+        contact_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Contacts this memo is linked to.
+        project_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Projects this memo is linked to.
+        lead_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Leads this memo is linked to.
+        quote_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Quotes this memo is linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Opportunities this memo is linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MessageRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MessageRelation'' object for properties.'
+          description: Custom entity records this memo is linked to.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Documents linked to this memo.
+        comments:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to MemoComment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MemoComment'' object for properties.'
+          description: Comments authored on this memo.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - owner_id
+      - subject
+      - table_name
+    updateMemoInput:
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo author.
+        subject:
+          type: string
+          example: string
+          description: Short summary line of the memo.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingSalesUnitRelation, see: ''updateMessageSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this memo.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingClientRelation, see: ''updateMessageSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this memo.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Accounts this memo is linked to.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Contacts this memo is linked to.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Projects this memo is linked to.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Leads this memo is linked to.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Quotes this memo is linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Opportunities this memo is linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Custom entity records this memo is linked to.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this memo.
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MemoComment, see: ''updateMemoCommentInput'' object for properties.'
+          description: Comments authored on this memo.
+    batchMemoCommentInput:
+      properties:
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

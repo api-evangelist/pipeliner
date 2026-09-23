@@ -1,0 +1,1149 @@
+{
+  "@context": {
+    "@vocab": "https://pipeliner.example/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "pipeliner": "https://pipeliner.example/schema#",
+    "Error": "pipeliner:Error",
+    "http_status": {
+      "@id": "pipeliner:http_status",
+      "@type": "xsd:integer"
+    },
+    "code": {
+      "@id": "pipeliner:code",
+      "@type": "xsd:integer"
+    },
+    "name": {
+      "@id": "pipeliner:name",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "pipeliner:message",
+      "@type": "xsd:string"
+    },
+    "success": {
+      "@id": "pipeliner:success",
+      "@type": "xsd:boolean"
+    },
+    "Account": "pipeliner:Account",
+    "is_delete_protected": {
+      "@id": "pipeliner:is_delete_protected",
+      "@type": "xsd:boolean"
+    },
+    "id": {
+      "@id": "pipeliner:id",
+      "@type": "xsd:string"
+    },
+    "is_deleted": {
+      "@id": "pipeliner:is_deleted",
+      "@type": "xsd:boolean"
+    },
+    "modified": {
+      "@id": "pipeliner:modified",
+      "@type": "xsd:dateTime"
+    },
+    "created": {
+      "@id": "pipeliner:created",
+      "@type": "xsd:dateTime"
+    },
+    "account_type": {
+      "@id": "pipeliner:account_type",
+      "@type": "@id"
+    },
+    "currency_exchange_rates_list": {
+      "@id": "pipeliner:currency_exchange_rates_list",
+      "@type": "@id"
+    },
+    "customer_type": {
+      "@id": "pipeliner:customer_type",
+      "@type": "@id"
+    },
+    "industry": {
+      "@id": "pipeliner:industry",
+      "@type": "@id"
+    },
+    "owner": {
+      "@id": "pipeliner:owner",
+      "@type": "@id"
+    },
+    "parent_account": {
+      "@id": "pipeliner:parent_account",
+      "@type": "@id"
+    },
+    "parent_account_relation_type": {
+      "@id": "pipeliner:parent_account_relation_type",
+      "@type": "@id"
+    },
+    "picture": {
+      "@id": "pipeliner:picture",
+      "@type": "@id"
+    },
+    "unit": {
+      "@id": "pipeliner:unit",
+      "@type": "@id"
+    },
+    "account_class": {
+      "@id": "pipeliner:account_class",
+      "@type": "xsd:integer"
+    },
+    "account_type_id": {
+      "@id": "pipeliner:account_type_id",
+      "@type": "xsd:string"
+    },
+    "address": {
+      "@id": "pipeliner:address",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "pipeliner:city",
+      "@type": "xsd:string"
+    },
+    "comments": {
+      "@id": "pipeliner:comments",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "pipeliner:country",
+      "@type": "xsd:string"
+    },
+    "currency_exchange_rates_list_id": {
+      "@id": "pipeliner:currency_exchange_rates_list_id",
+      "@type": "xsd:string"
+    },
+    "customer_type_id": {
+      "@id": "pipeliner:customer_type_id",
+      "@type": "xsd:string"
+    },
+    "email1": {
+      "@id": "pipeliner:email1",
+      "@type": "xsd:string"
+    },
+    "email2": {
+      "@id": "pipeliner:email2",
+      "@type": "xsd:string"
+    },
+    "email3": {
+      "@id": "pipeliner:email3",
+      "@type": "xsd:string"
+    },
+    "email4": {
+      "@id": "pipeliner:email4",
+      "@type": "xsd:string"
+    },
+    "email5": {
+      "@id": "pipeliner:email5",
+      "@type": "xsd:string"
+    },
+    "health_category": {
+      "@id": "pipeliner:health_category",
+      "@type": "xsd:string"
+    },
+    "health_status": {
+      "@id": "pipeliner:health_status",
+      "@type": "xsd:integer"
+    },
+    "home_page": {
+      "@id": "pipeliner:home_page",
+      "@type": "xsd:string"
+    },
+    "industry_id": {
+      "@id": "pipeliner:industry_id",
+      "@type": "xsd:string"
+    },
+    "is_archived": {
+      "@id": "pipeliner:is_archived",
+      "@type": "xsd:boolean"
+    },
+    "last_ai_account_hierarchy_applied": {
+      "@id": "pipeliner:last_ai_account_hierarchy_applied",
+      "@type": "xsd:dateTime"
+    },
+    "last_ai_org_chart_applied": {
+      "@id": "pipeliner:last_ai_org_chart_applied",
+      "@type": "xsd:dateTime"
+    },
+    "owner_id": {
+      "@id": "pipeliner:owner_id",
+      "@type": "xsd:string"
+    },
+    "parent_account_id": {
+      "@id": "pipeliner:parent_account_id",
+      "@type": "xsd:string"
+    },
+    "parent_account_relation_type_id": {
+      "@id": "pipeliner:parent_account_relation_type_id",
+      "@type": "xsd:string"
+    },
+    "phone1": {
+      "@id": "pipeliner:phone1",
+      "@type": "xsd:string"
+    },
+    "phone2": {
+      "@id": "pipeliner:phone2",
+      "@type": "xsd:string"
+    },
+    "phone3": {
+      "@id": "pipeliner:phone3",
+      "@type": "xsd:string"
+    },
+    "phone4": {
+      "@id": "pipeliner:phone4",
+      "@type": "xsd:string"
+    },
+    "phone5": {
+      "@id": "pipeliner:phone5",
+      "@type": "xsd:string"
+    },
+    "picture_id": {
+      "@id": "pipeliner:picture_id",
+      "@type": "xsd:string"
+    },
+    "quick_parent_account_name": {
+      "@id": "pipeliner:quick_parent_account_name",
+      "@type": "xsd:string"
+    },
+    "share_mode": {
+      "@id": "pipeliner:share_mode",
+      "@type": "xsd:integer"
+    },
+    "state_province": {
+      "@id": "pipeliner:state_province",
+      "@type": "xsd:string"
+    },
+    "unit_id": {
+      "@id": "pipeliner:unit_id",
+      "@type": "xsd:string"
+    },
+    "zip_code": {
+      "@id": "pipeliner:zip_code",
+      "@type": "xsd:string"
+    },
+    "revision": {
+      "@id": "pipeliner:revision",
+      "@type": "xsd:integer"
+    },
+    "formatted_name": {
+      "@id": "pipeliner:formatted_name",
+      "@type": "xsd:string"
+    },
+    "social_media": {
+      "@id": "pipeliner:social_media",
+      "@type": "@id"
+    },
+    "sharing_units": {
+      "@id": "pipeliner:sharing_units",
+      "@container": "@list"
+    },
+    "sharing_clients": {
+      "@id": "pipeliner:sharing_clients",
+      "@container": "@list"
+    },
+    "documents": {
+      "@id": "pipeliner:documents",
+      "@container": "@list"
+    },
+    "is_favorite": {
+      "@id": "pipeliner:is_favorite",
+      "@type": "xsd:boolean"
+    },
+    "is_unsubscribed": {
+      "@id": "pipeliner:is_unsubscribed",
+      "@type": "xsd:boolean"
+    },
+    "tags": {
+      "@id": "pipeliner:tags",
+      "@container": "@list"
+    },
+    "static_profiles": {
+      "@id": "pipeliner:static_profiles",
+      "@container": "@list"
+    },
+    "health": {
+      "@id": "pipeliner:health"
+    },
+    "modified_by_user": {
+      "@id": "pipeliner:modified_by_user",
+      "@type": "xsd:dateTime"
+    },
+    "createAccountInput": "pipeliner:createAccountInput",
+    "updateAccountInput": "pipeliner:updateAccountInput",
+    "batchAccountInput": "pipeliner:batchAccountInput",
+    "AccountDataExRelation": "pipeliner:AccountDataExRelation",
+    "account": {
+      "@id": "pipeliner:account",
+      "@type": "@id"
+    },
+    "data": {
+      "@id": "pipeliner:data",
+      "@type": "@id"
+    },
+    "account_id": {
+      "@id": "pipeliner:account_id",
+      "@type": "xsd:string"
+    },
+    "data_id": {
+      "@id": "pipeliner:data_id",
+      "@type": "xsd:string"
+    },
+    "data_set_id": {
+      "@id": "pipeliner:data_set_id",
+      "@type": "xsd:string"
+    },
+    "AccountKPI": "pipeliner:AccountKPI",
+    "client": {
+      "@id": "pipeliner:client",
+      "@type": "@id"
+    },
+    "application_id": {
+      "@id": "pipeliner:application_id",
+      "@type": "xsd:string"
+    },
+    "client_id": {
+      "@id": "pipeliner:client_id",
+      "@type": "xsd:string"
+    },
+    "kpi": {
+      "@id": "pipeliner:kpi",
+      "@type": "xsd:integer"
+    },
+    "createAccountKPIInput": "pipeliner:createAccountKPIInput",
+    "updateAccountKPIInput": "pipeliner:updateAccountKPIInput",
+    "batchAccountKPIInput": "pipeliner:batchAccountKPIInput",
+    "AccountProductPricing": "pipeliner:AccountProductPricing",
+    "currency": {
+      "@id": "pipeliner:currency",
+      "@type": "@id"
+    },
+    "product": {
+      "@id": "pipeliner:product",
+      "@type": "@id"
+    },
+    "currency_id": {
+      "@id": "pipeliner:currency_id",
+      "@type": "xsd:string"
+    },
+    "price": {
+      "@id": "pipeliner:price",
+      "@type": "xsd:decimal"
+    },
+    "product_id": {
+      "@id": "pipeliner:product_id",
+      "@type": "xsd:string"
+    },
+    "createAccountProductPricingInput": "pipeliner:createAccountProductPricingInput",
+    "updateAccountProductPricingInput": "pipeliner:updateAccountProductPricingInput",
+    "batchAccountProductPricingInput": "pipeliner:batchAccountProductPricingInput",
+    "AccountRelation": "pipeliner:AccountRelation",
+    "account1": {
+      "@id": "pipeliner:account1",
+      "@type": "@id"
+    },
+    "account2": {
+      "@id": "pipeliner:account2",
+      "@type": "@id"
+    },
+    "account1_id": {
+      "@id": "pipeliner:account1_id",
+      "@type": "xsd:string"
+    },
+    "account2_id": {
+      "@id": "pipeliner:account2_id",
+      "@type": "xsd:string"
+    },
+    "createAccountRelationInput": "pipeliner:createAccountRelationInput",
+    "updateAccountRelationInput": "pipeliner:updateAccountRelationInput",
+    "batchAccountRelationInput": "pipeliner:batchAccountRelationInput",
+    "AccountRelationLabel": "pipeliner:AccountRelationLabel",
+    "account_relation": {
+      "@id": "pipeliner:account_relation",
+      "@type": "@id"
+    },
+    "account_relation_type": {
+      "@id": "pipeliner:account_relation_type",
+      "@type": "@id"
+    },
+    "account_relation_id": {
+      "@id": "pipeliner:account_relation_id",
+      "@type": "xsd:string"
+    },
+    "account_relation_type_id": {
+      "@id": "pipeliner:account_relation_type_id",
+      "@type": "xsd:string"
+    },
+    "createAccountRelationLabelInput": "pipeliner:createAccountRelationLabelInput",
+    "updateAccountRelationLabelInput": "pipeliner:updateAccountRelationLabelInput",
+    "batchAccountRelationLabelInput": "pipeliner:batchAccountRelationLabelInput",
+    "AccountRelationType": "pipeliner:AccountRelationType",
+    "color": {
+      "@id": "pipeliner:color",
+      "@type": "xsd:integer"
+    },
+    "label": {
+      "@id": "pipeliner:label",
+      "@type": "xsd:string"
+    },
+    "createAccountRelationTypeInput": "pipeliner:createAccountRelationTypeInput",
+    "updateAccountRelationTypeInput": "pipeliner:updateAccountRelationTypeInput",
+    "batchAccountRelationTypeInput": "pipeliner:batchAccountRelationTypeInput",
+    "AccountRole": "pipeliner:AccountRole",
+    "createAccountRoleInput": "pipeliner:createAccountRoleInput",
+    "updateAccountRoleInput": "pipeliner:updateAccountRoleInput",
+    "batchAccountRoleInput": "pipeliner:batchAccountRoleInput",
+    "AccountSharingClientRelation": "pipeliner:AccountSharingClientRelation",
+    "role": {
+      "@id": "pipeliner:role",
+      "@type": "xsd:integer"
+    },
+    "createAccountSharingClientRelationInput": "pipeliner:createAccountSharingClientRelationInput",
+    "updateAccountSharingClientRelationInput": "pipeliner:updateAccountSharingClientRelationInput",
+    "batchAccountSharingClientRelationInput": "pipeliner:batchAccountSharingClientRelationInput",
+    "AccountSharingSalesUnitRelation": "pipeliner:AccountSharingSalesUnitRelation",
+    "createAccountSharingSalesUnitRelationInput": "pipeliner:createAccountSharingSalesUnitRelationInput",
+    "updateAccountSharingSalesUnitRelationInput": "pipeliner:updateAccountSharingSalesUnitRelationInput",
+    "batchAccountSharingSalesUnitRelationInput": "pipeliner:batchAccountSharingSalesUnitRelationInput",
+    "AccountSocialRelation": "pipeliner:AccountSocialRelation",
+    "angellist_url": {
+      "@id": "pipeliner:angellist_url",
+      "@type": "xsd:string"
+    },
+    "crunchbase_url": {
+      "@id": "pipeliner:crunchbase_url",
+      "@type": "xsd:string"
+    },
+    "disqus_url": {
+      "@id": "pipeliner:disqus_url",
+      "@type": "xsd:string"
+    },
+    "facebook_id": {
+      "@id": "pipeliner:facebook_id",
+      "@type": "xsd:string"
+    },
+    "facebook_url": {
+      "@id": "pipeliner:facebook_url",
+      "@type": "xsd:string"
+    },
+    "flickr_url": {
+      "@id": "pipeliner:flickr_url",
+      "@type": "xsd:string"
+    },
+    "foursquare_url": {
+      "@id": "pipeliner:foursquare_url",
+      "@type": "xsd:string"
+    },
+    "google_id": {
+      "@id": "pipeliner:google_id",
+      "@type": "xsd:string"
+    },
+    "google_plus_url": {
+      "@id": "pipeliner:google_plus_url",
+      "@type": "xsd:string"
+    },
+    "gravatar_url": {
+      "@id": "pipeliner:gravatar_url",
+      "@type": "xsd:string"
+    },
+    "klout_url": {
+      "@id": "pipeliner:klout_url",
+      "@type": "xsd:string"
+    },
+    "linkedin_id": {
+      "@id": "pipeliner:linkedin_id",
+      "@type": "xsd:string"
+    },
+    "linkedin_url": {
+      "@id": "pipeliner:linkedin_url",
+      "@type": "xsd:string"
+    },
+    "pinterest_url": {
+      "@id": "pipeliner:pinterest_url",
+      "@type": "xsd:string"
+    },
+    "quora_url": {
+      "@id": "pipeliner:quora_url",
+      "@type": "xsd:string"
+    },
+    "reddit_url": {
+      "@id": "pipeliner:reddit_url",
+      "@type": "xsd:string"
+    },
+    "skype_url": {
+      "@id": "pipeliner:skype_url",
+      "@type": "xsd:string"
+    },
+    "slideshare_url": {
+      "@id": "pipeliner:slideshare_url",
+      "@type": "xsd:string"
+    },
+    "twitter_id": {
+      "@id": "pipeliner:twitter_id",
+      "@type": "xsd:string"
+    },
+    "twitter_url": {
+      "@id": "pipeliner:twitter_url",
+      "@type": "xsd:string"
+    },
+    "vimeo_url": {
+      "@id": "pipeliner:vimeo_url",
+      "@type": "xsd:string"
+    },
+    "wordpress_url": {
+      "@id": "pipeliner:wordpress_url",
+      "@type": "xsd:string"
+    },
+    "xing_url": {
+      "@id": "pipeliner:xing_url",
+      "@type": "xsd:string"
+    },
+    "yahoo_url": {
+      "@id": "pipeliner:yahoo_url",
+      "@type": "xsd:string"
+    },
+    "yelp_url": {
+      "@id": "pipeliner:yelp_url",
+      "@type": "xsd:string"
+    },
+    "youtube_url": {
+      "@id": "pipeliner:youtube_url",
+      "@type": "xsd:string"
+    },
+    "createAccountSocialRelationInput": "pipeliner:createAccountSocialRelationInput",
+    "updateAccountSocialRelationInput": "pipeliner:updateAccountSocialRelationInput",
+    "batchAccountSocialRelationInput": "pipeliner:batchAccountSocialRelationInput",
+    "AccountType": "pipeliner:AccountType",
+    "has_draft": {
+      "@id": "pipeliner:has_draft",
+      "@type": "xsd:boolean"
+    },
+    "form_edit_api": {
+      "@id": "pipeliner:form_edit_api"
+    },
+    "can_change_readonly": {
+      "@id": "pipeliner:can_change_readonly",
+      "@type": "xsd:boolean"
+    },
+    "form_edit": {
+      "@id": "pipeliner:form_edit"
+    },
+    "is_readonly": {
+      "@id": "pipeliner:is_readonly",
+      "@type": "xsd:boolean"
+    },
+    "settings": {
+      "@id": "pipeliner:settings",
+      "@type": "xsd:string"
+    },
+    "is_published": {
+      "@id": "pipeliner:is_published",
+      "@type": "xsd:boolean"
+    },
+    "createAccountTypeInput": "pipeliner:createAccountTypeInput",
+    "updateAccountTypeInput": "pipeliner:updateAccountTypeInput",
+    "batchAccountTypeInput": "pipeliner:batchAccountTypeInput",
+    "Activity": "pipeliner:Activity",
+    "active_reminder": {
+      "@id": "pipeliner:active_reminder",
+      "@type": "xsd:dateTime"
+    },
+    "media_transcription_id": {
+      "@id": "pipeliner:media_transcription_id",
+      "@type": "xsd:string"
+    },
+    "ActivityComment": "pipeliner:ActivityComment",
+    "appointment": {
+      "@id": "pipeliner:appointment",
+      "@type": "@id"
+    },
+    "task": {
+      "@id": "pipeliner:task",
+      "@type": "@id"
+    },
+    "activity_id": {
+      "@id": "pipeliner:activity_id",
+      "@type": "xsd:string"
+    },
+    "comment": {
+      "@id": "pipeliner:comment",
+      "@type": "xsd:string"
+    },
+    "createActivityCommentInput": "pipeliner:createActivityCommentInput",
+    "updateActivityCommentInput": "pipeliner:updateActivityCommentInput",
+    "batchActivityCommentInput": "pipeliner:batchActivityCommentInput",
+    "ActivityDataExRelation": "pipeliner:ActivityDataExRelation",
+    "ActivityKPI": "pipeliner:ActivityKPI",
+    "createActivityKPIInput": "pipeliner:createActivityKPIInput",
+    "updateActivityKPIInput": "pipeliner:updateActivityKPIInput",
+    "batchActivityKPIInput": "pipeliner:batchActivityKPIInput",
+    "ActivityRelation": "pipeliner:ActivityRelation",
+    "contact": {
+      "@id": "pipeliner:contact",
+      "@type": "@id"
+    },
+    "custom_entity": {
+      "@id": "pipeliner:custom_entity",
+      "@type": "@id"
+    },
+    "lead": {
+      "@id": "pipeliner:lead",
+      "@type": "@id"
+    },
+    "oppty": {
+      "@id": "pipeliner:oppty",
+      "@type": "@id"
+    },
+    "project": {
+      "@id": "pipeliner:project",
+      "@type": "@id"
+    },
+    "project_objective": {
+      "@id": "pipeliner:project_objective",
+      "@type": "@id"
+    },
+    "quote": {
+      "@id": "pipeliner:quote",
+      "@type": "@id"
+    },
+    "contact_id": {
+      "@id": "pipeliner:contact_id",
+      "@type": "xsd:string"
+    },
+    "custom_entity_id": {
+      "@id": "pipeliner:custom_entity_id",
+      "@type": "xsd:string"
+    },
+    "lead_oppty_id": {
+      "@id": "pipeliner:lead_oppty_id",
+      "@type": "xsd:string"
+    },
+    "project_id": {
+      "@id": "pipeliner:project_id",
+      "@type": "xsd:string"
+    },
+    "project_objective_id": {
+      "@id": "pipeliner:project_objective_id",
+      "@type": "xsd:string"
+    },
+    "quote_id": {
+      "@id": "pipeliner:quote_id",
+      "@type": "xsd:string"
+    },
+    "sort_order": {
+      "@id": "pipeliner:sort_order",
+      "@type": "xsd:integer"
+    },
+    "createActivityRelationInput": "pipeliner:createActivityRelationInput",
+    "updateActivityRelationInput": "pipeliner:updateActivityRelationInput",
+    "batchActivityRelationInput": "pipeliner:batchActivityRelationInput",
+    "AllowedAccountType": "pipeliner:AllowedAccountType",
+    "master_right": {
+      "@id": "pipeliner:master_right",
+      "@type": "@id"
+    },
+    "master_right_id": {
+      "@id": "pipeliner:master_right_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedAccountTypeInput": "pipeliner:createAllowedAccountTypeInput",
+    "updateAllowedAccountTypeInput": "pipeliner:updateAllowedAccountTypeInput",
+    "batchAllowedAccountTypeInput": "pipeliner:batchAllowedAccountTypeInput",
+    "AllowedCompanyEmail": "pipeliner:AllowedCompanyEmail",
+    "company_email": {
+      "@id": "pipeliner:company_email",
+      "@type": "@id"
+    },
+    "company_email_id": {
+      "@id": "pipeliner:company_email_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedCompanyEmailInput": "pipeliner:createAllowedCompanyEmailInput",
+    "updateAllowedCompanyEmailInput": "pipeliner:updateAllowedCompanyEmailInput",
+    "batchAllowedCompanyEmailInput": "pipeliner:batchAllowedCompanyEmailInput",
+    "AllowedCompanyPhone": "pipeliner:AllowedCompanyPhone",
+    "phone": {
+      "@id": "pipeliner:phone",
+      "@type": "@id"
+    },
+    "phone_id": {
+      "@id": "pipeliner:phone_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedCompanyPhoneInput": "pipeliner:createAllowedCompanyPhoneInput",
+    "updateAllowedCompanyPhoneInput": "pipeliner:updateAllowedCompanyPhoneInput",
+    "batchAllowedCompanyPhoneInput": "pipeliner:batchAllowedCompanyPhoneInput",
+    "AllowedContactType": "pipeliner:AllowedContactType",
+    "contact_type": {
+      "@id": "pipeliner:contact_type",
+      "@type": "@id"
+    },
+    "contact_type_id": {
+      "@id": "pipeliner:contact_type_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedContactTypeInput": "pipeliner:createAllowedContactTypeInput",
+    "updateAllowedContactTypeInput": "pipeliner:updateAllowedContactTypeInput",
+    "batchAllowedContactTypeInput": "pipeliner:batchAllowedContactTypeInput",
+    "AllowedLeadType": "pipeliner:AllowedLeadType",
+    "lead_type": {
+      "@id": "pipeliner:lead_type",
+      "@type": "@id"
+    },
+    "lead_type_id": {
+      "@id": "pipeliner:lead_type_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedLeadTypeInput": "pipeliner:createAllowedLeadTypeInput",
+    "updateAllowedLeadTypeInput": "pipeliner:updateAllowedLeadTypeInput",
+    "batchAllowedLeadTypeInput": "pipeliner:batchAllowedLeadTypeInput",
+    "AllowedPipeline": "pipeliner:AllowedPipeline",
+    "pipeline": {
+      "@id": "pipeliner:pipeline",
+      "@type": "@id"
+    },
+    "access_step_documents": {
+      "@id": "pipeliner:access_step_documents",
+      "@type": "xsd:boolean"
+    },
+    "pipeline_id": {
+      "@id": "pipeliner:pipeline_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedPipelineInput": "pipeliner:createAllowedPipelineInput",
+    "updateAllowedPipelineInput": "pipeliner:updateAllowedPipelineInput",
+    "batchAllowedPipelineInput": "pipeliner:batchAllowedPipelineInput",
+    "AllowedQuoteType": "pipeliner:AllowedQuoteType",
+    "quote_type": {
+      "@id": "pipeliner:quote_type",
+      "@type": "@id"
+    },
+    "quote_type_id": {
+      "@id": "pipeliner:quote_type_id",
+      "@type": "xsd:string"
+    },
+    "createAllowedQuoteTypeInput": "pipeliner:createAllowedQuoteTypeInput",
+    "updateAllowedQuoteTypeInput": "pipeliner:updateAllowedQuoteTypeInput",
+    "batchAllowedQuoteTypeInput": "pipeliner:batchAllowedQuoteTypeInput",
+    "ApiAccess": "pipeliner:ApiAccess",
+    "email": {
+      "@id": "pipeliner:email",
+      "@type": "xsd:string"
+    },
+    "is_active": {
+      "@id": "pipeliner:is_active",
+      "@type": "xsd:boolean"
+    },
+    "last_used": {
+      "@id": "pipeliner:last_used",
+      "@type": "xsd:dateTime"
+    },
+    "permissions": {
+      "@id": "pipeliner:permissions"
+    },
+    "type": {
+      "@id": "pipeliner:type",
+      "@type": "xsd:integer"
+    },
+    "username": {
+      "@id": "pipeliner:username",
+      "@type": "xsd:string"
+    },
+    "plain_password": {
+      "@id": "pipeliner:plain_password",
+      "@type": "xsd:string"
+    },
+    "Appointment": "pipeliner:Appointment",
+    "activity_type": {
+      "@id": "pipeliner:activity_type",
+      "@type": "@id"
+    },
+    "recurrence_master": {
+      "@id": "pipeliner:recurrence_master",
+      "@type": "@id"
+    },
+    "schedule": {
+      "@id": "pipeliner:schedule",
+      "@type": "@id"
+    },
+    "activity_type_id": {
+      "@id": "pipeliner:activity_type_id",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "pipeliner:description",
+      "@type": "xsd:string"
+    },
+    "duration": {
+      "@id": "pipeliner:duration",
+      "@type": "xsd:decimal"
+    },
+    "end_date": {
+      "@id": "pipeliner:end_date",
+      "@type": "xsd:dateTime"
+    },
+    "invitees_can_edit": {
+      "@id": "pipeliner:invitees_can_edit",
+      "@type": "xsd:boolean"
+    },
+    "is_recurrence_active": {
+      "@id": "pipeliner:is_recurrence_active",
+      "@type": "xsd:boolean"
+    },
+    "is_recurrence_exception": {
+      "@id": "pipeliner:is_recurrence_exception",
+      "@type": "xsd:boolean"
+    },
+    "location": {
+      "@id": "pipeliner:location",
+      "@type": "xsd:string"
+    },
+    "meeting_url": {
+      "@id": "pipeliner:meeting_url"
+    },
+    "occurence_date": {
+      "@id": "pipeliner:occurence_date",
+      "@type": "xsd:dateTime"
+    },
+    "organizer": {
+      "@id": "pipeliner:organizer",
+      "@type": "xsd:string"
+    },
+    "recurrence_master_id": {
+      "@id": "pipeliner:recurrence_master_id",
+      "@type": "xsd:string"
+    },
+    "recurrence_rule": {
+      "@id": "pipeliner:recurrence_rule",
+      "@type": "xsd:string"
+    },
+    "recurrence_tzid": {
+      "@id": "pipeliner:recurrence_tzid",
+      "@type": "xsd:string"
+    },
+    "schedule_id": {
+      "@id": "pipeliner:schedule_id",
+      "@type": "xsd:string"
+    },
+    "schedule_tzid": {
+      "@id": "pipeliner:schedule_tzid",
+      "@type": "xsd:string"
+    },
+    "start_date": {
+      "@id": "pipeliner:start_date",
+      "@type": "xsd:dateTime"
+    },
+    "subject": {
+      "@id": "pipeliner:subject",
+      "@type": "xsd:string"
+    },
+    "table_name": {
+      "@id": "pipeliner:table_name",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "pipeliner:status",
+      "@type": "xsd:integer"
+    },
+    "account_relations": {
+      "@id": "pipeliner:account_relations",
+      "@container": "@list"
+    },
+    "contact_relations": {
+      "@id": "pipeliner:contact_relations",
+      "@container": "@list"
+    },
+    "lead_relations": {
+      "@id": "pipeliner:lead_relations",
+      "@container": "@list"
+    },
+    "opportunity_relations": {
+      "@id": "pipeliner:opportunity_relations",
+      "@container": "@list"
+    },
+    "project_relations": {
+      "@id": "pipeliner:project_relations",
+      "@container": "@list"
+    },
+    "quote_relations": {
+      "@id": "pipeliner:quote_relations",
+      "@container": "@list"
+    },
+    "custom_entity_relations": {
+      "@id": "pipeliner:custom_entity_relations",
+      "@container": "@list"
+    },
+    "invitees_contacts": {
+      "@id": "pipeliner:invitees_contacts",
+      "@container": "@list"
+    },
+    "invitees_clients": {
+      "@id": "pipeliner:invitees_clients",
+      "@container": "@list"
+    },
+    "exchange_entity_id": {
+      "@id": "pipeliner:exchange_entity_id",
+      "@type": "xsd:string"
+    },
+    "gapi_entity_id": {
+      "@id": "pipeliner:gapi_entity_id",
+      "@type": "xsd:string"
+    },
+    "o365_entity_id": {
+      "@id": "pipeliner:o365_entity_id",
+      "@type": "xsd:string"
+    },
+    "has_3rd_party_mapping": {
+      "@id": "pipeliner:has_3rd_party_mapping",
+      "@type": "xsd:boolean"
+    },
+    "reminder": {
+      "@id": "pipeliner:reminder",
+      "@type": "@id"
+    },
+    "recurrence": {
+      "@id": "pipeliner:recurrence"
+    },
+    "createAppointmentInput": "pipeliner:createAppointmentInput",
+    "updateAppointmentInput": "pipeliner:updateAppointmentInput",
+    "batchAppointmentInput": "pipeliner:batchAppointmentInput",
+    "AppointmentClientInviteesRelation": "pipeliner:AppointmentClientInviteesRelation",
+    "appointment_id": {
+      "@id": "pipeliner:appointment_id",
+      "@type": "xsd:string"
+    },
+    "response": {
+      "@id": "pipeliner:response",
+      "@type": "xsd:integer"
+    },
+    "createAppointmentClientInviteesRelationInput": "pipeliner:createAppointmentClientInviteesRelationInput",
+    "updateAppointmentClientInviteesRelationInput": "pipeliner:updateAppointmentClientInviteesRelationInput",
+    "batchAppointmentClientInviteesRelationInput": "pipeliner:batchAppointmentClientInviteesRelationInput",
+    "AppointmentContactInviteesRelation": "pipeliner:AppointmentContactInviteesRelation",
+    "first_name": {
+      "@id": "pipeliner:first_name",
+      "@type": "xsd:string"
+    },
+    "invitee_type": {
+      "@id": "pipeliner:invitee_type",
+      "@type": "xsd:integer"
+    },
+    "last_name": {
+      "@id": "pipeliner:last_name",
+      "@type": "xsd:string"
+    },
+    "createAppointmentContactInviteesRelationInput": "pipeliner:createAppointmentContactInviteesRelationInput",
+    "updateAppointmentContactInviteesRelationInput": "pipeliner:updateAppointmentContactInviteesRelationInput",
+    "batchAppointmentContactInviteesRelationInput": "pipeliner:batchAppointmentContactInviteesRelationInput",
+    "AppointmentReminder": "pipeliner:AppointmentReminder",
+    "end_date_offset": {
+      "@id": "pipeliner:end_date_offset",
+      "@type": "xsd:integer"
+    },
+    "snooze_date": {
+      "@id": "pipeliner:snooze_date",
+      "@type": "xsd:dateTime"
+    },
+    "createAppointmentReminderInput": "pipeliner:createAppointmentReminderInput",
+    "updateAppointmentReminderInput": "pipeliner:updateAppointmentReminderInput",
+    "batchAppointmentReminderInput": "pipeliner:batchAppointmentReminderInput",
+    "AppointmentSchedule": "pipeliner:AppointmentSchedule",
+    "appointment_owner": {
+      "@id": "pipeliner:appointment_owner",
+      "@type": "@id"
+    },
+    "appointment_type": {
+      "@id": "pipeliner:appointment_type",
+      "@type": "@id"
+    },
+    "reply_company_email": {
+      "@id": "pipeliner:reply_company_email",
+      "@type": "@id"
+    },
+    "appointment_description": {
+      "@id": "pipeliner:appointment_description",
+      "@type": "xsd:string"
+    },
+    "appointment_duration": {
+      "@id": "pipeliner:appointment_duration",
+      "@type": "xsd:decimal"
+    },
+    "appointment_location": {
+      "@id": "pipeliner:appointment_location",
+      "@type": "xsd:string"
+    },
+    "appointment_location_type": {
+      "@id": "pipeliner:appointment_location_type",
+      "@type": "xsd:integer"
+    },
+    "appointment_owner_id": {
+      "@id": "pipeliner:appointment_owner_id",
+      "@type": "xsd:string"
+    },
+    "appointment_subject": {
+      "@id": "pipeliner:appointment_subject",
+      "@type": "xsd:string"
+    },
+    "appointment_subject_uses_schedule_name": {
+      "@id": "pipeliner:appointment_subject_uses_schedule_name",
+      "@type": "xsd:boolean"
+    },
+    "appointment_type_id": {
+      "@id": "pipeliner:appointment_type_id",
+      "@type": "xsd:string"
+    },
+    "availability_tzid": {
+      "@id": "pipeliner:availability_tzid",
+      "@type": "xsd:string"
+    },
+    "buffer_time_after": {
+      "@id": "pipeliner:buffer_time_after",
+      "@type": "xsd:integer"
+    },
+    "buffer_time_before": {
+      "@id": "pipeliner:buffer_time_before",
+      "@type": "xsd:integer"
+    },
+    "confirmation_page_type": {
+      "@id": "pipeliner:confirmation_page_type",
+      "@type": "xsd:integer"
+    },
+    "confirmation_page_url": {
+      "@id": "pipeliner:confirmation_page_url",
+      "@type": "xsd:string"
+    },
+    "is_enabled": {
+      "@id": "pipeliner:is_enabled",
+      "@type": "xsd:boolean"
+    },
+    "minimum_notice_time": {
+      "@id": "pipeliner:minimum_notice_time",
+      "@type": "xsd:integer"
+    },
+    "planning_day_offset": {
+      "@id": "pipeliner:planning_day_offset",
+      "@type": "xsd:integer"
+    },
+    "planning_period_from": {
+      "@id": "pipeliner:planning_period_from",
+      "@type": "xsd:date"
+    },
+    "planning_period_to": {
+      "@id": "pipeliner:planning_period_to",
+      "@type": "xsd:date"
+    },
+    "planning_type": {
+      "@id": "pipeliner:planning_type",
+      "@type": "xsd:integer"
+    },
+    "reminder_email_enabled": {
+      "@id": "pipeliner:reminder_email_enabled",
+      "@type": "xsd:boolean"
+    },
+    "reminder_email_offset": {
+      "@id": "pipeliner:reminder_email_offset",
+      "@type": "xsd:integer"
+    },
+    "reminder_email_offset_type": {
+      "@id": "pipeliner:reminder_email_offset_type",
+      "@type": "xsd:integer"
+    },
+    "reply_company_email_id": {
+      "@id": "pipeliner:reply_company_email_id",
+      "@type": "xsd:string"
+    },
+    "schedule_name": {
+      "@id": "pipeliner:schedule_name",
+      "@type": "xsd:string"
+    },
+    "time_increment": {
+      "@id": "pipeliner:time_increment",
+      "@type": "xsd:integer"
+    },
+    "url": {
+      "@id": "pipeliner:url",
+      "@type": "xsd:string"
+    },
+    "additional_fields_data": {
+      "@id": "pipeliner:additional_fields_data",
+      "@container": "@list"
+    },
+    "availability_data": {
+      "@id": "pipeliner:availability_data"
+    },
+    "appointment_invitees_data": {
+      "@id": "pipeliner:appointment_invitees_data",
+      "@container": "@list"
+    },
+    "createAppointmentScheduleInput": "pipeliner:createAppointmentScheduleInput",
+    "updateAppointmentScheduleInput": "pipeliner:updateAppointmentScheduleInput",
+    "batchAppointmentScheduleInput": "pipeliner:batchAppointmentScheduleInput",
+    "AppointmentType": "pipeliner:AppointmentType",
+    "icon": {
+      "@id": "pipeliner:icon",
+      "@type": "xsd:integer"
+    },
+    "createAppointmentTypeInput": "pipeliner:createAppointmentTypeInput",
+    "updateAppointmentTypeInput": "pipeliner:updateAppointmentTypeInput",
+    "batchAppointmentTypeInput": "pipeliner:batchAppointmentTypeInput",
+    "Approval": "pipeliner:Approval",
+    "actor": {
+      "@id": "pipeliner:actor",
+      "@type": "@id"
+    },
+    "application": {
+      "@id": "pipeliner:application",
+      "@type": "@id"
+    },
+    "approval_process": {
+      "@id": "pipeliner:approval_process",
+      "@type": "@id"
+    },
+    "actor_id": {
+      "@id": "pipeliner:actor_id",
+      "@type": "xsd:string"
+    },
+    "approval_process_id": {
+      "@id": "pipeliner:approval_process_id",
+      "@type": "xsd:string"
+    },
+    "approval_status": {
+      "@id": "pipeliner:approval_status",
+      "@type": "xsd:integer"
+    },
+    "end_time": {
+      "@id": "pipeliner:end_time",
+      "@type": "xsd:dateTime"
+    },
+    "approvers": {
+      "@id": "pipeliner:approvers",
+      "@container": "@list"
+    },
+    "lines": {
+      "@id": "pipeliner:lines",
+      "@container": "@list"
+    },
+    "start_time": {
+      "@id": "pipeliner:start_time",
+      "@type": "xsd:dateTime"
+    },
+    "createApprovalInput": "pipeliner:createApprovalInput",
+    "updateApprovalInput": "pipeliner:updateApprovalInput",
+    "batchApprovalInput": "pipeliner:batchApprovalInput",
+    "ApprovalApprover": "pipeliner:ApprovalApprover",
+    "approval": {
+      "@id": "pipeliner:approval",
+      "@type": "@id"
+    },
+    "approval_id": {
+      "@id": "pipeliner:approval_id",
+      "@type": "xsd:string"
+    },
+    "createApprovalApproverInput": "pipeliner:createApprovalApproverInput",
+    "updateApprovalApproverInput": "pipeliner:updateApprovalApproverInput"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Pipeliner CRM API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Pipeliner CRM's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-09-22) from openapi/pipeliner-openapi.json.",
+  "dcterms:created": "2026-09-22",
+  "dcterms:source": [
+    "openapi/pipeliner-openapi.json"
+  ]
+}

@@ -1,0 +1,1529 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Opportunity API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Opportunity
+paths:
+  /entities/EntityFitnesses/{id}:
+    get:
+      description: Returns EntityFitness with given id
+      operationId: EntityFitnesses.get
+      summary: EntityFitnesses.get
+      tags:
+      - Opportunity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitness to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: EntityFitness data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitness'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes EntityFitness with given id
+      operationId: EntityFitnesses.delete
+      summary: EntityFitnesses.delete
+      tags:
+      - Opportunity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitness to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitness on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted EntityFitness
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies EntityFitness or EntityFitnesses with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitness to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitness on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: EntityFitnesses.update
+      summary: EntityFitnesses.update
+      tags:
+      - Opportunity
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateEntityFitnessInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting EntityFitness
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitness'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnesses:
+    get:
+      description: Returns all defined EntityFitnesses
+      operationId: EntityFitnesses.list
+      summary: EntityFitnesses.list
+      tags:
+      - Opportunity
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted EntityFitnesses are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of EntityFitnesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityFitness'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new EntityFitness
+      operationId: EntityFitnesses.create
+      summary: EntityFitnesses.create
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitness on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntityFitness
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createEntityFitnessInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created EntityFitness
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitness'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnesses/batch-delete:
+    post:
+      description: Removes EntityFitnesses with given list of ids
+      operationId: EntityFitnesses.batch_delete
+      summary: EntityFitnesses.batch_delete
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnesses on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntityFitness to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted EntityFitness.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnesses/batch-modify:
+    post:
+      description: Create or update an batch of EntityFitnesses
+      operationId: EntityFitnesses.batch_create_or_update
+      summary: EntityFitnesses.batch_create_or_update
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnesses on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntityFitness
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchEntityFitnessInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated EntityFitnesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnesses/batch-restore:
+    post:
+      description: Restores EntityFitnesses with given list of ids
+      operationId: EntityFitnesses.batch_restore
+      summary: EntityFitnesses.batch_restore
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnesses on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntityFitness to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored EntityFitness.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnessIndicators/{id}:
+    get:
+      description: Returns EntityFitnessIndicator with given id
+      operationId: EntityFitnessIndicators.get
+      summary: EntityFitnessIndicators.get
+      tags:
+      - Opportunity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitnessIndicator to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: EntityFitnessIndicator data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitnessIndicator'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes EntityFitnessIndicator with given id
+      operationId: EntityFitnessIndicators.delete
+      summary: EntityFitnessIndicators.delete
+      tags:
+      - Opportunity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitnessIndicator to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicator on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted EntityFitnessIndicator
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies EntityFitnessIndicator or EntityFitnessIndicators with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntityFitnessIndicator to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicator on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: EntityFitnessIndicators.update
+      summary: EntityFitnessIndicators.update
+      tags:
+      - Opportunity
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateEntityFitnessIndicatorInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting EntityFitnessIndicator
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitnessIndicator'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnessIndicators:
+    get:
+      description: Returns all defined EntityFitnessIndicators
+      operationId: EntityFitnessIndicators.list
+      summary: EntityFitnessIndicators.list
+      tags:
+      - Opportunity
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted EntityFitnessIndicators are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of EntityFitnessIndicators
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityFitnessIndicator'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new EntityFitnessIndicator
+      operationId: EntityFitnessIndicators.create
+      summary: EntityFitnessIndicators.create
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicator on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntityFitnessIndicator
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createEntityFitnessIndicatorInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created EntityFitnessIndicator
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntityFitnessIndicator'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnessIndicators/batch-delete:
+    post:
+      description: Removes EntityFitnessIndicators with given list of ids
+      operationId: EntityFitnessIndicators.batch_delete
+      summary: EntityFitnessIndicators.batch_delete
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicators on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnessIndicators. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntityFitnessIndicator to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted EntityFitnessIndicator.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnessIndicators/batch-modify:
+    post:
+      description: Create or update an batch of EntityFitnessIndicators
+      operationId: EntityFitnessIndicators.batch_create_or_update
+      summary: EntityFitnessIndicators.batch_create_or_update
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicators on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnessIndicators. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntityFitnessIndicator
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchEntityFitnessIndicatorInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated EntityFitnessIndicators
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntityFitnessIndicators/batch-restore:
+    post:
+      description: Restores EntityFitnessIndicators with given list of ids
+      operationId: EntityFitnessIndicators.batch_restore
+      summary: EntityFitnessIndicators.batch_restore
+      tags:
+      - Opportunity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntityFitnessIndicators on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntityFitnessIndicators. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntityFitnessIndicator to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored EntityFitnessIndicator.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    EntityFitness:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_type:
+          type: string
+          format: uri
+          description: 'Lead type this fitness configuration applies to. Set when configuring fitness for leads.
+
+
+            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
+        oppty_type:
+          type: string
+          format: uri
+          description: 'Opportunity type this fitness configuration applies to. Set when configuring fitness for opportunities.
+
+
+            Relation to OpportunityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpportunityType'' object for properties.'
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EntityFitnessIndicator. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EntityFitnessIndicator'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+        entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity type this fitness configuration applies to.
+        entity_type:
+          type: integer
+          description: 'Entity kind this fitness configuration applies to (Lead or Opportunity). Derived from whichever of lead_type/oppty_type is set.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+      required:
+      - is_delete_protected
+      - id
+      - entity_type_id
+      - entity_type
+    batchEntityFitnessIndicatorInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateEntityFitnessIndicatorInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchEntityFitnessInput:
+      properties:
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateEntityFitnessInput:
+      properties:
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+    createEntityFitnessIndicatorInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - description
+      - description_use_lang
+      - entity_fitness_id
+      - how_to_fix
+      - how_to_fix_use_lang
+      - is_enabled
+      - name
+      - name_use_lang
+      - settings
+      - type
+    EntityFitnessIndicator:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        entity_fitness:
+          type: string
+          format: uri
+          description: 'Fitness configuration this indicator belongs to.
+
+
+            Relation to EntityFitness. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EntityFitness'' object for properties.'
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - entity_fitness
+      - description
+      - description_use_lang
+      - entity_fitness_id
+      - how_to_fix
+      - how_to_fix_use_lang
+      - is_enabled
+      - name
+      - name_use_lang
+      - settings
+      - type
+    createEntityFitnessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''createEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.

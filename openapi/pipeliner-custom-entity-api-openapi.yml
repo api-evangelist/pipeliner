@@ -1,0 +1,2617 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Custom Entity API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Custom Entity
+paths:
+  /entities/{custom_entity_api_name}/{id}:
+    get:
+      description: Returns CustomEntity with given id
+      operationId: '{custom_entity_api_name}.get'
+      summary: CustomEntities.get
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntity to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: CustomEntity data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntity'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes CustomEntity with given id
+      operationId: '{custom_entity_api_name}.delete'
+      summary: CustomEntities.delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntity to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntity on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted CustomEntity
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies CustomEntity or {custom_entity_api_name} with given id(s)
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntity to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntity on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: '{custom_entity_api_name}.update'
+      summary: CustomEntities.update
+      tags:
+      - Custom Entity
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomEntityInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting CustomEntity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntity'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_api_name}:
+    get:
+      description: Returns all defined {custom_entity_api_name}
+      operationId: '{custom_entity_api_name}.list'
+      summary: CustomEntities.list
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted {custom_entity_api_name} are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of {custom_entity_api_name}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomEntity'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new CustomEntity
+      operationId: '{custom_entity_api_name}.create'
+      summary: CustomEntities.create
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntity on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new CustomEntity
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createCustomEntityInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created CustomEntity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntity'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_api_name}/batch-delete:
+    post:
+      description: Removes {custom_entity_api_name} with given list of ids
+      operationId: '{custom_entity_api_name}.batch_delete'
+      summary: CustomEntities.batch_delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_api_name} on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity CustomEntity to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted CustomEntity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_api_name}/batch-modify:
+    post:
+      description: Create or update an batch of {custom_entity_api_name}
+      operationId: '{custom_entity_api_name}.batch_create_or_update'
+      summary: CustomEntities.batch_create_or_update
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_api_name} on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new CustomEntity
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchCustomEntityInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated {custom_entity_api_name}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_api_name}/batch-restore:
+    post:
+      description: Restores {custom_entity_api_name} with given list of ids
+      operationId: '{custom_entity_api_name}.batch_restore'
+      summary: CustomEntities.batch_restore
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_api_name
+        in: path
+        description: Custom entity api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_api_name} on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity CustomEntity to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored CustomEntity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_type_api_name}/{id}:
+    get:
+      description: Returns CustomEntityType with given id
+      operationId: '{custom_entity_type_api_name}.get'
+      summary: CustomEntityTypes.get
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntityType to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: CustomEntityType data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntityType'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes CustomEntityType with given id
+      operationId: '{custom_entity_type_api_name}.delete'
+      summary: CustomEntityTypes.delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntityType to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntityType on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted CustomEntityType
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies CustomEntityType or {custom_entity_type_api_name} with given id(s)
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of CustomEntityType to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntityType on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: '{custom_entity_type_api_name}.update'
+      summary: CustomEntityTypes.update
+      tags:
+      - Custom Entity
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomEntityTypeInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting CustomEntityType
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntityType'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_type_api_name}:
+    get:
+      description: Returns all defined {custom_entity_type_api_name}
+      operationId: '{custom_entity_type_api_name}.list'
+      summary: CustomEntityTypes.list
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted {custom_entity_type_api_name} are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of {custom_entity_type_api_name}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomEntityType'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new CustomEntityType
+      operationId: '{custom_entity_type_api_name}.create'
+      summary: CustomEntityTypes.create
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of CustomEntityType on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new CustomEntityType
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createCustomEntityTypeInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created CustomEntityType
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/CustomEntityType'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_type_api_name}/batch-delete:
+    post:
+      description: Removes {custom_entity_type_api_name} with given list of ids
+      operationId: '{custom_entity_type_api_name}.batch_delete'
+      summary: CustomEntityTypes.batch_delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_type_api_name} on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_type_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity CustomEntityType to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted CustomEntityType.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_type_api_name}/batch-modify:
+    post:
+      description: Create or update an batch of {custom_entity_type_api_name}
+      operationId: '{custom_entity_type_api_name}.batch_create_or_update'
+      summary: CustomEntityTypes.batch_create_or_update
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_type_api_name} on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_type_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new CustomEntityType
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchCustomEntityTypeInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated {custom_entity_type_api_name}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/{custom_entity_type_api_name}/batch-restore:
+    post:
+      description: Restores {custom_entity_type_api_name} with given list of ids
+      operationId: '{custom_entity_type_api_name}.batch_restore'
+      summary: CustomEntityTypes.batch_restore
+      tags:
+      - Custom Entity
+      parameters:
+      - name: custom_entity_type_api_name
+        in: path
+        description: Custom entity type api name
+        required: true
+        schema:
+          type: string
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of {custom_entity_type_api_name} on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for {custom_entity_type_api_name}. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity CustomEntityType to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored CustomEntityType.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Entities/{id}:
+    get:
+      description: Returns Entity with given id
+      operationId: Entities.get
+      summary: Entities.get
+      tags:
+      - Custom Entity
+      parameters:
+      - name: id
+        in: path
+        description: ID of Entity to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Entity data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Entity'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Entities:
+    get:
+      description: Returns all defined Entities
+      operationId: Entities.list
+      summary: Entities.list
+      tags:
+      - Custom Entity
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Entities are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Entities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Entity'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntitySettingses/{id}:
+    get:
+      description: Returns EntitySettings with given id
+      operationId: EntitySettingses.get
+      summary: EntitySettingses.get
+      tags:
+      - Custom Entity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntitySettings to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: EntitySettings data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntitySettings'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes EntitySettings with given id
+      operationId: EntitySettingses.delete
+      summary: EntitySettingses.delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntitySettings to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettings on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted EntitySettings
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies EntitySettings or EntitySettingses with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of EntitySettings to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettings on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: EntitySettingses.update
+      summary: EntitySettingses.update
+      tags:
+      - Custom Entity
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateEntitySettingsInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting EntitySettings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntitySettings'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntitySettingses:
+    get:
+      description: Returns all defined EntitySettingses
+      operationId: EntitySettingses.list
+      summary: EntitySettingses.list
+      tags:
+      - Custom Entity
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted EntitySettingses are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of EntitySettingses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntitySettings'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new EntitySettings
+      operationId: EntitySettingses.create
+      summary: EntitySettingses.create
+      tags:
+      - Custom Entity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettings on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntitySettings
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createEntitySettingsInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created EntitySettings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/EntitySettings'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntitySettingses/batch-delete:
+    post:
+      description: Removes EntitySettingses with given list of ids
+      operationId: EntitySettingses.batch_delete
+      summary: EntitySettingses.batch_delete
+      tags:
+      - Custom Entity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettingses on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntitySettingses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntitySettings to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted EntitySettings.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntitySettingses/batch-modify:
+    post:
+      description: Create or update an batch of EntitySettingses
+      operationId: EntitySettingses.batch_create_or_update
+      summary: EntitySettingses.batch_create_or_update
+      tags:
+      - Custom Entity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettingses on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntitySettingses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new EntitySettings
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchEntitySettingsInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated EntitySettingses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/EntitySettingses/batch-restore:
+    post:
+      description: Restores EntitySettingses with given list of ids
+      operationId: EntitySettingses.batch_restore
+      summary: EntitySettingses.batch_restore
+      tags:
+      - Custom Entity
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of EntitySettingses on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for EntitySettingses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity EntitySettings to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored EntitySettings.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    updateEntitySettingsInput:
+      properties:
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    EntitySettings:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        is_published:
+          type: boolean
+          example: false
+          description: True when the settings are published; false while they exist only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - default_list_columns
+    Entity:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        entity_name:
+          type: string
+          example: string
+          description: Stable identifier of the entity (e.g. "Account", "Lead", "Opportunity").
+          readOnly: true
+        table_name:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity. Read-only.
+          readOnly: true
+        table_ex:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity's custom-field data. Read-only.
+          readOnly: true
+        table_data_ex:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity's data relation rows. Read-only.
+          readOnly: true
+        default_view_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the field used as the default display label for records of this entity.
+          readOnly: true
+        abstract_entity_id:
+          type: string
+          example: string
+          description: For sub-entities (e.g. Lead/Opportunity sharing a LeadOppty parent), the entity name of the parent abstract entity. Empty for stand-alone entities.
+          readOnly: true
+        entity_type:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Kind of the entity in the platform: business entity, system schema, custom entity, etc.'
+          readOnly: true
+        preference_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Display order used to sort entities in pickers and navigation lists; lower values appear first.
+          readOnly: true
+        allows_multiple_relation:
+          type: boolean
+          example: false
+          description: True when records of this entity can be linked to multiple records of the same other entity through the same relation.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: True when records of this entity support drafts (changes go through a draft before being published).
+          readOnly: true
+        access_mode:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Access scope of records of this entity: shared across the entire space, scoped to a sales unit, or owner-only.'
+          readOnly: true
+        icon:
+          type: integer
+          format: int32
+          example: 1
+          description: Numeric icon identifier used to render the entity in the UI.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: True when the entity is marked as deleted (soft-delete). Read-only at the entity-metadata level.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        settings:
+          type: object
+          description: Optional space-level configuration for the entity (e.g. UI/feature flags). Empty when no overrides are set.
+        name_singular:
+          type: string
+          example: string
+          description: Display name of the entity in singular form (e.g. "Account").
+        name_plural:
+          type: string
+          example: string
+          description: Display name of the entity in plural form (e.g. "Accounts").
+      required:
+      - is_delete_protected
+      - id
+      - default_view_field_id
+      - abstract_entity_id
+      - entity_type
+      - preference_order
+      - has_draft
+      - access_mode
+      - icon
+    batchEntitySettingsInput:
+      properties:
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+    updateCustomEntityInput:
+      properties:
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''updateCustomEntitySharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingClientRelation, see: ''updateCustomEntitySharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this custom entity record.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    CustomEntityType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity type (e.g. "Vehicle", "Project_Phase"). Used as the entity name when calling REST endpoints or selecting a concrete custom entity in GraphQL.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - form_edit
+      - is_readonly
+      - name
+      - settings
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createCustomEntityInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''createCustomEntitySharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingClientRelation, see: ''createCustomEntitySharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tag labels applied to this custom entity record.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - owner_id
+    batchCustomEntityInput:
+      properties:
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''updateCustomEntitySharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingClientRelation, see: ''updateCustomEntitySharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this custom entity record.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createEntitySettingsInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        is_published:
+          type: boolean
+          example: false
+          description: True when the settings are published; false while they exist only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - default_list_columns
+    createCustomEntityTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+      required:
+      - form_edit
+      - is_readonly
+      - name
+      - settings
+    CustomEntity:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_exchange_rates_list:
+          type: string
+          format: uri
+          description: 'Currency exchange rate list used to convert monetary fields linked to this record. Empty to inherit the team space default.
+
+
+            Relation to CurrencyExchangeRatesList. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CurrencyExchangeRatesList'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'Sales user who owns this custom entity record.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        type:
+          type: string
+          format: uri
+          description: 'Custom entity type that classifies this record. Custom entity types are configurable per team space and define the schema (fields and form) of the records.
+
+
+            Relation to CustomEntityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntityType'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit this record is assigned to. Determines which team members can see the record under unit-based sharing.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        table_name:
+          type: string
+          example: string
+          description: Discriminator identifying which custom entity type this record belongs to. Read-only; matches CustomEntityType.entity_api_name and is used as the entity name in REST and GraphQL queries.
+          readOnly: true
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntitySharingSalesUnitRelation'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CustomEntitySharingClientRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntitySharingClientRelation'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProfileRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProfileRelation'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TagRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TagRelation'' object for properties.'
+          description: Tag labels applied to this custom entity record.
+        is_favorite:
+          type: boolean
+          example: false
+          description: True when the current authenticated user has marked this record as favorite. Per-user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - type
+      - unit
+      - owner_id
+      - table_name
+      - is_favorite

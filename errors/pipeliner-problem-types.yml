@@ -1,0 +1,27 @@
+generated: '2026-09-22'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/pipeliner-openapi.json
+format: custom
+envelope:
+  media_type: application/json
+  schema: Error
+coverage:
+  operations: 1510
+  statuses_declared: 2
+problems:
+- status: 404
+  title: Not Found
+  description: Sent when invalid ID is given
+  operations: 572
+  media_types:
+  - application/json
+  schema: Error
+- status: 500
+  title: Internal Server Error
+  description: unexpected error
+  operations: 1510
+  media_types:
+  - application/json
+  schema: Error

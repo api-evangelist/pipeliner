@@ -1,0 +1,38 @@
+generated: '2026-09-22'
+method: generated
+generator: extract-docs-artifacts.py skills (local)
+source: openapi/pipeliner-openapi.json
+skills:
+- file: skills/pipeliner-create-and-list-accounts.md
+  name: pipeliner-create-and-list-accounts
+  api: openapi/pipeliner-openapi.json
+  operations:
+  - Accounts.create
+  - Accounts.list
+- file: skills/pipeliner-client-list-and-fetch.md
+  name: pipeliner-client-list-and-fetch
+  api: openapi/pipeliner-openapi.json
+  operations:
+  - Clients.list
+  - Clients.get
+- file: skills/pipeliner-create-product.md
+  name: pipeliner-create-product
+  api: openapi/pipeliner-openapi.json
+  operations:
+  - Products.create
+  - Products.get
+- file: skills/pipeliner-create-and-list-webhook.md
+  name: pipeliner-create-and-list-webhook
+  api: openapi/pipeliner-openapi.json
+  operations:
+  - Webhooks.create
+  - Webhooks.list
+  - Webhooks.get
+- file: skills/pipeliner-manage-pipeline.md
+  name: pipeliner-manage-pipeline
+  api: openapi/pipeliner-openapi.json
+  operations:
+  - Pipelines.create
+  - Pipelines.get
+  - Pipelines.update
+  - Pipelines.list

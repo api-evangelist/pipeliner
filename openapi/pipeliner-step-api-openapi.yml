@@ -1,0 +1,2658 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Step API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Step
+paths:
+  /entities/Steps/{id}:
+    get:
+      description: Returns Step with given id
+      operationId: Steps.get
+      summary: Steps.get
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of Step to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Step data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Step'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Step with given id
+      operationId: Steps.delete
+      summary: Steps.delete
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of Step to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Step on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Step
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Step or Steps with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Step to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Step on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Steps.update
+      summary: Steps.update
+      tags:
+      - Step
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateStepInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Step
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Step'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Steps:
+    get:
+      description: Returns all defined Steps
+      operationId: Steps.list
+      summary: Steps.list
+      tags:
+      - Step
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Steps are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Steps
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Step'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Step
+      operationId: Steps.create
+      summary: Steps.create
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Step on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Step
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createStepInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Step
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Step'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Steps/batch-delete:
+    post:
+      description: Removes Steps with given list of ids
+      operationId: Steps.batch_delete
+      summary: Steps.batch_delete
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Steps on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Steps. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Step to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Step.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Steps/batch-modify:
+    post:
+      description: Create or update an batch of Steps
+      operationId: Steps.batch_create_or_update
+      summary: Steps.batch_create_or_update
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Steps on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Steps. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Step
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchStepInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Steps
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Steps/batch-restore:
+    post:
+      description: Restores Steps with given list of ids
+      operationId: Steps.batch_restore
+      summary: Steps.batch_restore
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Steps on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Steps. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Step to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Step.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklists/{id}:
+    get:
+      description: Returns StepChecklist with given id
+      operationId: StepChecklists.get
+      summary: StepChecklists.get
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklist to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: StepChecklist data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklist'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes StepChecklist with given id
+      operationId: StepChecklists.delete
+      summary: StepChecklists.delete
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklist to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklist on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted StepChecklist
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies StepChecklist or StepChecklists with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklist to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklist on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: StepChecklists.update
+      summary: StepChecklists.update
+      tags:
+      - Step
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateStepChecklistInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting StepChecklist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklist'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklists:
+    get:
+      description: Returns all defined StepChecklists
+      operationId: StepChecklists.list
+      summary: StepChecklists.list
+      tags:
+      - Step
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted StepChecklists are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of StepChecklists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StepChecklist'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new StepChecklist
+      operationId: StepChecklists.create
+      summary: StepChecklists.create
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklist on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new StepChecklist
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createStepChecklistInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created StepChecklist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklist'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklists/batch-delete:
+    post:
+      description: Removes StepChecklists with given list of ids
+      operationId: StepChecklists.batch_delete
+      summary: StepChecklists.batch_delete
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklists on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity StepChecklist to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted StepChecklist.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklists/batch-modify:
+    post:
+      description: Create or update an batch of StepChecklists
+      operationId: StepChecklists.batch_create_or_update
+      summary: StepChecklists.batch_create_or_update
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklists on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new StepChecklist
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchStepChecklistInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated StepChecklists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklists/batch-restore:
+    post:
+      description: Restores StepChecklists with given list of ids
+      operationId: StepChecklists.batch_restore
+      summary: StepChecklists.batch_restore
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklists on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklists. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity StepChecklist to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored StepChecklist.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklistSalesRoleRelations/{id}:
+    get:
+      description: Returns StepChecklistSalesRoleRelation with given id
+      operationId: StepChecklistSalesRoleRelations.get
+      summary: StepChecklistSalesRoleRelations.get
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklistSalesRoleRelation to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: StepChecklistSalesRoleRelation data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklistSalesRoleRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes StepChecklistSalesRoleRelation with given id
+      operationId: StepChecklistSalesRoleRelations.delete
+      summary: StepChecklistSalesRoleRelations.delete
+      tags:
+      - Step
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklistSalesRoleRelation to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelation on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted StepChecklistSalesRoleRelation
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies StepChecklistSalesRoleRelation or StepChecklistSalesRoleRelations with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of StepChecklistSalesRoleRelation to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelation on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: StepChecklistSalesRoleRelations.update
+      summary: StepChecklistSalesRoleRelations.update
+      tags:
+      - Step
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateStepChecklistSalesRoleRelationInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting StepChecklistSalesRoleRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklistSalesRoleRelation'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklistSalesRoleRelations:
+    get:
+      description: Returns all defined StepChecklistSalesRoleRelations
+      operationId: StepChecklistSalesRoleRelations.list
+      summary: StepChecklistSalesRoleRelations.list
+      tags:
+      - Step
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted StepChecklistSalesRoleRelations are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of StepChecklistSalesRoleRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StepChecklistSalesRoleRelation'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new StepChecklistSalesRoleRelation
+      operationId: StepChecklistSalesRoleRelations.create
+      summary: StepChecklistSalesRoleRelations.create
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelation on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new StepChecklistSalesRoleRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createStepChecklistSalesRoleRelationInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created StepChecklistSalesRoleRelation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/StepChecklistSalesRoleRelation'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklistSalesRoleRelations/batch-delete:
+    post:
+      description: Removes StepChecklistSalesRoleRelations with given list of ids
+      operationId: StepChecklistSalesRoleRelations.batch_delete
+      summary: StepChecklistSalesRoleRelations.batch_delete
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelations on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklistSalesRoleRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity StepChecklistSalesRoleRelation to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted StepChecklistSalesRoleRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklistSalesRoleRelations/batch-modify:
+    post:
+      description: Create or update an batch of StepChecklistSalesRoleRelations
+      operationId: StepChecklistSalesRoleRelations.batch_create_or_update
+      summary: StepChecklistSalesRoleRelations.batch_create_or_update
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelations on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklistSalesRoleRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new StepChecklistSalesRoleRelation
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchStepChecklistSalesRoleRelationInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated StepChecklistSalesRoleRelations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/StepChecklistSalesRoleRelations/batch-restore:
+    post:
+      description: Restores StepChecklistSalesRoleRelations with given list of ids
+      operationId: StepChecklistSalesRoleRelations.batch_restore
+      summary: StepChecklistSalesRoleRelations.batch_restore
+      tags:
+      - Step
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of StepChecklistSalesRoleRelations on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for StepChecklistSalesRoleRelations. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity StepChecklistSalesRoleRelation to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored StepChecklistSalesRoleRelation.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    createStepChecklistInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        cloud_object_template:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object template that the checklist item should fill and attach to the record.
+
+
+            Relation to CloudObjectTemplate, see: ''createCloudObjectTemplateInput'' object for properties.'
+        activity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
+        cloud_object_format:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Default, 1 - Pdf'
+          example: 0
+          enum:
+          - 0
+          - 1
+        cloud_object_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object template.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the checklist item.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related field.
+        item_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        item_validation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        label:
+          type: string
+          example: string
+          description: Display label of the checklist item.
+        label_use_lang:
+          type: boolean
+          example: false
+          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related process.
+        send_email_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the recipient field.
+        send_email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the step.
+        visibility_condition:
+          type: string
+          format: binary
+          example: blob
+          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
+        visibility_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Always, 1 - Condition'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sales_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklistSalesRoleRelation, see: ''createStepChecklistSalesRoleRelationInput'' object for properties.'
+          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
+      required:
+      - step_id
+      - visibility_condition
+    StepChecklistSalesRoleRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        sales_role:
+          type: string
+          format: uri
+          description: 'Sales role that sees the checklist item.
+
+
+            Relation to SalesRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesRole'' object for properties.'
+        step_checklist:
+          type: string
+          format: uri
+          description: 'Checklist item the role is granted access to.
+
+
+            Relation to StepChecklist. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''StepChecklist'' object for properties.'
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - sales_role
+      - step_checklist
+      - sales_role_id
+      - step_checklist_id
+    batchStepInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateStepChecklistInput:
+      properties:
+        cloud_object_template:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object template that the checklist item should fill and attach to the record.
+
+
+            Relation to CloudObjectTemplate, see: ''updateCloudObjectTemplateInput'' object for properties.'
+        activity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
+        cloud_object_format:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Default, 1 - Pdf'
+          example: 0
+          enum:
+          - 0
+          - 1
+        cloud_object_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object template.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the checklist item.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related field.
+        item_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        item_validation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        label:
+          type: string
+          example: string
+          description: Display label of the checklist item.
+        label_use_lang:
+          type: boolean
+          example: false
+          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related process.
+        send_email_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the recipient field.
+        send_email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the step.
+        visibility_condition:
+          type: string
+          format: binary
+          example: blob
+          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
+        visibility_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Always, 1 - Condition'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sales_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklistSalesRoleRelation, see: ''updateStepChecklistSalesRoleRelationInput'' object for properties.'
+          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
+    createStepInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity pipeline.
+          readOnly: true
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''createCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''createStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+      required:
+      - name
+    updateStepChecklistSalesRoleRelationInput:
+      properties:
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createStepChecklistSalesRoleRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - sales_role_id
+      - step_checklist_id
+    updateStepInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+    batchStepChecklistInput:
+      properties:
+        cloud_object_template:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object template that the checklist item should fill and attach to the record.
+
+
+            Relation to CloudObjectTemplate, see: ''updateCloudObjectTemplateInput'' object for properties.'
+        activity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
+        cloud_object_format:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Default, 1 - Pdf'
+          example: 0
+          enum:
+          - 0
+          - 1
+        cloud_object_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object template.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the checklist item.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related field.
+        item_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        item_validation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        label:
+          type: string
+          example: string
+          description: Display label of the checklist item.
+        label_use_lang:
+          type: boolean
+          example: false
+          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related process.
+        send_email_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the recipient field.
+        send_email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the step.
+        visibility_condition:
+          type: string
+          format: binary
+          example: blob
+          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
+        visibility_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Always, 1 - Condition'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sales_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklistSalesRoleRelation, see: ''updateStepChecklistSalesRoleRelationInput'' object for properties.'
+          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchStepChecklistSalesRoleRelationInput:
+      properties:
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    StepChecklist:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        appointment_type:
+          type: string
+          format: uri
+          description: 'Appointment type that satisfies this checklist item. Set when activity_type_id resolves to an AppointmentType.
+
+
+            Relation to AppointmentType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AppointmentType'' object for properties.'
+        task_type:
+          type: string
+          format: uri
+          description: 'Task type that satisfies this checklist item. Set when activity_type_id resolves to a TaskType.
+
+
+            Relation to TaskType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TaskType'' object for properties.'
+        cloud_object_template:
+          type: string
+          format: uri
+          description: 'Cloud object template that the checklist item should fill and attach to the record.
+
+
+            Relation to CloudObjectTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectTemplate'' object for properties.'
+        email_sequence:
+          type: string
+          format: uri
+          description: 'Email sequence the item should enroll the record into.
+
+
+            Relation to EmailSequence. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequence'' object for properties.'
+        field:
+          type: string
+          format: uri
+          description: 'Field whose value satisfies this checklist item. Set when item_type is FieldType.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        process:
+          type: string
+          format: uri
+          description: 'Process the item should run. Set when item_type is ProcessType.
+
+
+            Relation to Process. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Process'' object for properties.'
+        send_email_field:
+          type: string
+          format: uri
+          description: 'Field that supplies the recipient email address when the checklist item triggers sending an email.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        send_email_template:
+          type: string
+          format: uri
+          description: 'Email template used when the checklist item triggers sending an email.
+
+
+            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
+        step:
+          type: string
+          format: uri
+          description: 'Pipeline or process step this checklist item belongs to.
+
+
+            Relation to Step. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Step'' object for properties.'
+        activity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
+        cloud_object_format:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Default, 1 - Pdf'
+          example: 0
+          enum:
+          - 0
+          - 1
+        cloud_object_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object template.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the checklist item.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related field.
+        item_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        item_validation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        label:
+          type: string
+          example: string
+          description: Display label of the checklist item.
+        label_use_lang:
+          type: boolean
+          example: false
+          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related process.
+        send_email_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the recipient field.
+        send_email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the checklist item within its step; lower values appear first.
+          readOnly: true
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the step.
+        visibility_condition:
+          type: string
+          format: binary
+          example: blob
+          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
+        visibility_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Always, 1 - Condition'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sales_roles:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to StepChecklistSalesRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''StepChecklistSalesRoleRelation'' object for properties.'
+          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
+      required:
+      - is_delete_protected
+      - id
+      - step
+      - sort_order
+      - step_id
+      - visibility_condition
+    Step:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_process:
+          type: string
+          format: uri
+          description: 'Lead process this step belongs to. Set when the step is part of a lead process.
+
+
+            Relation to LeadProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadProcess'' object for properties.'
+        pipeline:
+          type: string
+          format: uri
+          description: 'Opportunity pipeline this step belongs to. Set when the step is part of an opportunity pipeline.
+
+
+            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
+          readOnly: true
+        quote_process:
+          type: string
+          format: uri
+          description: 'Quote process this step belongs to. Set when the step is part of a quote process.
+
+
+            Relation to QuoteProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteProcess'' object for properties.'
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity pipeline.
+          readOnly: true
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectStepRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectStepRelation'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to StepChecklist. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''StepChecklist'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+      required:
+      - is_delete_protected
+      - id
+      - name

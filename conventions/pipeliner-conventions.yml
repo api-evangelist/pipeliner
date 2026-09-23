@@ -1,0 +1,25 @@
+generated: '2026-09-22'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developers.pipelinersales.com/api-docs/core-api-concepts/pagination.md
+sources:
+- https://developers.pipelinersales.com/api-docs/core-api-concepts/pagination.md
+- https://developers.pipelinersales.com/api-docs/core-api-concepts/pagination
+- https://developers.pipelinersales.com/api-docs/overview/quick-start.md
+- https://developers.pipelinersales.com/api-docs
+idempotency:
+  coverage: none
+pagination:
+  style: cursor-based
+  params:
+  - first (default 30, max 100)
+  - after
+  response_fields:
+  - success
+  - total
+  - page_info.start_cursor
+  - page_info.end_cursor
+  - page_info.has_previous_page
+  - page_info.has_next_page
+  - data
+docs: https://developers.pipelinersales.com/api-docs/core-api-concepts/pagination.md

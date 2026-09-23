@@ -1,0 +1,3141 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Approval API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Approval
+paths:
+  /entities/Approvals/{id}:
+    get:
+      description: Returns Approval with given id
+      operationId: Approvals.get
+      summary: Approvals.get
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of Approval to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Approval data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Approval'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Approval with given id
+      operationId: Approvals.delete
+      summary: Approvals.delete
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of Approval to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approval on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Approval
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Approval or Approvals with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Approval to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approval on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Approvals.update
+      summary: Approvals.update
+      tags:
+      - Approval
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateApprovalInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Approval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Approval'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Approvals:
+    get:
+      description: Returns all defined Approvals
+      operationId: Approvals.list
+      summary: Approvals.list
+      tags:
+      - Approval
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Approvals are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Approvals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Approval'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Approval
+      operationId: Approvals.create
+      summary: Approvals.create
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approval on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Approval
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createApprovalInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Approval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Approval'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Approvals/batch-delete:
+    post:
+      description: Removes Approvals with given list of ids
+      operationId: Approvals.batch_delete
+      summary: Approvals.batch_delete
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approvals on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Approvals. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Approval to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Approval.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Approvals/batch-modify:
+    post:
+      description: Create or update an batch of Approvals
+      operationId: Approvals.batch_create_or_update
+      summary: Approvals.batch_create_or_update
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approvals on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Approvals. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Approval
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchApprovalInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Approvals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Approvals/batch-restore:
+    post:
+      description: Restores Approvals with given list of ids
+      operationId: Approvals.batch_restore
+      summary: Approvals.batch_restore
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Approvals on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Approvals. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Approval to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Approval.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalApprovers/{id}:
+    get:
+      description: Returns ApprovalApprover with given id
+      operationId: ApprovalApprovers.get
+      summary: ApprovalApprovers.get
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalApprover to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ApprovalApprover data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalApprover'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ApprovalApprover with given id
+      operationId: ApprovalApprovers.delete
+      summary: ApprovalApprovers.delete
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalApprover to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprover on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ApprovalApprover
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ApprovalApprover or ApprovalApprovers with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalApprover to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprover on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ApprovalApprovers.update
+      summary: ApprovalApprovers.update
+      tags:
+      - Approval
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateApprovalApproverInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ApprovalApprover
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalApprover'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalApprovers:
+    get:
+      description: Returns all defined ApprovalApprovers
+      operationId: ApprovalApprovers.list
+      summary: ApprovalApprovers.list
+      tags:
+      - Approval
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ApprovalApprovers are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ApprovalApprovers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApprovalApprover'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ApprovalApprover
+      operationId: ApprovalApprovers.create
+      summary: ApprovalApprovers.create
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprover on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalApprover
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createApprovalApproverInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ApprovalApprover
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalApprover'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalApprovers/batch-delete:
+    post:
+      description: Removes ApprovalApprovers with given list of ids
+      operationId: ApprovalApprovers.batch_delete
+      summary: ApprovalApprovers.batch_delete
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprovers on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalApprovers. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalApprover to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ApprovalApprover.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalApprovers/batch-modify:
+    post:
+      description: Create or update an batch of ApprovalApprovers
+      operationId: ApprovalApprovers.batch_create_or_update
+      summary: ApprovalApprovers.batch_create_or_update
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprovers on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalApprovers. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalApprover
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchApprovalApproverInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ApprovalApprovers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalApprovers/batch-restore:
+    post:
+      description: Restores ApprovalApprovers with given list of ids
+      operationId: ApprovalApprovers.batch_restore
+      summary: ApprovalApprovers.batch_restore
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalApprovers on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalApprovers. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalApprover to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ApprovalApprover.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcesses/{id}:
+    get:
+      description: Returns ApprovalProcess with given id
+      operationId: ApprovalProcesses.get
+      summary: ApprovalProcesses.get
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcess to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ApprovalProcess data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcess'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ApprovalProcess with given id
+      operationId: ApprovalProcesses.delete
+      summary: ApprovalProcesses.delete
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcess to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcess on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ApprovalProcess
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ApprovalProcess or ApprovalProcesses with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcess to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcess on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ApprovalProcesses.update
+      summary: ApprovalProcesses.update
+      tags:
+      - Approval
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateApprovalProcessInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ApprovalProcess
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcess'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcesses:
+    get:
+      description: Returns all defined ApprovalProcesses
+      operationId: ApprovalProcesses.list
+      summary: ApprovalProcesses.list
+      tags:
+      - Approval
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ApprovalProcesses are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ApprovalProcesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApprovalProcess'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ApprovalProcess
+      operationId: ApprovalProcesses.create
+      summary: ApprovalProcesses.create
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcess on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalProcess
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createApprovalProcessInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ApprovalProcess
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcess'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcesses/batch-delete:
+    post:
+      description: Removes ApprovalProcesses with given list of ids
+      operationId: ApprovalProcesses.batch_delete
+      summary: ApprovalProcesses.batch_delete
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcesses on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalProcess to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ApprovalProcess.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcesses/batch-modify:
+    post:
+      description: Create or update an batch of ApprovalProcesses
+      operationId: ApprovalProcesses.batch_create_or_update
+      summary: ApprovalProcesses.batch_create_or_update
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcesses on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalProcess
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchApprovalProcessInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ApprovalProcesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcesses/batch-restore:
+    post:
+      description: Restores ApprovalProcesses with given list of ids
+      operationId: ApprovalProcesses.batch_restore
+      summary: ApprovalProcesses.batch_restore
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcesses on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcesses. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalProcess to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ApprovalProcess.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcessActivityLogLines/{id}:
+    get:
+      description: Returns ApprovalProcessActivityLogLine with given id
+      operationId: ApprovalProcessActivityLogLines.get
+      summary: ApprovalProcessActivityLogLines.get
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcessActivityLogLine to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ApprovalProcessActivityLogLine data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcessActivityLogLine'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes ApprovalProcessActivityLogLine with given id
+      operationId: ApprovalProcessActivityLogLines.delete
+      summary: ApprovalProcessActivityLogLines.delete
+      tags:
+      - Approval
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcessActivityLogLine to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLine on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted ApprovalProcessActivityLogLine
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies ApprovalProcessActivityLogLine or ApprovalProcessActivityLogLines with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of ApprovalProcessActivityLogLine to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLine on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: ApprovalProcessActivityLogLines.update
+      summary: ApprovalProcessActivityLogLines.update
+      tags:
+      - Approval
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateApprovalProcessActivityLogLineInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting ApprovalProcessActivityLogLine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcessActivityLogLine'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcessActivityLogLines:
+    get:
+      description: Returns all defined ApprovalProcessActivityLogLines
+      operationId: ApprovalProcessActivityLogLines.list
+      summary: ApprovalProcessActivityLogLines.list
+      tags:
+      - Approval
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted ApprovalProcessActivityLogLines are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of ApprovalProcessActivityLogLines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApprovalProcessActivityLogLine'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new ApprovalProcessActivityLogLine
+      operationId: ApprovalProcessActivityLogLines.create
+      summary: ApprovalProcessActivityLogLines.create
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLine on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalProcessActivityLogLine
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createApprovalProcessActivityLogLineInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created ApprovalProcessActivityLogLine
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/ApprovalProcessActivityLogLine'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcessActivityLogLines/batch-delete:
+    post:
+      description: Removes ApprovalProcessActivityLogLines with given list of ids
+      operationId: ApprovalProcessActivityLogLines.batch_delete
+      summary: ApprovalProcessActivityLogLines.batch_delete
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLines on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalProcessActivityLogLine to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted ApprovalProcessActivityLogLine.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcessActivityLogLines/batch-modify:
+    post:
+      description: Create or update an batch of ApprovalProcessActivityLogLines
+      operationId: ApprovalProcessActivityLogLines.batch_create_or_update
+      summary: ApprovalProcessActivityLogLines.batch_create_or_update
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLines on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new ApprovalProcessActivityLogLine
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchApprovalProcessActivityLogLineInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated ApprovalProcessActivityLogLines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/ApprovalProcessActivityLogLines/batch-restore:
+    post:
+      description: Restores ApprovalProcessActivityLogLines with given list of ids
+      operationId: ApprovalProcessActivityLogLines.batch_restore
+      summary: ApprovalProcessActivityLogLines.batch_restore
+      tags:
+      - Approval
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of ApprovalProcessActivityLogLines on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for ApprovalProcessActivityLogLines. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity ApprovalProcessActivityLogLine to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored ApprovalProcessActivityLogLine.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Approval:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the approval is requested on, when the trigger record is an Account.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        actor:
+          type: string
+          format: uri
+          description: 'User who triggered the approval, or empty when triggered automatically.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        application:
+          type: string
+          format: uri
+          description: 'Application context the approval was triggered in.
+
+
+            Relation to Application. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Application'' object for properties.'
+        approval_process:
+          type: string
+          format: uri
+          description: 'Approval process this approval was raised from.
+
+
+            Relation to ApprovalProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ApprovalProcess'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the approval is requested on, when the trigger record is a Contact.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the approval is requested on. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the approval is requested on. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the approval is requested on, when the trigger record is a Quote.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the triggering user.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval process.
+        approval_status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        comment:
+          type: string
+          example: string
+          description: Comment the requester attached when raising the approval.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the approval reached a final status (Approved/Rejected/Cancelled). Empty while the approval is still pending.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        settings:
+          type: object
+          description: Snapshot of the approval process schema at the time the approval was raised. Frozen so subsequent changes to the parent approval process do not affect this run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        approvers:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ApprovalApprover. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ApprovalApprover'' object for properties.'
+          description: Users who must respond to the approval, with their individual responses.
+        lines:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ApprovalProcessActivityLogLine. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ApprovalProcessActivityLogLine'' object for properties.'
+          description: Activity log lines describing the steps taken on this approval (visible only).
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the approval was raised (alias of created).
+      required:
+      - is_delete_protected
+      - id
+      - application
+      - approval_process
+      - application_id
+      - approval_process_id
+      - settings
+    createApprovalProcessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+      required:
+      - is_enabled
+      - name
+      - owner_id
+    updateApprovalInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the triggering user.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval process.
+        approval_status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        comment:
+          type: string
+          example: string
+          description: Comment the requester attached when raising the approval.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        approvers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ApprovalApprover, see: ''updateApprovalApproverInput'' object for properties.'
+          description: Users who must respond to the approval, with their individual responses.
+    batchApprovalInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the triggering user.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval process.
+        approval_status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        comment:
+          type: string
+          example: string
+          description: Comment the requester attached when raising the approval.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        approvers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ApprovalApprover, see: ''updateApprovalApproverInput'' object for properties.'
+          description: Users who must respond to the approval, with their individual responses.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createApprovalProcessActivityLogLineInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - approval_id
+      - data
+      - sort_order
+    ApprovalProcess:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the approval process.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          readOnly: true
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        priority:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this process among approval processes for the same record-trigger entity type; lower values are evaluated first. Read-only; managed via update_priority. Null for manual-trigger approval processes.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+          description: Approvals (one per process run) raised by this approval process.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - is_enabled
+      - name
+      - owner_id
+    ApprovalProcessActivityLogLine:
+      properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval:
+          type: string
+          format: uri
+          description: 'Approval this log line belongs to.
+
+
+            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - formatted_text
+      - is_delete_protected
+      - id
+      - approval
+      - approval_id
+      - data
+      - sort_order
+    batchApprovalProcessActivityLogLineInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateApprovalProcessActivityLogLineInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateApprovalProcessInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+    createApprovalApproverInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - approval_id
+      - client_id
+    createApprovalInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the triggering user.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval process.
+        approval_status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        comment:
+          type: string
+          example: string
+          description: Comment the requester attached when raising the approval.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        approvers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ApprovalApprover, see: ''createApprovalApproverInput'' object for properties.'
+          description: Users who must respond to the approval, with their individual responses.
+      required:
+      - application_id
+      - approval_process_id
+    batchApprovalApproverInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateApprovalApproverInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchApprovalProcessInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    ApprovalApprover:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval:
+          type: string
+          format: uri
+          description: 'Approval this approver is assigned to.
+
+
+            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+        client:
+          type: string
+          format: uri
+          description: 'User responsible for approving (or rejecting) the request.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - approval
+      - client
+      - approval_id
+      - client_id

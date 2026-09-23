@@ -1,0 +1,791 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Phone API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Phone
+paths:
+  /entities/Phones/{id}:
+    get:
+      description: Returns Phone with given id
+      operationId: Phones.get
+      summary: Phones.get
+      tags:
+      - Phone
+      parameters:
+      - name: id
+        in: path
+        description: ID of Phone to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Phone data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Phone'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Phone with given id
+      operationId: Phones.delete
+      summary: Phones.delete
+      tags:
+      - Phone
+      parameters:
+      - name: id
+        in: path
+        description: ID of Phone to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phone on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Phone
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Phone or Phones with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Phone to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phone on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Phones.update
+      summary: Phones.update
+      tags:
+      - Phone
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatePhoneInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Phone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Phone'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Phones:
+    get:
+      description: Returns all defined Phones
+      operationId: Phones.list
+      summary: Phones.list
+      tags:
+      - Phone
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Phones are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Phones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Phone'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Phone
+      operationId: Phones.create
+      summary: Phones.create
+      tags:
+      - Phone
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phone on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Phone
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createPhoneInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Phone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Phone'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Phones/batch-delete:
+    post:
+      description: Removes Phones with given list of ids
+      operationId: Phones.batch_delete
+      summary: Phones.batch_delete
+      tags:
+      - Phone
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phones on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Phones. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Phone to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Phone.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Phones/batch-modify:
+    post:
+      description: Create or update an batch of Phones
+      operationId: Phones.batch_create_or_update
+      summary: Phones.batch_create_or_update
+      tags:
+      - Phone
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phones on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Phones. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Phone
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchPhoneInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Phones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Phones/batch-restore:
+    post:
+      description: Restores Phones with given list of ids
+      operationId: Phones.batch_restore
+      summary: Phones.batch_restore
+      tags:
+      - Phone
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Phones on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Phones. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Phone to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Phone.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    updatePhoneInput:
+      properties:
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+    createPhoneInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+      required:
+      - name
+      - type
+      - enabled
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    Phone:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User the phone is assigned to, when the phone belongs to a specific user (personal calling/SMS line).
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        message_forwarding_email:
+          type: string
+          example: string
+          description: Email address that incoming text messages to this phone are forwarded to. Empty when forwarding is not configured.
+        call_forwarding_phone:
+          type: string
+          example: string
+          description: Phone number that incoming calls/SMS to this phone are forwarded to. Empty when forwarding is not configured.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+      required:
+      - is_delete_protected
+      - id
+      - name
+      - type
+      - enabled
+    batchPhoneInput:
+      properties:
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

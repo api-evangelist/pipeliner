@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/pipeliner/main/json-schema/pipeliner-opportunity-schema.json",
+  "title": "Opportunity",
+  "x-generated": "2026-09-22",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/pipeliner-openapi.json#/components/schemas/Opportunity",
+  "properties": {
+    "is_delete_protected": {
+      "type": "boolean",
+      "description": "Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.",
+      "readOnly": true
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier of entity.",
+      "readOnly": true
+    },
+    "is_deleted": {
+      "type": "boolean",
+      "description": "Specifies if the entity is considered deleted.",
+      "readOnly": true
+    },
+    "modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification time.",
+      "readOnly": true
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation time."
+    },
+    "active_quote": {
+      "type": "string",
+      "format": "uri",
+      "description": "Quote currently used to drive the opportunity (e.g. for synchronisation of monetary fields). Empty when no quote is active.\n\nRelation to Quote. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Quote' object for properties."
+    },
+    "currency_exchange_rates_list": {
+      "type": "string",
+      "format": "uri",
+      "description": "Currency exchange rate list used to convert monetary fields linked to this opportunity. Empty to inherit the team space default.\n\nRelation to CurrencyExchangeRatesList. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'CurrencyExchangeRatesList' object for properties."
+    },
+    "lead_source": {
+      "type": "string",
+      "format": "uri",
+      "description": "How the opportunity originated (e.g. Website, Referral, Trade Show). Configurable per team space.\n\nRelation to Data. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Data' object for properties."
+    },
+    "oppty_type": {
+      "type": "string",
+      "format": "uri",
+      "description": "Opportunity type that classifies this opportunity. Each type maps to one pipeline and drives which form, fields and stages apply.\n\nRelation to OpportunityType. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'OpportunityType' object for properties."
+    },
+    "owner": {
+      "type": "string",
+      "format": "uri",
+      "description": "Sales user who owns this opportunity.\n\nRelation to Client. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Client' object for properties."
+    },
+    "product_currency": {
+      "type": "string",
+      "format": "uri",
+      "description": "Currency used for product line-item prices on this opportunity.\n\nRelation to Currency. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Currency' object for properties."
+    },
+    "product_price_list": {
+      "type": "string",
+      "format": "uri",
+      "description": "Product price list used to populate prices for product line items added to this opportunity. Empty to use catalog defaults.\n\nRelation to ProductPriceList. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ProductPriceList' object for properties."
+    },
+    "reason_of_close": {
+      "type": "string",
+      "format": "uri",
+      "description": "Configurable reason recorded when the opportunity is archived (lost). Required when the lost form mandates it.\n\nRelation to Data. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Data' object for properties."
+    },
+    "step": {
+      "type": "string",
+      "format": "uri",
+      "description": "Pipeline step the opportunity is currently sitting in. Reaching the last step in the pipeline marks the opportunity as won; archiving sets it to lost.\n\nRelation to Step. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Step' object for properties."
+    },
+    "unit": {
+      "type": "string",
+      "format": "uri",
+      "description": "Sales unit this opportunity is assigned to. Determines which team members can see the record under unit-based sharing.\n\nRelation to SalesUnit. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'SalesUnit' object for properties."
+    },
+    "active_quote_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the active quote."
+    },
+    "closing_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected or actual closing date of the opportunity."
+    },
+    "currency_exchange_rates_list_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the currency exchange rate list applied to this opportunity."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free-form description of the opportunity."
+    },
+    "is_archived": {
+      "type": "boolean",
+      "description": "True when the opportunity has been archived (lost). Archived opportunities remain readable but are hidden from active lists and cannot be edited until reactivated."
+    },
+    "is_value_auto_calculate": {
+      "type": "boolean",
+      "description": "True when value is auto-calculated from the opportunity product line items. False when the user enters value directly."
+    },
+    "label_flag": {
+      "type": "string",
+      "enum": [
+        1,
+        2,
+        4
+      ],
+      "description": "User-set colored flag used to highlight the opportunity in lists and reports."
+    },
+    "last_ai_buying_center_applied": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Time when an AI-suggested buying center was last applied to this opportunity."
+    },
+    "lead_source_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the lead source."
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the entity and its default text representation."
+    },
+    "oppty_type_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the opportunity type."
+    },
+    "owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the opportunity owner."
+    },
+    "product_currency_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the product currency."
+    },
+    "product_price_list_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the product price list."
+    },
+    "product_sections": {
+      "type": "object",
+      "description": "Product sections grouping the record's line items, as a JSON array of {\"id\": <UUID>, \"name\": <string>} objects. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/productsection.doc.html"
+    },
+    "quick_account_email": {
+      "type": "string",
+      "description": "Free-text company email captured at opportunity creation when no Account record has been linked yet."
+    },
+    "quick_account_name": {
+      "type": "string",
+      "description": "Free-text company name captured at opportunity creation when no Account record has been linked yet."
+    },
+    "quick_account_phone": {
+      "type": "string",
+      "description": "Free-text company phone captured at opportunity creation when no Account record has been linked yet."
+    },
+    "quick_contact_name": {
+      "type": "string",
+      "description": "Free-text contact name captured at opportunity creation when no Contact record has been linked yet."
+    },
+    "quick_email": {
+      "type": "string",
+      "description": "Free-text contact email captured at opportunity creation when no Contact record has been linked yet."
+    },
+    "quick_phone": {
+      "type": "string",
+      "description": "Free-text contact phone captured at opportunity creation when no Contact record has been linked yet."
+    },
+    "ranking": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Qualitative ranking score (1-10) the user assigns to indicate the strength of the opportunity."
+    },
+    "reason_of_close_description": {
+      "type": "string",
+      "description": "Free-form note explaining why the opportunity was archived (lost)."
+    },
+    "reason_of_close_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the reason-of-close value."
+    },
+    "share_mode": {
+      "type": "integer",
+      "description": "Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.\n\nInteger enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit",
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "step_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the pipeline step."
+    },
+    "table_name": {
+      "type": "string",
+      "description": "Discriminator identifying the concrete record type — always \"opportunity\" for Opportunity records. Read-only; useful when consuming polymorphic LeadOppty results.",
+      "readOnly": true
+    },
+    "unit_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the sales unit."
+    },
+    "was_qualified": {
+      "type": "boolean",
+      "description": "True when the opportunity has gone through the qualification step at least once."
+    },
+    "revision": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Revision when entity was lastly changed."
+    },
+    "value": {
+      "type": "object",
+      "properties": {
+        "base_value": {
+          "type": "number",
+          "format": "double",
+          "description": "Currency."
+        },
+        "currency_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Relation to single entity instance."
+        },
+        "value_foreign": {
+          "type": "number",
+          "format": "double",
+          "description": "Decimal number."
+        }
+      },
+      "required": [
+        "base_value",
+        "currency_id",
+        "value_foreign"
+      ],
+      "description": "Monetary value of the opportunity in the team space base currency, with the foreign value and currency code preserved alongside."
+    },
+    "oppty_recurrence": {
+      "type": "string",
+      "format": "uri",
+      "description": "Recurrence schedule generating periodic copies of this opportunity, or empty when no recurrence is set up.\n\nRelation to OpptyRecurrence. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'OpptyRecurrence' object for properties."
+    },
+    "revenue_schedule": {
+      "type": "string",
+      "format": "uri",
+      "description": "Revenue schedule splitting the opportunity value across periods, or empty when revenue scheduling is not enabled for this opportunity.\n\nRelation to OpptyRevenueSchedule. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'OpptyRevenueSchedule' object for properties."
+    },
+    "product_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to OpptyProductRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'OpptyProductRelation' object for properties."
+      },
+      "description": "Product line items on this opportunity. Each entry holds the product, quantity, price and discount that contribute to the opportunity value when is_value_auto_calculate is true."
+    },
+    "primary_contact": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primary contact of this opportunity. Set automatically from the contact relation marked as primary.\n\nRelation to Contact. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Contact' object for properties."
+    },
+    "primary_account": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primary account of this opportunity. Set automatically from the account relation marked as primary.\n\nRelation to Account. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Account' object for properties."
+    },
+    "contact_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to LeadOpptyContactRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'LeadOpptyContactRelation' object for properties."
+      },
+      "description": "Contacts linked to this opportunity, including their roles and org-chart positions."
+    },
+    "account_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to LeadOpptyAccountRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'LeadOpptyAccountRelation' object for properties."
+      },
+      "description": "Accounts linked to this opportunity, including the primary-account flag."
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'CloudObjectRelation' object for properties."
+      },
+      "description": "Documents linked to this opportunity."
+    },
+    "quote_relations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to Quote. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'Quote' object for properties."
+      },
+      "description": "Quotes prepared for this opportunity."
+    },
+    "status": {
+      "type": "integer",
+      "description": "Current status of the opportunity (Open, Won, Lost). Read-only; derived from the current pipeline step and the archived flag.\n\nInteger enum value: 1 - Open, 2 - Lost, 3 - Won",
+      "enum": [
+        1,
+        2,
+        3
+      ],
+      "readOnly": true
+    },
+    "qualify_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the opportunity was qualified, taken from the matching KPI event. Empty for opportunities that have not been qualified. Read-only."
+    },
+    "won_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the opportunity was won. Setting it adjusts the underlying win event; empty for opportunities that have not been won."
+    },
+    "lost_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the opportunity was archived (lost). Setting it adjusts the underlying loss event; empty for opportunities that have not been archived."
+    },
+    "days_in_step": {
+      "type": "integer",
+      "format": "int32",
+      "description": "Number of days the opportunity has been sitting in its current pipeline step. Read-only; computed by Coevera from the most recent move event and per-step timeframe history."
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "description": "True when the current authenticated user has marked this opportunity as favorite. Per-user."
+    },
+    "sharing_units": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to LeadOpptySharingSalesUnitRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'LeadOpptySharingSalesUnitRelation' object for properties."
+      },
+      "description": "Sales units that have been granted shared access to this opportunity. Editable only when share_mode allows unit sharing."
+    },
+    "sharing_clients": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to LeadOpptySharingClientRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'LeadOpptySharingClientRelation' object for properties."
+      },
+      "description": "Users that have been granted shared access to this opportunity. Editable only when share_mode allows user sharing."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to TagRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'TagRelation' object for properties."
+      },
+      "description": "Tag labels applied to this opportunity."
+    },
+    "static_profiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri",
+        "description": "Relation to ProfileRelation. By default it is returned as URI to related resource. Using parameter 'expand', it will return full entity. See: 'ProfileRelation' object for properties."
+      },
+      "description": "Saved view profiles this opportunity currently matches."
+    },
+    "formatted_name": {
+      "type": "string",
+      "description": "Display version of the opportunity name, used in lists and references."
+    },
+    "modified_by_user": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the most recent modification made by an end user (excluding system changes). Read-only; computed by Coevera."
+    }
+  },
+  "required": [
+    "is_delete_protected",
+    "id",
+    "oppty_type",
+    "owner",
+    "product_currency",
+    "step",
+    "unit",
+    "closing_date",
+    "name",
+    "owner_id",
+    "step_id",
+    "table_name",
+    "value",
+    "status",
+    "days_in_step",
+    "is_favorite",
+    "formatted_name"
+  ]
+}

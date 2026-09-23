@@ -1,0 +1,974 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Call API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Call
+paths:
+  /entities/Calls/{id}:
+    get:
+      description: Returns Call with given id
+      operationId: Calls.get
+      summary: Calls.get
+      tags:
+      - Call
+      parameters:
+      - name: id
+        in: path
+        description: ID of Call to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Call data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Call'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Call with given id
+      operationId: Calls.delete
+      summary: Calls.delete
+      tags:
+      - Call
+      parameters:
+      - name: id
+        in: path
+        description: ID of Call to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Call on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Call
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Call or Calls with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Call to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Call on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Calls.update
+      summary: Calls.update
+      tags:
+      - Call
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCallInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Call
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Call'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Calls:
+    get:
+      description: Returns all defined Calls
+      operationId: Calls.list
+      summary: Calls.list
+      tags:
+      - Call
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Calls are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Calls
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Call'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Call
+      operationId: Calls.create
+      summary: Calls.create
+      tags:
+      - Call
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Call on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Call
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createCallInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Call
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Call'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Calls/batch-delete:
+    post:
+      description: Removes Calls with given list of ids
+      operationId: Calls.batch_delete
+      summary: Calls.batch_delete
+      tags:
+      - Call
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Calls on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Calls. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Call to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Call.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Calls/batch-modify:
+    post:
+      description: Create or update an batch of Calls
+      operationId: Calls.batch_create_or_update
+      summary: Calls.batch_create_or_update
+      tags:
+      - Call
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Calls on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Calls. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Call
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchCallInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Calls
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Calls/batch-restore:
+    post:
+      description: Restores Calls with given list of ids
+      operationId: Calls.batch_restore
+      summary: Calls.batch_restore
+      tags:
+      - Call
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Calls on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Calls. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Call to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Call.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    batchCallInput:
+      properties:
+        oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateCallInput:
+      properties:
+        oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createCallInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation, see: ''createOpptyProductRelationInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
+      required:
+      - caller_id
+      - twilio_call_log_id
+      - audio_status
+    Call:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the call is linked to, when applicable.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        caller:
+          type: string
+          format: uri
+          description: 'User who initiated the call.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        client:
+          type: string
+          format: uri
+          description: 'User the call was made with, when the call was an internal user-to-user call.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the call is linked to, when applicable.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the call is linked to, when the call is associated with a lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the call is linked to, when the call is associated with an opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        oppty_product_relation:
+          type: string
+          format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpptyProductRelation'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product discussed on the call, when applicable.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        transcription_file_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object holding the transcription payload, when available.
+        audio_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object holding the call audio recording, when available.
+        twilio_call_sid:
+          type: string
+          example: string
+          description: External call identifier from the calling provider (e.g. Twilio Call SID).
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
+      required:
+      - is_delete_protected
+      - id
+      - caller
+      - caller_id
+      - twilio_call_log_id
+      - twilio_call_sid
+      - audio_status

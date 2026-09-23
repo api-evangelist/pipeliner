@@ -1,0 +1,16 @@
+generated: '2026-09-22'
+method: searched
+probe: true
+source: https://www.coevera.com/security/
+url: https://www.coevera.com/security/
+certifications:
+- ISO 27001
+- HIPAA
+- GDPR
+evidence:
+- source: https://www.coevera.com/security/
+  keywords:
+  - iso 27001
+  - iso/iec 27001
+  - hipaa
+  - gdpr

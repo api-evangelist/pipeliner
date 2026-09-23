@@ -1,0 +1,441 @@
+generated: '2026-09-22'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/pipeliner-openapi.json
+vocabulary:
+  name: Pipeliner CRM Domain Vocabulary
+  description: 'Terms declared by Pipeliner CRM''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-09-22'
+  terms:
+  - term: Error
+    definition: 'Object declared by the contract with fields: http_status, code, name, message, success.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/Error
+  - term: Account
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account_type, currency_exchange_rates_list,
+      customer_type, industry, owner, parent_account, parent_account_relation_type. (49 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/Account
+  - term: createAccountInput
+    definition: 'Object declared by the contract with fields: modified, created, picture, account_class, account_type_id, address, city, comments,
+      country, currency_exchange_rates_list_id, customer_type_id, email1. (32 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountInput
+  - term: updateAccountInput
+    definition: 'Object declared by the contract with fields: created, picture, account_class, account_type_id, address, city, comments, country,
+      currency_exchange_rates_list_id, customer_type_id, email1, email2. (31 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountInput
+  - term: batchAccountInput
+    definition: 'Object declared by the contract with fields: created, picture, account_class, account_type_id, address, city, comments, country,
+      currency_exchange_rates_list_id, customer_type_id, email1, email2. (32 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountInput
+  - term: AccountDataExRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, data, account_id,
+      data_id, data_set_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountDataExRelation
+  - term: AccountKPI
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, client, owner,
+      unit, account_id, application_id, client_id. (4 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountKPI
+  - term: createAccountKPIInput
+    definition: 'Object declared by the contract with fields: modified, created, account_id, application_id, client_id, kpi, owner_id, unit_id,
+      revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountKPIInput
+  - term: updateAccountKPIInput
+    definition: 'Object declared by the contract with fields: account_id, application_id, client_id, kpi, owner_id, unit_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountKPIInput
+  - term: batchAccountKPIInput
+    definition: 'Object declared by the contract with fields: account_id, application_id, client_id, kpi, owner_id, unit_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountKPIInput
+  - term: AccountProductPricing
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, currency, product,
+      account_id, currency_id, price, product_id. (1 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountProductPricing
+  - term: createAccountProductPricingInput
+    definition: 'Object declared by the contract with fields: modified, created, account_id, currency_id, price, product_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountProductPricingInput
+  - term: updateAccountProductPricingInput
+    definition: 'Object declared by the contract with fields: account_id, currency_id, price, product_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountProductPricingInput
+  - term: batchAccountProductPricingInput
+    definition: 'Object declared by the contract with fields: account_id, currency_id, price, product_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountProductPricingInput
+  - term: AccountRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account1, account2, account1_id,
+      account2_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountRelation
+  - term: createAccountRelationInput
+    definition: 'Object declared by the contract with fields: modified, created, account1_id, account2_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountRelationInput
+  - term: updateAccountRelationInput
+    definition: 'Object declared by the contract with fields: account1_id, account2_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountRelationInput
+  - term: batchAccountRelationInput
+    definition: 'Object declared by the contract with fields: account1_id, account2_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountRelationInput
+  - term: AccountRelationLabel
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account_relation, account_relation_type,
+      account_relation_id, account_relation_type_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountRelationLabel
+  - term: createAccountRelationLabelInput
+    definition: 'Object declared by the contract with fields: modified, created, account_relation, account_relation_id, account_relation_type_id,
+      revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountRelationLabelInput
+  - term: updateAccountRelationLabelInput
+    definition: 'Object declared by the contract with fields: account_relation, account_relation_id, account_relation_type_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountRelationLabelInput
+  - term: batchAccountRelationLabelInput
+    definition: 'Object declared by the contract with fields: account_relation, account_relation_id, account_relation_type_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountRelationLabelInput
+  - term: AccountRelationType
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountRelationType
+  - term: createAccountRelationTypeInput
+    definition: 'Object declared by the contract with fields: modified, created, color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountRelationTypeInput
+  - term: updateAccountRelationTypeInput
+    definition: 'Object declared by the contract with fields: color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountRelationTypeInput
+  - term: batchAccountRelationTypeInput
+    definition: 'Object declared by the contract with fields: color, label, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountRelationTypeInput
+  - term: AccountRole
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountRole
+  - term: createAccountRoleInput
+    definition: 'Object declared by the contract with fields: modified, created, color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountRoleInput
+  - term: updateAccountRoleInput
+    definition: 'Object declared by the contract with fields: color, label, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountRoleInput
+  - term: batchAccountRoleInput
+    definition: 'Object declared by the contract with fields: color, label, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountRoleInput
+  - term: AccountSharingClientRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, client, account_id,
+      client_id, role, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountSharingClientRelation
+  - term: createAccountSharingClientRelationInput
+    definition: 'Object declared by the contract with fields: modified, created, account_id, client_id, role, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountSharingClientRelationInput
+  - term: updateAccountSharingClientRelationInput
+    definition: 'Object declared by the contract with fields: account_id, client_id, role, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountSharingClientRelationInput
+  - term: batchAccountSharingClientRelationInput
+    definition: 'Object declared by the contract with fields: account_id, client_id, role, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountSharingClientRelationInput
+  - term: AccountSharingSalesUnitRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, unit, account_id,
+      role, unit_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountSharingSalesUnitRelation
+  - term: createAccountSharingSalesUnitRelationInput
+    definition: 'Object declared by the contract with fields: modified, created, account_id, role, unit_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountSharingSalesUnitRelationInput
+  - term: updateAccountSharingSalesUnitRelationInput
+    definition: 'Object declared by the contract with fields: account_id, role, unit_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountSharingSalesUnitRelationInput
+  - term: batchAccountSharingSalesUnitRelationInput
+    definition: 'Object declared by the contract with fields: account_id, role, unit_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountSharingSalesUnitRelationInput
+  - term: AccountSocialRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, angellist_url, crunchbase_url,
+      disqus_url, facebook_id, facebook_url, flickr_url, foursquare_url. (20 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountSocialRelation
+  - term: createAccountSocialRelationInput
+    definition: 'Object declared by the contract with fields: id, modified, created, angellist_url, crunchbase_url, disqus_url, facebook_id, facebook_url,
+      flickr_url, foursquare_url, google_id, google_plus_url. (18 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountSocialRelationInput
+  - term: updateAccountSocialRelationInput
+    definition: 'Object declared by the contract with fields: angellist_url, crunchbase_url, disqus_url, facebook_id, facebook_url, flickr_url,
+      foursquare_url, google_id, google_plus_url, gravatar_url, klout_url, linkedin_id. (15 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountSocialRelationInput
+  - term: batchAccountSocialRelationInput
+    definition: 'Object declared by the contract with fields: angellist_url, crunchbase_url, disqus_url, facebook_id, facebook_url, flickr_url,
+      foursquare_url, google_id, google_plus_url, gravatar_url, klout_url, linkedin_id. (16 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountSocialRelationInput
+  - term: AccountType
+    definition: 'Object declared by the contract with fields: has_draft, is_delete_protected, form_edit_api, can_change_readonly, id, is_deleted,
+      modified, created, form_edit, is_readonly, name, settings. (2 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AccountType
+  - term: createAccountTypeInput
+    definition: 'Object declared by the contract with fields: modified, created, form_edit, is_readonly, name, settings, is_published, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAccountTypeInput
+  - term: updateAccountTypeInput
+    definition: 'Object declared by the contract with fields: form_edit, is_readonly, name, settings, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAccountTypeInput
+  - term: batchAccountTypeInput
+    definition: 'Object declared by the contract with fields: form_edit, is_readonly, name, settings, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAccountTypeInput
+  - term: Activity
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, active_reminder, media_transcription_id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/Activity
+  - term: ActivityComment
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, appointment, task, owner,
+      activity_id, comment, owner_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/ActivityComment
+  - term: createActivityCommentInput
+    definition: 'Object declared by the contract with fields: modified, created, activity_id, comment, owner_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createActivityCommentInput
+  - term: updateActivityCommentInput
+    definition: 'Object declared by the contract with fields: activity_id, comment, owner_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateActivityCommentInput
+  - term: batchActivityCommentInput
+    definition: 'Object declared by the contract with fields: activity_id, comment, owner_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchActivityCommentInput
+  - term: ActivityDataExRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, appointment, task, data,
+      activity_id, data_id, data_set_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/ActivityDataExRelation
+  - term: ActivityKPI
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, appointment, task, client,
+      owner, unit, activity_id, application_id. (5 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/ActivityKPI
+  - term: createActivityKPIInput
+    definition: 'Object declared by the contract with fields: modified, created, activity_id, application_id, client_id, kpi, owner_id, unit_id,
+      revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createActivityKPIInput
+  - term: updateActivityKPIInput
+    definition: 'Object declared by the contract with fields: activity_id, application_id, client_id, kpi, owner_id, unit_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateActivityKPIInput
+  - term: batchActivityKPIInput
+    definition: 'Object declared by the contract with fields: activity_id, application_id, client_id, kpi, owner_id, unit_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchActivityKPIInput
+  - term: ActivityRelation
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account, appointment, task,
+      contact, custom_entity, lead, oppty. (13 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/ActivityRelation
+  - term: createActivityRelationInput
+    definition: 'Object declared by the contract with fields: modified, created, project_objective, account_id, activity_id, contact_id, custom_entity_id,
+      lead_oppty_id, project_id, project_objective_id, quote_id, sort_order. (1 more)'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createActivityRelationInput
+  - term: updateActivityRelationInput
+    definition: 'Object declared by the contract with fields: project_objective, account_id, activity_id, contact_id, custom_entity_id, lead_oppty_id,
+      project_id, project_objective_id, quote_id, sort_order, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateActivityRelationInput
+  - term: batchActivityRelationInput
+    definition: 'Object declared by the contract with fields: project_objective, account_id, activity_id, contact_id, custom_entity_id, lead_oppty_id,
+      project_id, project_objective_id, quote_id, sort_order, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchActivityRelationInput
+  - term: AllowedAccountType
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, account_type, master_right,
+      account_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AllowedAccountType
+  - term: createAllowedAccountTypeInput
+    definition: 'Object declared by the contract with fields: modified, created, account_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAllowedAccountTypeInput
+  - term: updateAllowedAccountTypeInput
+    definition: 'Object declared by the contract with fields: account_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAllowedAccountTypeInput
+  - term: batchAllowedAccountTypeInput
+    definition: 'Object declared by the contract with fields: account_type_id, master_right_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAllowedAccountTypeInput
+  - term: AllowedCompanyEmail
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, company_email, master_right,
+      company_email_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AllowedCompanyEmail
+  - term: createAllowedCompanyEmailInput
+    definition: 'Object declared by the contract with fields: modified, created, company_email_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAllowedCompanyEmailInput
+  - term: updateAllowedCompanyEmailInput
+    definition: 'Object declared by the contract with fields: company_email_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAllowedCompanyEmailInput
+  - term: batchAllowedCompanyEmailInput
+    definition: 'Object declared by the contract with fields: company_email_id, master_right_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAllowedCompanyEmailInput
+  - term: AllowedCompanyPhone
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, master_right, phone, master_right_id,
+      phone_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AllowedCompanyPhone
+  - term: createAllowedCompanyPhoneInput
+    definition: 'Object declared by the contract with fields: modified, created, master_right_id, phone_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAllowedCompanyPhoneInput
+  - term: updateAllowedCompanyPhoneInput
+    definition: 'Object declared by the contract with fields: master_right_id, phone_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAllowedCompanyPhoneInput
+  - term: batchAllowedCompanyPhoneInput
+    definition: 'Object declared by the contract with fields: master_right_id, phone_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAllowedCompanyPhoneInput
+  - term: AllowedContactType
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, contact_type, master_right,
+      contact_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AllowedContactType
+  - term: createAllowedContactTypeInput
+    definition: 'Object declared by the contract with fields: modified, created, contact_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAllowedContactTypeInput
+  - term: updateAllowedContactTypeInput
+    definition: 'Object declared by the contract with fields: contact_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAllowedContactTypeInput
+  - term: batchAllowedContactTypeInput
+    definition: 'Object declared by the contract with fields: contact_type_id, master_right_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAllowedContactTypeInput
+  - term: AllowedLeadType
+    definition: 'Object declared by the contract with fields: is_delete_protected, id, is_deleted, modified, created, lead_type, master_right,
+      lead_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/AllowedLeadType
+  - term: createAllowedLeadTypeInput
+    definition: 'Object declared by the contract with fields: modified, created, lead_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/createAllowedLeadTypeInput
+  - term: updateAllowedLeadTypeInput
+    definition: 'Object declared by the contract with fields: lead_type_id, master_right_id, revision.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/updateAllowedLeadTypeInput
+  - term: batchAllowedLeadTypeInput
+    definition: 'Object declared by the contract with fields: lead_type_id, master_right_id, revision, id.'
+    tags:
+    - Object
+    source: openapi/pipeliner-openapi.json#/components/schemas/batchAllowedLeadTypeInput

@@ -1,0 +1,2422 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Webhook API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Webhook
+paths:
+  /entities/Webhooks/{id}:
+    get:
+      description: Returns Webhook with given id
+      operationId: Webhooks.get
+      summary: Webhooks.get
+      tags:
+      - Webhook
+      parameters:
+      - name: id
+        in: path
+        description: ID of Webhook to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Webhook data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Webhook with given id
+      operationId: Webhooks.delete
+      summary: Webhooks.delete
+      tags:
+      - Webhook
+      parameters:
+      - name: id
+        in: path
+        description: ID of Webhook to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhook on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Webhook
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Webhook or Webhooks with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Webhook to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhook on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Webhooks.update
+      summary: Webhooks.update
+      tags:
+      - Webhook
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateWebhookInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Webhook
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Webhooks:
+    get:
+      description: Returns all defined Webhooks
+      operationId: Webhooks.list
+      summary: Webhooks.list
+      tags:
+      - Webhook
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Webhooks are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Webhook
+      operationId: Webhooks.create
+      summary: Webhooks.create
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhook on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Webhook
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createWebhookInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Webhook
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Webhooks/batch-delete:
+    post:
+      description: Removes Webhooks with given list of ids
+      operationId: Webhooks.batch_delete
+      summary: Webhooks.batch_delete
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhooks on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Webhooks. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Webhook to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted Webhook.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Webhooks/batch-modify:
+    post:
+      description: Create or update an batch of Webhooks
+      operationId: Webhooks.batch_create_or_update
+      summary: Webhooks.batch_create_or_update
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhooks on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Webhooks. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Webhook
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchWebhookInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated Webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Webhooks/batch-restore:
+    post:
+      description: Restores Webhooks with given list of ids
+      operationId: Webhooks.batch_restore
+      summary: Webhooks.batch_restore
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Webhooks on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Webhooks. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Webhook to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Webhook.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/WebhookEvents/{id}:
+    get:
+      description: Returns WebhookEvent with given id
+      operationId: WebhookEvents.get
+      summary: WebhookEvents.get
+      tags:
+      - Webhook
+      parameters:
+      - name: id
+        in: path
+        description: ID of WebhookEvent to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: WebhookEvent data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/WebhookEvent'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes WebhookEvent with given id
+      operationId: WebhookEvents.delete
+      summary: WebhookEvents.delete
+      tags:
+      - Webhook
+      parameters:
+      - name: id
+        in: path
+        description: ID of WebhookEvent to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvent on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted WebhookEvent
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies WebhookEvent or WebhookEvents with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of WebhookEvent to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvent on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: WebhookEvents.update
+      summary: WebhookEvents.update
+      tags:
+      - Webhook
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateWebhookEventInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting WebhookEvent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/WebhookEvent'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/WebhookEvents:
+    get:
+      description: Returns all defined WebhookEvents
+      operationId: WebhookEvents.list
+      summary: WebhookEvents.list
+      tags:
+      - Webhook
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted WebhookEvents are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of WebhookEvents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookEvent'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new WebhookEvent
+      operationId: WebhookEvents.create
+      summary: WebhookEvents.create
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvent on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new WebhookEvent
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createWebhookEventInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created WebhookEvent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/WebhookEvent'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/WebhookEvents/batch-delete:
+    post:
+      description: Removes WebhookEvents with given list of ids
+      operationId: WebhookEvents.batch_delete
+      summary: WebhookEvents.batch_delete
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvents on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for WebhookEvents. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity WebhookEvent to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted WebhookEvent.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/WebhookEvents/batch-modify:
+    post:
+      description: Create or update an batch of WebhookEvents
+      operationId: WebhookEvents.batch_create_or_update
+      summary: WebhookEvents.batch_create_or_update
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvents on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for WebhookEvents. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new WebhookEvent
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchWebhookEventInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated WebhookEvents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/WebhookEvents/batch-restore:
+    post:
+      description: Restores WebhookEvents with given list of ids
+      operationId: WebhookEvents.batch_restore
+      summary: WebhookEvents.batch_restore
+      tags:
+      - Webhook
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of WebhookEvents on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for WebhookEvents. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity WebhookEvent to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored WebhookEvent.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    batchWebhookInput:
+      properties:
+        insecure_ssl:
+          type: boolean
+          example: false
+          description: If True, remote side ssl certificate will not be validated when delivering notifications.
+        options:
+          type: object
+          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
+        signature:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
+        url:
+          type: string
+          example: string
+          description: Target URL that webhook event payloads are POSTed to.
+        events:
+          type: array
+          items:
+            type: string
+            example: '*'
+            enum:
+            - '*'
+            - Account.*
+            - Account.Create
+            - Account.Delete
+            - Account.DocumentLinked
+            - Account.OwnerChanged
+            - Account.Update
+            - ActivityRelation.*
+            - ActivityRelation.Create
+            - ActivityRelation.Delete
+            - ActivityRelation.Update
+            - Appointment.*
+            - Appointment.Comment
+            - Appointment.Create
+            - Appointment.Delete
+            - Appointment.DocumentLinked
+            - Appointment.OwnerChanged
+            - Appointment.Update
+            - Contact.*
+            - Contact.Create
+            - Contact.Delete
+            - Contact.DocumentLinked
+            - Contact.OwnerChanged
+            - Contact.Update
+            - ContactAccountRelation.*
+            - ContactAccountRelation.Create
+            - ContactAccountRelation.Delete
+            - ContactAccountRelation.Update
+            - Currency.*
+            - Currency.Create
+            - Currency.Delete
+            - Currency.Update
+            - CurrencyExchangeRate.*
+            - CurrencyExchangeRate.Create
+            - CurrencyExchangeRate.Delete
+            - CurrencyExchangeRate.Update
+            - CurrencyExchangeRatesList.*
+            - CurrencyExchangeRatesList.Create
+            - CurrencyExchangeRatesList.Delete
+            - CurrencyExchangeRatesList.Update
+            - CustomEntity.*
+            - CustomEntity.Create
+            - CustomEntity.Delete
+            - CustomEntity.DocumentLinked
+            - CustomEntity.OwnerChanged
+            - CustomEntity.Update
+            - Email.*
+            - Email.Create
+            - Email.Delete
+            - Email.DocumentLinked
+            - Email.Update
+            - Lead.*
+            - Lead.BackToLead
+            - Lead.Create
+            - Lead.Delete
+            - Lead.DocumentLinked
+            - Lead.Lost
+            - Lead.OwnerChanged
+            - Lead.Update
+            - LeadOpptyAccountRelation.*
+            - LeadOpptyAccountRelation.Create
+            - LeadOpptyAccountRelation.Delete
+            - LeadOpptyAccountRelation.Update
+            - LeadOpptyContactRelation.*
+            - LeadOpptyContactRelation.Create
+            - LeadOpptyContactRelation.Delete
+            - LeadOpptyContactRelation.Update
+            - Memo.*
+            - Memo.Comment
+            - Memo.Create
+            - Memo.Delete
+            - Memo.DocumentLinked
+            - Memo.Update
+            - Message.*
+            - Message.Create
+            - Message.Delete
+            - Message.DocumentLinked
+            - Message.Update
+            - Note.*
+            - Note.Create
+            - Note.Delete
+            - Note.Update
+            - Opportunity.*
+            - Opportunity.Create
+            - Opportunity.Delete
+            - Opportunity.DocumentLinked
+            - Opportunity.Lost
+            - Opportunity.Move
+            - Opportunity.OwnerChanged
+            - Opportunity.Qualify
+            - Opportunity.Update
+            - Opportunity.Won
+            - OpptyProductRelation.*
+            - OpptyProductRelation.Create
+            - OpptyProductRelation.Delete
+            - OpptyProductRelation.Update
+            - Product.*
+            - Product.Create
+            - Product.Delete
+            - Product.Update
+            - ProductPriceList.*
+            - ProductPriceList.Create
+            - ProductPriceList.Delete
+            - ProductPriceList.Update
+            - ProductPriceListPrice.*
+            - ProductPriceListPrice.Create
+            - ProductPriceListPrice.Delete
+            - ProductPriceListPrice.Update
+            - Project.*
+            - Project.Create
+            - Project.Delete
+            - Project.DocumentLinked
+            - Project.OwnerChanged
+            - Project.Update
+            - Quote.*
+            - Quote.Create
+            - Quote.Delete
+            - Quote.DocumentLinked
+            - Quote.Lost
+            - Quote.Move
+            - Quote.OwnerChanged
+            - Quote.Update
+            - Quote.Won
+            - QuoteAccountRelation.*
+            - QuoteAccountRelation.Create
+            - QuoteAccountRelation.Delete
+            - QuoteAccountRelation.Update
+            - QuoteContactRelation.*
+            - QuoteContactRelation.Create
+            - QuoteContactRelation.Delete
+            - QuoteContactRelation.Update
+            - Task.*
+            - Task.Comment
+            - Task.Create
+            - Task.Delete
+            - Task.DocumentLinked
+            - Task.OwnerChanged
+            - Task.Update
+          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateWebhookEventInput:
+      properties:
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+    WebhookEvent:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        webhook:
+          type: string
+          format: uri
+          description: 'Webhook this subscription belongs to. The parent webhook is fired whenever the subscribed event occurs.
+
+
+            Relation to Webhook. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Webhook'' object for properties.'
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+      required:
+      - is_delete_protected
+      - id
+      - webhook
+      - event
+      - webhook_id
+    batchWebhookEventInput:
+      properties:
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Webhook:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        application:
+          type: string
+          format: uri
+          description: 'OAuth application that registered this webhook. Set automatically when the webhook is created using OAuth credentials; empty when a team-space API key was used.
+
+
+            Relation to Application. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Application'' object for properties.'
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'Client who defined the Webhook. Only those notifications are sent which this Client has permission to see. If empty, all space notification are send, even for events of private records. Value is automatically set to authenticated user who created the webhook. It is left empty if global team space API Credentials are used.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the OAuth application that registered the Webhook.
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who defined the Webhook.
+        insecure_ssl:
+          type: boolean
+          example: false
+          description: If True, remote side ssl certificate will not be validated when delivering notifications.
+        options:
+          type: object
+          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
+        signature:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
+        url:
+          type: string
+          example: string
+          description: Target URL that webhook event payloads are POSTed to.
+        events:
+          type: array
+          items:
+            type: string
+            example: '*'
+            enum:
+            - '*'
+            - Account.*
+            - Account.Create
+            - Account.Delete
+            - Account.DocumentLinked
+            - Account.OwnerChanged
+            - Account.Update
+            - ActivityRelation.*
+            - ActivityRelation.Create
+            - ActivityRelation.Delete
+            - ActivityRelation.Update
+            - Appointment.*
+            - Appointment.Comment
+            - Appointment.Create
+            - Appointment.Delete
+            - Appointment.DocumentLinked
+            - Appointment.OwnerChanged
+            - Appointment.Update
+            - Contact.*
+            - Contact.Create
+            - Contact.Delete
+            - Contact.DocumentLinked
+            - Contact.OwnerChanged
+            - Contact.Update
+            - ContactAccountRelation.*
+            - ContactAccountRelation.Create
+            - ContactAccountRelation.Delete
+            - ContactAccountRelation.Update
+            - Currency.*
+            - Currency.Create
+            - Currency.Delete
+            - Currency.Update
+            - CurrencyExchangeRate.*
+            - CurrencyExchangeRate.Create
+            - CurrencyExchangeRate.Delete
+            - CurrencyExchangeRate.Update
+            - CurrencyExchangeRatesList.*
+            - CurrencyExchangeRatesList.Create
+            - CurrencyExchangeRatesList.Delete
+            - CurrencyExchangeRatesList.Update
+            - CustomEntity.*
+            - CustomEntity.Create
+            - CustomEntity.Delete
+            - CustomEntity.DocumentLinked
+            - CustomEntity.OwnerChanged
+            - CustomEntity.Update
+            - Email.*
+            - Email.Create
+            - Email.Delete
+            - Email.DocumentLinked
+            - Email.Update
+            - Lead.*
+            - Lead.BackToLead
+            - Lead.Create
+            - Lead.Delete
+            - Lead.DocumentLinked
+            - Lead.Lost
+            - Lead.OwnerChanged
+            - Lead.Update
+            - LeadOpptyAccountRelation.*
+            - LeadOpptyAccountRelation.Create
+            - LeadOpptyAccountRelation.Delete
+            - LeadOpptyAccountRelation.Update
+            - LeadOpptyContactRelation.*
+            - LeadOpptyContactRelation.Create
+            - LeadOpptyContactRelation.Delete
+            - LeadOpptyContactRelation.Update
+            - Memo.*
+            - Memo.Comment
+            - Memo.Create
+            - Memo.Delete
+            - Memo.DocumentLinked
+            - Memo.Update
+            - Message.*
+            - Message.Create
+            - Message.Delete
+            - Message.DocumentLinked
+            - Message.Update
+            - Note.*
+            - Note.Create
+            - Note.Delete
+            - Note.Update
+            - Opportunity.*
+            - Opportunity.Create
+            - Opportunity.Delete
+            - Opportunity.DocumentLinked
+            - Opportunity.Lost
+            - Opportunity.Move
+            - Opportunity.OwnerChanged
+            - Opportunity.Qualify
+            - Opportunity.Update
+            - Opportunity.Won
+            - OpptyProductRelation.*
+            - OpptyProductRelation.Create
+            - OpptyProductRelation.Delete
+            - OpptyProductRelation.Update
+            - Product.*
+            - Product.Create
+            - Product.Delete
+            - Product.Update
+            - ProductPriceList.*
+            - ProductPriceList.Create
+            - ProductPriceList.Delete
+            - ProductPriceList.Update
+            - ProductPriceListPrice.*
+            - ProductPriceListPrice.Create
+            - ProductPriceListPrice.Delete
+            - ProductPriceListPrice.Update
+            - Project.*
+            - Project.Create
+            - Project.Delete
+            - Project.DocumentLinked
+            - Project.OwnerChanged
+            - Project.Update
+            - Quote.*
+            - Quote.Create
+            - Quote.Delete
+            - Quote.DocumentLinked
+            - Quote.Lost
+            - Quote.Move
+            - Quote.OwnerChanged
+            - Quote.Update
+            - Quote.Won
+            - QuoteAccountRelation.*
+            - QuoteAccountRelation.Create
+            - QuoteAccountRelation.Delete
+            - QuoteAccountRelation.Update
+            - QuoteContactRelation.*
+            - QuoteContactRelation.Create
+            - QuoteContactRelation.Delete
+            - QuoteContactRelation.Update
+            - Task.*
+            - Task.Comment
+            - Task.Create
+            - Task.Delete
+            - Task.DocumentLinked
+            - Task.OwnerChanged
+            - Task.Update
+          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
+      required:
+      - is_delete_protected
+      - id
+      - insecure_ssl
+      - url
+      - events
+    createWebhookEventInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+      required:
+      - event
+      - webhook_id
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createWebhookInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        insecure_ssl:
+          type: boolean
+          example: false
+          description: If True, remote side ssl certificate will not be validated when delivering notifications.
+        options:
+          type: object
+          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
+        signature:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
+        url:
+          type: string
+          example: string
+          description: Target URL that webhook event payloads are POSTed to.
+        events:
+          type: array
+          items:
+            type: string
+            example: '*'
+            enum:
+            - '*'
+            - Account.*
+            - Account.Create
+            - Account.Delete
+            - Account.DocumentLinked
+            - Account.OwnerChanged
+            - Account.Update
+            - ActivityRelation.*
+            - ActivityRelation.Create
+            - ActivityRelation.Delete
+            - ActivityRelation.Update
+            - Appointment.*
+            - Appointment.Comment
+            - Appointment.Create
+            - Appointment.Delete
+            - Appointment.DocumentLinked
+            - Appointment.OwnerChanged
+            - Appointment.Update
+            - Contact.*
+            - Contact.Create
+            - Contact.Delete
+            - Contact.DocumentLinked
+            - Contact.OwnerChanged
+            - Contact.Update
+            - ContactAccountRelation.*
+            - ContactAccountRelation.Create
+            - ContactAccountRelation.Delete
+            - ContactAccountRelation.Update
+            - Currency.*
+            - Currency.Create
+            - Currency.Delete
+            - Currency.Update
+            - CurrencyExchangeRate.*
+            - CurrencyExchangeRate.Create
+            - CurrencyExchangeRate.Delete
+            - CurrencyExchangeRate.Update
+            - CurrencyExchangeRatesList.*
+            - CurrencyExchangeRatesList.Create
+            - CurrencyExchangeRatesList.Delete
+            - CurrencyExchangeRatesList.Update
+            - CustomEntity.*
+            - CustomEntity.Create
+            - CustomEntity.Delete
+            - CustomEntity.DocumentLinked
+            - CustomEntity.OwnerChanged
+            - CustomEntity.Update
+            - Email.*
+            - Email.Create
+            - Email.Delete
+            - Email.DocumentLinked
+            - Email.Update
+            - Lead.*
+            - Lead.BackToLead
+            - Lead.Create
+            - Lead.Delete
+            - Lead.DocumentLinked
+            - Lead.Lost
+            - Lead.OwnerChanged
+            - Lead.Update
+            - LeadOpptyAccountRelation.*
+            - LeadOpptyAccountRelation.Create
+            - LeadOpptyAccountRelation.Delete
+            - LeadOpptyAccountRelation.Update
+            - LeadOpptyContactRelation.*
+            - LeadOpptyContactRelation.Create
+            - LeadOpptyContactRelation.Delete
+            - LeadOpptyContactRelation.Update
+            - Memo.*
+            - Memo.Comment
+            - Memo.Create
+            - Memo.Delete
+            - Memo.DocumentLinked
+            - Memo.Update
+            - Message.*
+            - Message.Create
+            - Message.Delete
+            - Message.DocumentLinked
+            - Message.Update
+            - Note.*
+            - Note.Create
+            - Note.Delete
+            - Note.Update
+            - Opportunity.*
+            - Opportunity.Create
+            - Opportunity.Delete
+            - Opportunity.DocumentLinked
+            - Opportunity.Lost
+            - Opportunity.Move
+            - Opportunity.OwnerChanged
+            - Opportunity.Qualify
+            - Opportunity.Update
+            - Opportunity.Won
+            - OpptyProductRelation.*
+            - OpptyProductRelation.Create
+            - OpptyProductRelation.Delete
+            - OpptyProductRelation.Update
+            - Product.*
+            - Product.Create
+            - Product.Delete
+            - Product.Update
+            - ProductPriceList.*
+            - ProductPriceList.Create
+            - ProductPriceList.Delete
+            - ProductPriceList.Update
+            - ProductPriceListPrice.*
+            - ProductPriceListPrice.Create
+            - ProductPriceListPrice.Delete
+            - ProductPriceListPrice.Update
+            - Project.*
+            - Project.Create
+            - Project.Delete
+            - Project.DocumentLinked
+            - Project.OwnerChanged
+            - Project.Update
+            - Quote.*
+            - Quote.Create
+            - Quote.Delete
+            - Quote.DocumentLinked
+            - Quote.Lost
+            - Quote.Move
+            - Quote.OwnerChanged
+            - Quote.Update
+            - Quote.Won
+            - QuoteAccountRelation.*
+            - QuoteAccountRelation.Create
+            - QuoteAccountRelation.Delete
+            - QuoteAccountRelation.Update
+            - QuoteContactRelation.*
+            - QuoteContactRelation.Create
+            - QuoteContactRelation.Delete
+            - QuoteContactRelation.Update
+            - Task.*
+            - Task.Comment
+            - Task.Create
+            - Task.Delete
+            - Task.DocumentLinked
+            - Task.OwnerChanged
+            - Task.Update
+          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
+      required:
+      - insecure_ssl
+      - url
+      - events
+    updateWebhookInput:
+      properties:
+        insecure_ssl:
+          type: boolean
+          example: false
+          description: If True, remote side ssl certificate will not be validated when delivering notifications.
+        options:
+          type: object
+          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
+        signature:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
+        url:
+          type: string
+          example: string
+          description: Target URL that webhook event payloads are POSTed to.
+        events:
+          type: array
+          items:
+            type: string
+            example: '*'
+            enum:
+            - '*'
+            - Account.*
+            - Account.Create
+            - Account.Delete
+            - Account.DocumentLinked
+            - Account.OwnerChanged
+            - Account.Update
+            - ActivityRelation.*
+            - ActivityRelation.Create
+            - ActivityRelation.Delete
+            - ActivityRelation.Update
+            - Appointment.*
+            - Appointment.Comment
+            - Appointment.Create
+            - Appointment.Delete
+            - Appointment.DocumentLinked
+            - Appointment.OwnerChanged
+            - Appointment.Update
+            - Contact.*
+            - Contact.Create
+            - Contact.Delete
+            - Contact.DocumentLinked
+            - Contact.OwnerChanged
+            - Contact.Update
+            - ContactAccountRelation.*
+            - ContactAccountRelation.Create
+            - ContactAccountRelation.Delete
+            - ContactAccountRelation.Update
+            - Currency.*
+            - Currency.Create
+            - Currency.Delete
+            - Currency.Update
+            - CurrencyExchangeRate.*
+            - CurrencyExchangeRate.Create
+            - CurrencyExchangeRate.Delete
+            - CurrencyExchangeRate.Update
+            - CurrencyExchangeRatesList.*
+            - CurrencyExchangeRatesList.Create
+            - CurrencyExchangeRatesList.Delete
+            - CurrencyExchangeRatesList.Update
+            - CustomEntity.*
+            - CustomEntity.Create
+            - CustomEntity.Delete
+            - CustomEntity.DocumentLinked
+            - CustomEntity.OwnerChanged
+            - CustomEntity.Update
+            - Email.*
+            - Email.Create
+            - Email.Delete
+            - Email.DocumentLinked
+            - Email.Update
+            - Lead.*
+            - Lead.BackToLead
+            - Lead.Create
+            - Lead.Delete
+            - Lead.DocumentLinked
+            - Lead.Lost
+            - Lead.OwnerChanged
+            - Lead.Update
+            - LeadOpptyAccountRelation.*
+            - LeadOpptyAccountRelation.Create
+            - LeadOpptyAccountRelation.Delete
+            - LeadOpptyAccountRelation.Update
+            - LeadOpptyContactRelation.*
+            - LeadOpptyContactRelation.Create
+            - LeadOpptyContactRelation.Delete
+            - LeadOpptyContactRelation.Update
+            - Memo.*
+            - Memo.Comment
+            - Memo.Create
+            - Memo.Delete
+            - Memo.DocumentLinked
+            - Memo.Update
+            - Message.*
+            - Message.Create
+            - Message.Delete
+            - Message.DocumentLinked
+            - Message.Update
+            - Note.*
+            - Note.Create
+            - Note.Delete
+            - Note.Update
+            - Opportunity.*
+            - Opportunity.Create
+            - Opportunity.Delete
+            - Opportunity.DocumentLinked
+            - Opportunity.Lost
+            - Opportunity.Move
+            - Opportunity.OwnerChanged
+            - Opportunity.Qualify
+            - Opportunity.Update
+            - Opportunity.Won
+            - OpptyProductRelation.*
+            - OpptyProductRelation.Create
+            - OpptyProductRelation.Delete
+            - OpptyProductRelation.Update
+            - Product.*
+            - Product.Create
+            - Product.Delete
+            - Product.Update
+            - ProductPriceList.*
+            - ProductPriceList.Create
+            - ProductPriceList.Delete
+            - ProductPriceList.Update
+            - ProductPriceListPrice.*
+            - ProductPriceListPrice.Create
+            - ProductPriceListPrice.Delete
+            - ProductPriceListPrice.Update
+            - Project.*
+            - Project.Create
+            - Project.Delete
+            - Project.DocumentLinked
+            - Project.OwnerChanged
+            - Project.Update
+            - Quote.*
+            - Quote.Create
+            - Quote.Delete
+            - Quote.DocumentLinked
+            - Quote.Lost
+            - Quote.Move
+            - Quote.OwnerChanged
+            - Quote.Update
+            - Quote.Won
+            - QuoteAccountRelation.*
+            - QuoteAccountRelation.Create
+            - QuoteAccountRelation.Delete
+            - QuoteAccountRelation.Update
+            - QuoteContactRelation.*
+            - QuoteContactRelation.Create
+            - QuoteContactRelation.Delete
+            - QuoteContactRelation.Update
+            - Task.*
+            - Task.Comment
+            - Task.Create
+            - Task.Delete
+            - Task.DocumentLinked
+            - Task.OwnerChanged
+            - Task.Update
+          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.

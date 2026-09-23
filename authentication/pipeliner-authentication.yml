@@ -1,0 +1,17 @@
+generated: '2026-09-22'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developers.pipelinersales.com/api-docs/overview/authentication.md
+sources:
+- https://developers.pipelinersales.com/api-docs/overview/authentication.md
+- https://developers.pipelinersales.com/api-docs/overview/authentication
+- https://developers.pipelinersales.com/api-docs#obtain-api-keys
+- https://help.coevera.com/en/articles/3811347-accessing-the-coevera-api-key
+description: Authentication schemes for Pipeliner CRM (Coevera) API
+schemes:
+- type: http-basic
+  name: Basic
+  evidence: Coevera API is using Basic authentication which consists of **username** and **password**.
+  how_to_obtain: Create an Application in the Coevera administration UI and click “Show API Access” to get a generated username and password.
+note: No OAuth, API‑key, or other authentication methods are documented on the provided pages.
+docs: https://developers.pipelinersales.com/api-docs/overview/authentication.md

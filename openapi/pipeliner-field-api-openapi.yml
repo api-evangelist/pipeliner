@@ -1,0 +1,2379 @@
+openapi: 3.2.0
+info:
+  title: Pipeliner Cloud Field API
+  version: '100'
+servers:
+- url: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://eu-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ca-central.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+- url: https://ap-southeast.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
+tags:
+- name: Field
+paths:
+  /entities/Fields/{id}:
+    get:
+      description: Returns Field with given id
+      operationId: Fields.get
+      summary: Fields.get
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of Field to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Field data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Field'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes Field with given id
+      operationId: Fields.delete
+      summary: Fields.delete
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of Field to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Field on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted Field
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies Field or Fields with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of Field to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Field on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: Fields.update
+      summary: Fields.update
+      tags:
+      - Field
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateFieldInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting Field
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Field'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Fields:
+    get:
+      description: Returns all defined Fields
+      operationId: Fields.list
+      summary: Fields.list
+      tags:
+      - Field
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted Fields are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of Fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Field'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new Field
+      operationId: Fields.create
+      summary: Fields.create
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Field on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new Field
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createFieldInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created Field
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/Field'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/Fields/batch-restore:
+    post:
+      description: Restores Fields with given list of ids
+      operationId: Fields.batch_restore
+      summary: Fields.batch_restore
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of Fields on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for Fields. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity Field to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored Field.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldMappings/{id}:
+    get:
+      description: Returns FieldMapping with given id
+      operationId: FieldMappings.get
+      summary: FieldMappings.get
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldMapping to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: FieldMapping data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldMapping'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes FieldMapping with given id
+      operationId: FieldMappings.delete
+      summary: FieldMappings.delete
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldMapping to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMapping on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted FieldMapping
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies FieldMapping or FieldMappings with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldMapping to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMapping on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: FieldMappings.update
+      summary: FieldMappings.update
+      tags:
+      - Field
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateFieldMappingInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting FieldMapping
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldMapping'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldMappings:
+    get:
+      description: Returns all defined FieldMappings
+      operationId: FieldMappings.list
+      summary: FieldMappings.list
+      tags:
+      - Field
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted FieldMappings are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of FieldMappings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FieldMapping'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new FieldMapping
+      operationId: FieldMappings.create
+      summary: FieldMappings.create
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMapping on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new FieldMapping
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createFieldMappingInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created FieldMapping
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldMapping'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldMappings/batch-delete:
+    post:
+      description: Removes FieldMappings with given list of ids
+      operationId: FieldMappings.batch_delete
+      summary: FieldMappings.batch_delete
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMappings on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldMappings. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity FieldMapping to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted FieldMapping.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldMappings/batch-modify:
+    post:
+      description: Create or update an batch of FieldMappings
+      operationId: FieldMappings.batch_create_or_update
+      summary: FieldMappings.batch_create_or_update
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMappings on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldMappings. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new FieldMapping
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchFieldMappingInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated FieldMappings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldMappings/batch-restore:
+    post:
+      description: Restores FieldMappings with given list of ids
+      operationId: FieldMappings.batch_restore
+      summary: FieldMappings.batch_restore
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldMappings on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldMappings. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity FieldMapping to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored FieldMapping.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldPermissions/{id}:
+    get:
+      description: Returns FieldPermission with given id
+      operationId: FieldPermissions.get
+      summary: FieldPermissions.get
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldPermission to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: FieldPermission data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldPermission'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: Removes FieldPermission with given id
+      operationId: FieldPermissions.delete
+      summary: FieldPermissions.delete
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldPermission to delete
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermission on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    description: id of deleted FieldPermission
+                    type: string
+                    format: uuid
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      description: Modifies FieldPermission or FieldPermissions with given id(s)
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldPermission to update
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermission on update. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      operationId: FieldPermissions.update
+      summary: FieldPermissions.update
+      tags:
+      - Field
+      requestBody:
+        description: id(s) of modified item(s) and fields to modify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateFieldPermissionInput'
+      responses:
+        '200':
+          description: Modification confirmation. Returns resulting FieldPermission
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldPermission'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldPermissions:
+    get:
+      description: Returns all defined FieldPermissions
+      operationId: FieldPermissions.list
+      summary: FieldPermissions.list
+      tags:
+      - Field
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted FieldPermissions are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of FieldPermissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FieldPermission'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates new FieldPermission
+      operationId: FieldPermissions.create
+      summary: FieldPermissions.create
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermission on create. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new FieldPermission
+        required: true
+        content:
+          application / json:
+            schema:
+              $ref: '#/components/schemas/createFieldPermissionInput'
+      responses:
+        '201':
+          description: Creation confirmation. Returns created FieldPermission
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldPermission'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldPermissions/batch-delete:
+    post:
+      description: Removes FieldPermissions with given list of ids
+      operationId: FieldPermissions.batch_delete
+      summary: FieldPermissions.batch_delete
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermissions on delete. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldPermissions. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to delete.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity FieldPermission to delete.
+                format: uuid
+      responses:
+        '200':
+          description: Batch removal confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of deleted FieldPermission.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldPermissions/batch-modify:
+    post:
+      description: Create or update an batch of FieldPermissions
+      operationId: FieldPermissions.batch_create_or_update
+      summary: FieldPermissions.batch_create_or_update
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermissions on change. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldPermissions. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: data of new FieldPermission
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batchFieldPermissionInput'
+      responses:
+        '200':
+          description: Creation confirmation. Returns a list of created / updated FieldPermissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: And ID of created / updated entity.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldPermissions/batch-restore:
+    post:
+      description: Restores FieldPermissions with given list of ids
+      operationId: FieldPermissions.batch_restore
+      summary: FieldPermissions.batch_restore
+      tags:
+      - Field
+      parameters:
+      - name: validation-level
+        in: query
+        description: 'Specify validation level of FieldPermissions on restore. Use them as bit mask: 0 - validate each field on entity,
+
+          2 - validate only changed fields, 4 - validate only system fields, 8 - allows to override readonly fields,
+
+          16 - allows to set entity on deleted relationship.'
+        schema:
+          type: integer
+          format: int32
+      - name: rollback-method
+        in: query
+        description: Specify rollback method for FieldPermissions. 0 - rollback all, 1 - rollback only failed records.
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: List of ids to restore.
+        required: true
+        content:
+          application / json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: An id of entity FieldPermission to restore.
+                format: uuid
+      responses:
+        '200':
+          description: Batch restoration confirmation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      oneOf:
+                      - type: string
+                        description: An id of restored FieldPermission.
+                        format: uuid
+                      - $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldSequences/{id}:
+    get:
+      description: Returns FieldSequence with given id
+      operationId: FieldSequences.get
+      summary: FieldSequences.get
+      tags:
+      - Field
+      parameters:
+      - name: id
+        in: path
+        description: ID of FieldSequence to retrieve
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: FieldSequence data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    $ref: '#/components/schemas/FieldSequence'
+        '404':
+          description: Sent when invalid ID is given
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /entities/FieldSequences:
+    get:
+      description: Returns all defined FieldSequences
+      operationId: FieldSequences.list
+      summary: FieldSequences.list
+      tags:
+      - Field
+      parameters:
+      - name: include-deleted
+        in: query
+        description: if enabled, deleted FieldSequences are returned as well
+        required: false
+        schema:
+          type: boolean
+      - name: first
+        in: query
+        description: 'Number of entities to return from beginning of the result set. Max: 100. Default: 30'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: last
+        in: query
+        description: Return only the "last" number of entities from result set. When used with first parameter, then it returns last M records from the first N records.
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: before
+        in: query
+        description: Cursor until which to take entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: after
+        in: query
+        description: Cursor after which to start taking entities to result set.
+        required: false
+        schema:
+          type: string
+      - name: expand
+        in: query
+        description: Expand related entity. Use api_names of relation fields. You can use multiple values separated via ',' colon. If not used, URI link will be returned instead. You can use dots '.' to expand nested entities as well.
+        required: false
+        example: expand=owner,sales_unit,account_relations.account
+        schema:
+          type: string
+      - name: order-by
+        in: query
+        description: Order by values. Use api_name of field to sort by ascending. Prefix api_name with '-' to descending sort. You can use multiple values separated via ',' colon.
+        example: order-by=created,-modified
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Use name of field in braces to filter by this field. To advanced filter, use with combination with filter-op parameter.
+        example: filter[name]=Example
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: filter-op
+        in: query
+        description: 'Filter operator. Specify a way how to filter fields. Supported operators: [eq, ieq, not-eq, not-ieq, contains, starts, ends, icontains, istarts, iends, null, not-null, empty, not-empty, gt, gte, lt, lte, between].'
+        example: filter-op[name]=eq
+        required: false
+        schema:
+          type: object
+        style: deepObject
+        allowReserved: true
+      - name: load-only
+        in: query
+        description: Loads only fields defined within this parameter. You can use multiple values separated via ',' colon. If not used, then all fields are returned. You can use dots '.' to specify load only fields in nested as well.
+        required: false
+        example: load-only=id,name,owner.id
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of FieldSequences
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: True when response succeeded, false on error.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FieldSequence'
+                  page_info:
+                    type: object
+                    properties:
+                      start_cursor:
+                        type: string
+                        example: WyIwMSIsICJiMmYwODI0Ni1iYWE5LTQyY2QtYmM3Yi04YmM4MjY3M2E2NTgiXQ==
+                        description: Start cursor of result set.
+                      end_cursor:
+                        type: string
+                        example: WyIwNSIsICJmMjZhZjZiMC00ZWE4LTQ3MDgtODU2NC0wN2JmYzI4ZGQ5ZTgiXQ==
+                        description: End cursor of result set.
+                      has_previous_page:
+                        type: boolean
+                        example: true
+                        description: If result set has previous page (if yes, use start_cursor value in before parameter to load it).
+                      has_next_page:
+                        type: boolean
+                        example: true
+                        description: If result set has next page (if yes, use end_cursor value in after parameter to load it).
+                    description: Page info result set. Please note it is returned only when legacy limit & offset parameters are not used.
+        '500':
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    updateFieldMappingInput:
+      properties:
+        is_system:
+          type: boolean
+          example: false
+          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
+        mapping:
+          type: string
+          format: binary
+          example: blob
+          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
+        operation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        type_mappings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the mapping (e.g. import source files).
+    batchFieldPermissionInput:
+      properties:
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Field:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: True when the field is marked as deleted (soft-delete).
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        entity_name:
+          type: string
+          example: string
+          description: Related entity name for field (e.g. Account, Contact, Lead, Opportunity, ...)
+          readOnly: true
+        api_name:
+          type: string
+          example: string
+          description: Immutable and generated name. This name is used for integrations.
+        name:
+          type: string
+          example: string
+          description: User friendly name for field.
+        use_lang:
+          type: integer
+          format: int32
+          example: 1
+          description: When true, the field name is treated as a translation key and resolved through the translation system; otherwise the literal name is shown.
+        column_name:
+          type: string
+          example: string
+          description: Storage column name for the field; used as the filter key in API queries.
+        column_source:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Storage origin of the field: on the main entity record, on the custom-field data record, or computed.'
+          readOnly: true
+        relation_id:
+          type: string
+          example: string
+          description: For relation-typed fields, identifier of the relation kind that connects this entity to the related entity. Empty for non-relation fields.
+        relation_with_entity_id:
+          type: string
+          example: string
+          description: For relation-typed fields, the entity the field points to (e.g. Contact, Account). Empty for non-relation fields.
+        shared_with_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: When the field is shared between abstract entities (e.g. Lead and Opportunity), id of the counterpart field on the other entity. Empty when the field is not shared.
+        system_type:
+          type: integer
+          format: int32
+          example: 1
+          description: Whether the field is System (built-in, immutable), Protected (built-in, limited changes), or Custom (user-created).
+          readOnly: true
+        type_id:
+          type: string
+          example: string
+          description: 'Type of the field. Supported field types are: checkbox, currency, currency_foreign, date, datetime, dropdown, email, float, input, integer, multiselect_checkbox, phone, radio, sequence, text_area, url'
+        composite_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For sub-fields of a composite field (e.g. the value/currency parts of a foreign currency field), id of the parent composite field. Empty for top-level fields.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Optional custom data set id can be set.
+        parent_options_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For dependent dropdown/radio fields, id of the parent field whose selected value restricts the options shown on this field.
+        calc_formula:
+          type: string
+          example: string
+          description: Calculated formula used for fields which supports calculation.
+        default_value:
+          type: string
+          example: string
+          description: A default value for field.
+        sequence_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For sequence-typed fields, id grouping the FieldSequence rows that drive auto-numbering for this field.
+        sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Deprecated; always returns null. Use sequence_set_id and FieldSequence instead.
+        system_required:
+          type: boolean
+          example: false
+          description: True when the field cannot be made optional (enforced by the platform).
+          readOnly: true
+        is_published:
+          type: boolean
+          example: false
+          description: True when the field configuration is published; false while the field exists only as an unpublished draft.
+          readOnly: true
+        system_readonly:
+          type: boolean
+          example: false
+          description: True when the field cannot be made writable (enforced by the platform).
+          readOnly: true
+        use_in_global_search:
+          type: boolean
+          example: false
+          description: If this field is allowed in global search.
+        settings:
+          type: object
+          description: Type-specific configuration for the field (e.g. rollup definition, calculated formula, AI options). Shape depends on type_id; null for fields that need no extra configuration.
+        is_unique:
+          type: boolean
+          example: false
+          description: If true, then there will be an API validation if value of entity is unique.
+          readOnly: true
+        data_set:
+          type: string
+          format: uri
+          description: 'For dropdown, radio, and multiselect-checkbox fields, the set of available options. Empty for other field types.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        lookup:
+          type: object
+          description: Lookup field definition.
+        sequence_pattern:
+          type: string
+          example: string
+          description: Deprecated - previously returned sequence pattern used for sequence type of field.
+        sequence:
+          type: object
+          description: Sequence field definition.
+        rollup:
+          type: object
+          description: Rollup field definition.
+        options:
+          type: object
+          description: Available option values for dropdown, radio, and multiselect-checkbox fields, including labels and translations. Empty for other field types.
+        ai_options:
+          type: object
+          description: AI Smart Field options. Available for input, text_area, integer, float, email, phone, url, currency.
+        advanced_formula:
+          type: object
+          description: Advanced calculated formula
+        source_field_id:
+          type: string
+          example: string
+          description: For derived fields, id of the underlying source field that drives this field's value (e.g. the value side of a composite currency field).
+        source_type_id:
+          type: string
+          example: string
+          description: Underlying primitive type id of the field, after resolving composite/rollup/lookup wrappers.
+        use_in_interface_preview:
+          type: boolean
+          example: false
+          description: True when the field can be used in the record interface preview pane.
+        translated_name:
+          type: string
+          example: string
+          description: Field name resolved into the current user's language. When use_lang is true, the name is looked up via the translation system; otherwise name is returned as-is.
+        field_permissions:
+          type: string
+          format: uri
+          description: 'Per-user-role access overrides for this field. Empty when the field uses default access (full access for all roles).
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        original_dataset_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: When multiple dropdown/radio fields share a data set, id of the field that originally defined the data set. Null when this field is the originator or has no data set.
+        name_translations:
+          type: string
+          format: binary
+          example: blob
+          description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
+        name_translated:
+          type: string
+          example: string
+          description: Field name in the current user's language, taken from name_translations. Empty when no translation is available for that language.
+        primitive_type:
+          type: string
+          example: string
+          description: Primitive value type of the field (e.g. STRING, INT, BOOL, DATE, ENUM), derived from source_type_id.
+        is_readonly_on_recurrent_appointment:
+          type: boolean
+          example: false
+          description: True when the field cannot be edited on individual occurrences of a recurring appointment (changes must be made on the recurrence master).
+        is_available_for_webresource:
+          type: boolean
+          example: false
+          description: True when the field can be referenced from a Webresource URL template.
+        is_available_for_advanced_formula:
+          type: boolean
+          example: false
+          description: True when the field can be used as an input in an advanced calculated formula expression on this entity.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - entity_name
+      - name
+      - type_id
+      - data_set
+      - source_field_id
+      - source_type_id
+      - use_in_interface_preview
+      - translated_name
+      - field_permissions
+      - name_translations
+      - name_translated
+      - primitive_type
+      - is_readonly_on_recurrent_appointment
+      - is_available_for_webresource
+      - is_available_for_advanced_formula
+    FieldMapping:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_system:
+          type: boolean
+          example: false
+          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
+        mapping:
+          type: string
+          format: binary
+          example: blob
+          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
+        operation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        source_entity_api_name:
+          type: string
+          example: string
+          description: API name of the source custom entity. Set only when source_entity_name is "CustomEntity"; otherwise empty.
+        target_entity_api_name:
+          type: string
+          example: string
+          description: API name of the target custom entity. Set only when target_entity_name is "CustomEntity"; otherwise empty.
+        type_mappings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        source_entity_name:
+          type: string
+          example: string
+          description: Source entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the source is a custom entity; the API name is then exposed via source_entity_api_name.
+        target_entity_name:
+          type: string
+          example: string
+          description: Target entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the target is a custom entity; the API name is then exposed via target_entity_api_name.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the mapping (e.g. import source files).
+      required:
+      - is_delete_protected
+      - id
+      - is_system
+      - source_entity_name
+      - target_entity_name
+    createFieldMappingInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_system:
+          type: boolean
+          example: false
+          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
+        mapping:
+          type: string
+          format: binary
+          example: blob
+          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
+        operation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        type_mappings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the mapping (e.g. import source files).
+      required:
+      - is_system
+    createFieldPermissionInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom field.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        is_published:
+          type: boolean
+          example: false
+          description: True when the permission override is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - field_id
+      - master_right_id
+    batchFieldMappingInput:
+      properties:
+        is_system:
+          type: boolean
+          example: false
+          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
+        mapping:
+          type: string
+          format: binary
+          example: blob
+          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
+        operation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        type_mappings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the mapping (e.g. import source files).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    FieldSequence:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        filter:
+          type: object
+          description: Optional filter restricting which records this sequence applies to. Empty means the sequence applies to all records.
+        pattern:
+          type: string
+          example: string
+          description: Pattern template used to generate auto-numbered values (e.g. "{prefix}{year}-{####}").
+        sequence_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all sequences (across entity types) that share the same auto-numbering pattern.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this sequence within its sequence set; sequences are evaluated in this order, the first whose filter matches is used.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the sequence is published; false while it exists only as an unpublished draft.
+          readOnly: true
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - pattern
+      - sequence_set_id
+    updateFieldPermissionInput:
+      properties:
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateFieldInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: User friendly name for field.
+        parent_options_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For dependent dropdown/radio fields, id of the parent field whose selected value restricts the options shown on this field.
+        calc_formula:
+          type: string
+          example: string
+          description: Calculated formula used for fields which supports calculation.
+        default_value:
+          type: string
+          example: string
+          description: A default value for field.
+        name_translations:
+          type: string
+          format: binary
+          example: blob
+          description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
+    createFieldInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        entity_name:
+          type: string
+          example: string
+          description: Related entity name for field (e.g. Account, Contact, Lead, Opportunity, ...)
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: User friendly name for field.
+        type_id:
+          type: string
+          example: string
+          description: 'Type of the field. Supported field types are: checkbox, currency, currency_foreign, date, datetime, dropdown, email, float, input, integer, multiselect_checkbox, phone, radio, sequence, text_area, url'
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Optional custom data set id can be set.
+        parent_options_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For dependent dropdown/radio fields, id of the parent field whose selected value restricts the options shown on this field.
+        calc_formula:
+          type: string
+          example: string
+          description: Calculated formula used for fields which supports calculation.
+        default_value:
+          type: string
+          example: string
+          description: A default value for field.
+        is_unique:
+          type: boolean
+          example: false
+          description: If true, then there will be an API validation if value of entity is unique.
+          readOnly: true
+        name_translations:
+          type: string
+          format: binary
+          example: blob
+          description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
+      required:
+      - entity_name
+      - name
+      - type_id
+      - name_translations
+    FieldPermission:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        field:
+          type: string
+          format: uri
+          description: 'Custom field this permission applies to.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted (or restricted) on the field.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom field.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        is_published:
+          type: boolean
+          example: false
+          description: True when the permission override is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - field
+      - master_right
+      - field_id
+      - master_right_id

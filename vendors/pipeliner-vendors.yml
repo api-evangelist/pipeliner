@@ -1,0 +1,56 @@
+generated: '2026-09-22'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: cloudflare
+  name: Cloudflare
+  area: cdn
+  host: developers.pipelinersales.com
+  evidence: header:cf-ray
+  signal: header
+  confidence: high
+  kin_score:
+  - https_enforced
+  - hsts
+- vendor: gitbook
+  name: GitBook
+  area: documentation
+  host: developers.pipelinersales.com
+  evidence: cname:gitbook.io
+  signal: docs-platform
+  confidence: high
+  kin_score:
+  - openapi_published
+  - llms_txt
+- vendor: vercel
+  name: Vercel
+  area: hosting
+  host: developers.pipelinersales.com
+  evidence: header:x-vercel-id
+  signal: header
+  confidence: high
+  kin_score: []
+checked:
+- 'docs-platform: gitbook'
+- developers.pipelinersales.com (DeveloperPortal)
+- developers.pipelinersales.com (Documentation)
+- developers.pipelinersales.com (APIReference)
+- developers.pipelinersales.com (GettingStarted)
+- help.pipelinersales.com (Support)
+- www.coevera.com (SignUp)
+- www.coevera.com (Login)
+- us-east.api.pipelinersales.com (baseURL)
