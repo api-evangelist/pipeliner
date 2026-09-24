@@ -508,148 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createInterfacePreviewInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-          readOnly: true
-        appointment_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the appointment type.
-          readOnly: true
-        card_field_ids:
-          type: object
-          description: Ordered ids of fields shown on the record's compact card view.
-        charts:
-          type: object
-          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
-          readOnly: true
-        custom_entity_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the custom entity type.
-          readOnly: true
-        detail_tabs:
-          type: object
-          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
-        detail_widgets:
-          type: object
-          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
-        field_ids:
-          type: object
-          description: Ordered ids of fields shown in the record's preview pane.
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
-          readOnly: true
-        oppty_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity type.
-          readOnly: true
-        product_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product type.
-          readOnly: true
-        project_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project type.
-          readOnly: true
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-          readOnly: true
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
-        task_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the task type.
-          readOnly: true
-        is_published:
-          type: boolean
-          example: false
-          description: True when the interface preview is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        entity_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the type the interface preview is configured for, derived from whichever of the per-entity-type relations is set.
-          readOnly: true
-      required:
-      - card_field_ids
-      - charts
-      - detail_tabs
-      - detail_widgets
-      - field_ids
-      - settings
-      - entity_type_id
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     updateInterfacePreviewInput:
       properties:
         card_field_ids:
@@ -677,6 +535,30 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     batchInterfacePreviewInput:
       properties:
         card_field_ids:
@@ -940,3 +822,121 @@ components:
       - settings
       - entity_type_id
       - entity_type
+    createInterfacePreviewInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+          readOnly: true
+        appointment_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment type.
+          readOnly: true
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+          readOnly: true
+        custom_entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+          readOnly: true
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+          readOnly: true
+        oppty_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity type.
+          readOnly: true
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+          readOnly: true
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+          readOnly: true
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+          readOnly: true
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        task_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the task type.
+          readOnly: true
+        is_published:
+          type: boolean
+          example: false
+          description: True when the interface preview is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        entity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the type the interface preview is configured for, derived from whichever of the per-entity-type relations is set.
+          readOnly: true
+      required:
+      - card_field_ids
+      - charts
+      - detail_tabs
+      - detail_widgets
+      - field_ids
+      - settings
+      - entity_type_id

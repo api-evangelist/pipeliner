@@ -508,32 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchUnsubscribedPhoneInput:
-      properties:
-        phone:
-          type: string
-          example: string
-          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateUnsubscribedPhoneInput:
-      properties:
-        phone:
-          type: string
-          example: string
-          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     Error:
       properties:
         http_status:
@@ -558,29 +532,6 @@ components:
       required:
       - success
       - http_status
-    createUnsubscribedPhoneInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        phone:
-          type: string
-          example: string
-          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     UnsubscribedPhone:
       properties:
         is_delete_protected:
@@ -623,3 +574,52 @@ components:
       required:
       - is_delete_protected
       - id
+    createUnsubscribedPhoneInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        phone:
+          type: string
+          example: string
+          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchUnsubscribedPhoneInput:
+      properties:
+        phone:
+          type: string
+          example: string
+          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateUnsubscribedPhoneInput:
+      properties:
+        phone:
+          type: string
+          example: string
+          description: Phone number that has unsubscribed from receiving SMS messages, in E.164 format.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.

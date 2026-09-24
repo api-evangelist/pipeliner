@@ -1500,7 +1500,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchMessageSharingClientRelationInput:
+    updateMessageSharingClientRelationInput:
       properties:
         client_id:
           type: string
@@ -1517,12 +1517,48 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    MessageSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
         id:
-          description: ID of object to update.
           type: string
           format: uuid
-    createMessageSharingClientRelationInput:
-      properties:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -1535,6 +1571,27 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User the message is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email being shared. Set when message_id resolves to an Email; otherwise empty.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        memo:
+          type: string
+          format: uri
+          description: 'Memo being shared. Set when message_id resolves to a Memo; otherwise empty.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
         client_id:
           type: string
           format: uuid
@@ -1551,8 +1608,104 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
+      - is_delete_protected
+      - id
+      - client
       - client_id
       - message_id
+    MessageSharingSalesUnitRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email:
+          type: string
+          format: uri
+          description: 'Email being shared. Set when message_id resolves to an Email; otherwise empty.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        memo:
+          type: string
+          format: uri
+          description: 'Memo being shared. Set when message_id resolves to a Memo; otherwise empty.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the message is shared with.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email or memo being shared.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - unit
+      - message_id
+      - unit_id
+    batchMessageSharingSalesUnitRelationInput:
+      properties:
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email or memo being shared.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     MessageRelation:
       properties:
         is_delete_protected:
@@ -1690,30 +1843,112 @@ components:
       - is_delete_protected
       - id
       - message_id
-    Error:
+    createMessageSharingClientRelationInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
+        modified:
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
           type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email or memo being shared.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
       required:
-      - success
-      - http_status
+      - client_id
+      - message_id
+    createMessageSharingSalesUnitRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email or memo being shared.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - message_id
+      - unit_id
+    updateMessageRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the message is linked to, or empty when not linked.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email or memo on this link.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     updateMessageSharingSalesUnitRelationInput:
       properties:
         message_id:
@@ -1787,120 +2022,6 @@ components:
           description: Revision when entity was lastly changed.
       required:
       - message_id
-    updateMessageRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead or opportunity the message is linked to, or empty when not linked.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email or memo on this link.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    MessageSharingSalesUnitRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email:
-          type: string
-          format: uri
-          description: 'Email being shared. Set when message_id resolves to an Email; otherwise empty.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        memo:
-          type: string
-          format: uri
-          description: 'Memo being shared. Set when message_id resolves to a Memo; otherwise empty.
-
-
-            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the message is shared with.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email or memo being shared.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - unit
-      - message_id
-      - unit_id
     batchMessageRelationInput:
       properties:
         account_id:
@@ -1947,7 +2068,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateMessageSharingClientRelationInput:
+    batchMessageSharingClientRelationInput:
       properties:
         client_id:
           type: string
@@ -1959,127 +2080,6 @@ components:
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the email or memo being shared.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    MessageSharingClientRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User the message is shared with.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        email:
-          type: string
-          format: uri
-          description: 'Email being shared. Set when message_id resolves to an Email; otherwise empty.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        memo:
-          type: string
-          format: uri
-          description: 'Memo being shared. Set when message_id resolves to a Memo; otherwise empty.
-
-
-            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email or memo being shared.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - client
-      - client_id
-      - message_id
-    createMessageSharingSalesUnitRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email or memo being shared.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - message_id
-      - unit_id
-    batchMessageSharingSalesUnitRelationInput:
-      properties:
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email or memo being shared.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
         revision:
           type: integer
           format: int32

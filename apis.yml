@@ -24,6 +24,10 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: LLMsTxt
+  url: llms/pipeliner-llms.txt
+- type: Website
+  url: https://www.coevera.com/
 - type: AgenticAccess
   url: agentic-access/pipeliner-agentic-access.yml
 - type: Spectral

@@ -557,42 +557,6 @@ components:
       - id
       - color_code
       - name
-    updateSalesRoleInput:
-      properties:
-        color_code:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchSalesRoleInput:
-      properties:
-        color_code:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     Error:
       properties:
         http_status:
@@ -617,6 +581,26 @@ components:
       required:
       - success
       - http_status
+    batchSalesRoleInput:
+      properties:
+        color_code:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     createSalesRoleInput:
       properties:
         modified:
@@ -648,3 +632,19 @@ components:
       required:
       - color_code
       - name
+    updateSalesRoleInput:
+      properties:
+        color_code:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.

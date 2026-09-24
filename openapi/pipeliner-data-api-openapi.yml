@@ -508,63 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createDataInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        allowed_by:
-          type: object
-          description: For dependent dropdowns, the parent-field values this option is available for, as a JSON array of identifiers (option ids or enum names). Empty when always available.
-        calc_value:
-          type: number
-          format: double
-          example: 4.32
-          description: Numeric value associated with the option, used in calculation formulas (e.g. score of a dropdown option).
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set this option belongs to. Shared by all options of a dropdown / radio / multiselect field.
-          readOnly: true
-        option_name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the option within its data set; lower values appear first.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        option_name_translations:
-          type: string
-          format: binary
-          example: blob
-          description: 'Map of locale codes to translated option names (e.g. {"en-US": "Hot", "de-DE": "Heiß"}). Empty when no translations are defined.'
-      required:
-      - data_set_id
-      - option_name
-      - sort_order
-      - option_name_translations
     batchDataInput:
       properties:
         allowed_by:
@@ -622,8 +565,20 @@ components:
       required:
       - success
       - http_status
-    updateDataInput:
+    createDataInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         allowed_by:
           type: object
           description: For dependent dropdowns, the parent-field values this option is available for, as a JSON array of identifiers (option ids or enum names). Empty when always available.
@@ -632,6 +587,12 @@ components:
           format: double
           example: 4.32
           description: Numeric value associated with the option, used in calculation formulas (e.g. score of a dropdown option).
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set this option belongs to. Shared by all options of a dropdown / radio / multiselect field.
+          readOnly: true
         option_name:
           type: string
           example: string
@@ -641,6 +602,11 @@ components:
           format: int32
           example: 1
           description: Position of the option within its data set; lower values appear first.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
         revision:
           type: integer
           format: int32
@@ -651,6 +617,11 @@ components:
           format: binary
           example: blob
           description: 'Map of locale codes to translated option names (e.g. {"en-US": "Hot", "de-DE": "Heiß"}). Empty when no translations are defined.'
+      required:
+      - data_set_id
+      - option_name
+      - sort_order
+      - option_name_translations
     Data:
       properties:
         is_delete_protected:
@@ -735,3 +706,32 @@ components:
       - sort_order
       - option_name_translations
       - option_name_translated
+    updateDataInput:
+      properties:
+        allowed_by:
+          type: object
+          description: For dependent dropdowns, the parent-field values this option is available for, as a JSON array of identifiers (option ids or enum names). Empty when always available.
+        calc_value:
+          type: number
+          format: double
+          example: 4.32
+          description: Numeric value associated with the option, used in calculation formulas (e.g. score of a dropdown option).
+        option_name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the option within its data set; lower values appear first.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        option_name_translations:
+          type: string
+          format: binary
+          example: blob
+          description: 'Map of locale codes to translated option names (e.g. {"en-US": "Hot", "de-DE": "Heiß"}). Empty when no translations are defined.'

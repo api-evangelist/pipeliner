@@ -3980,44 +3980,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updateAllowedLeadTypeInput:
-      properties:
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchAllowedCompanyPhoneInput:
-      properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createMasterRightInput:
       properties:
         modified:
@@ -4998,6 +4960,1315 @@ components:
           description: Per-custom-entity access settings (access level, allowed types, default screen profile, etc.) for users with this role. One entry per custom entity defined in the space.
       required:
       - name
+    createAllowedCompanyEmailInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        company_email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company email address.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - company_email_id
+      - master_right_id
+    batchAllowedContactTypeInput:
+      properties:
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateAllowedPipelineInput:
+      properties:
+        access_step_documents:
+          type: boolean
+          example: false
+          description: When true, the user role can access documents attached to steps of this pipeline.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createAllowedLeadTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - lead_type_id
+      - master_right_id
+    batchAllowedAccountTypeInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateMasterRightInput:
+      properties:
+        access_account_relation_types:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_accounts:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_automatizer:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_online_forms:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_record_detail:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_record_enrichment:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_relationship_charts:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_reports:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_ai_smart_field:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_appointment_scheduler:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_appointment_scheduler_management:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_approval_processes:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_approval_processes_management:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_approvals:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_archive:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_audit:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_audit_log:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_bulk_update:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_calling:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_calling_company_phone:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        access_calling_purchase_phone:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_company_emails:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        access_contacts:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_document_management:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_document_management_company:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_document_management_record:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_duplicate_checker:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_email_notification_enforcement:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_email_notification_settings:
+          type: object
+          description: Default email notification preferences applied to users with this role (which events trigger an email and through which channel).
+        access_entity_account:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_account_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_account_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_account_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_account_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_account_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_account_types:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        access_entity_appointment:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_appointment_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_appointment_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_appointment_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_better_navigator:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_better_navigator_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_better_navigator_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_better_navigator_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_better_navigator_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_contact:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_contact_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_contact_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_contact_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_contact_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_contact_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_contact_types:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        access_entity_dashboard:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_dashboard_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_dashboard_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_dashboard_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_dashboard_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_content_share_mode:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - PrivateOnly, 1 - Custom, 2 - PublicOnly'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        access_entity_email_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_sequence:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Personal, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        access_entity_email_template:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_email_template_create_delete_folder:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_template_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_template_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_template_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_email_template_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_forecast:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_forecast_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_forecast_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_forecast_edit_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_forecast_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_forecast_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_form_view:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_form_view_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_form_view_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_form_view_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_form_view_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_lead:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_lead_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_lead_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_lead_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_lead_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_lead_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_lead_types:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        access_entity_message_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_oppty:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_oppty_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_oppty_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_oppty_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_oppty_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_oppty_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_pipeline:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoPipeline, 1 - Selected, 2 - AllNoDocuments, 3 - AllWithDocuments'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        access_entity_process:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Personal, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        access_entity_profile:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_profile_default_screen_profiles:
+          type: object
+          description: Default screen profile ids assigned to users with this role for each main screen (Navigator, Pipeline, Lead, Account, Contact, Activity, Project, Quote, etc.).
+        access_entity_profile_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_profile_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_profile_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_profile_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_project:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_project_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_project_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_project_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_project_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_project_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_quote:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_quote_copy:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_quote_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_quote_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_quote_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_quote_types:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        access_entity_report:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_report_create_delete_folder:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_private:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_schedule_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_schedule_management:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_sharing_custom:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_report_sharing_public:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_target:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 4
+        access_entity_target_delete_not_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_target_delete_owned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_task:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+        access_entity_task_delete:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_task_direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        access_entity_task_tag_create:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_entity_task_unassigned:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_export:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_feeds:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_foreign_currencies:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_form_and_fields:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_global_settings:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_home_screen:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_import:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_insights:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_leads:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_online_forms:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_online_forms_management:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_opportunity:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_pipeline_configuration:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_print:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_products_services:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_projects:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_quotes:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_sales_roles:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_security:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_units:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_user_and_roles:
+          type: boolean
+          example: false
+          description: Controls access to resource.
+        access_whats_app_company_phone:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        allowed_pipelines:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedPipeline, see: ''updateAllowedPipelineInput'' object for properties.'
+          description: Pipelines this user role can use. Effective only when access_entity_pipeline is set to Selected; with All-* values every pipeline is granted.
+        allowed_lead_types:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedLeadType, see: ''updateAllowedLeadTypeInput'' object for properties.'
+          description: Lead types this user role can use. Effective only when access_entity_lead_types is set to Selected.
+        allowed_quote_types:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedQuoteType, see: ''updateAllowedQuoteTypeInput'' object for properties.'
+          description: Quote types this user role can use. Effective only when access_entity_quote_types is set to Selected.
+        allowed_account_types:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedAccountType, see: ''updateAllowedAccountTypeInput'' object for properties.'
+          description: Account types this user role can use. Effective only when access_entity_account_types is set to Selected.
+        allowed_contact_types:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedContactType, see: ''updateAllowedContactTypeInput'' object for properties.'
+          description: Contact types this user role can use. Effective only when access_entity_contact_types is set to Selected.
+        allowed_company_emails:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedCompanyEmail, see: ''updateAllowedCompanyEmailInput'' object for properties.'
+          description: Company email addresses this user role can send from. Effective only when access_company_emails is set to Selected.
+        allowed_company_phones:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AllowedCompanyPhone, see: ''updateAllowedCompanyPhoneInput'' object for properties.'
+          description: Company phones this user role can use for calling/SMS. Effective only when access_calling_company_phone is set to Selected.
+        custom_entities:
+          type: string
+          format: binary
+          example: blob
+          description: Per-custom-entity access settings (access level, allowed types, default screen profile, etc.) for users with this role. One entry per custom entity defined in the space.
+    batchAllowedCompanyPhoneInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createAllowedQuoteTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - master_right_id
+      - quote_type_id
+    updateAllowedCompanyPhoneInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateAllowedContactTypeInput:
+      properties:
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAllowedPipelineInput:
+      properties:
+        access_step_documents:
+          type: boolean
+          example: false
+          description: When true, the user role can access documents attached to steps of this pipeline.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    AllowedQuoteType:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the quote type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        quote_type:
+          type: string
+          format: uri
+          description: 'Quote type the user role can use.
+
+
+            Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - master_right
+      - quote_type
+      - master_right_id
+      - quote_type_id
+    updateAllowedLeadTypeInput:
+      properties:
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAllowedCompanyEmailInput:
+      properties:
+        company_email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company email address.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     AllowedCompanyEmail:
       properties:
         is_delete_protected:
@@ -5064,174 +6335,6 @@ components:
       - master_right
       - company_email_id
       - master_right_id
-    AllowedPipeline:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the pipeline.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        pipeline:
-          type: string
-          format: uri
-          description: 'Pipeline the user role can use.
-
-
-            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
-        access_step_documents:
-          type: boolean
-          example: false
-          description: When true, the user role can access documents attached to steps of this pipeline.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - master_right
-      - pipeline
-      - master_right_id
-      - pipeline_id
-    updateAllowedAccountTypeInput:
-      properties:
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createAllowedQuoteTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - master_right_id
-      - quote_type_id
-    createAllowedCompanyPhoneInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - master_right_id
-      - phone_id
-    updateAllowedQuoteTypeInput:
-      properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     batchMasterRightInput:
       properties:
         access_account_relation_types:
@@ -6202,38 +7305,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createAllowedCompanyEmailInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        company_email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company email address.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - company_email_id
-      - master_right_id
     createAllowedPipelineInput:
       properties:
         modified:
@@ -6270,8 +7341,24 @@ components:
       required:
       - master_right_id
       - pipeline_id
-    createAllowedContactTypeInput:
+    AllowedContactType:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -6284,6 +7371,20 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        contact_type:
+          type: string
+          format: uri
+          description: 'Contact type the user role can use.
+
+
+            Relation to ContactType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactType'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the contact type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
         contact_type_id:
           type: string
           format: uuid
@@ -6300,15 +7401,61 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
+      - is_delete_protected
+      - id
+      - contact_type
+      - master_right
       - contact_type_id
       - master_right_id
-    batchAllowedContactTypeInput:
+    AllowedAccountType:
       properties:
-        contact_type_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type:
+          type: string
+          format: uri
+          description: 'Account type the user role can use.
+
+
+            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the account type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
         master_right_id:
           type: string
           format: uuid
@@ -6319,10 +7466,256 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account_type
+      - master_right
+      - account_type_id
+      - master_right_id
+    AllowedLeadType:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_type:
+          type: string
+          format: uri
+          description: 'Lead type the user role can use.
+
+
+            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the lead type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - lead_type
+      - master_right
+      - lead_type_id
+      - master_right_id
+    batchAllowedQuoteTypeInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
+    AllowedCompanyPhone:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the company phone.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        phone:
+          type: string
+          format: uri
+          description: 'Company phone the user role can use for calling/SMS.
+
+
+            Relation to Phone. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Phone'' object for properties.'
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - master_right
+      - phone
+      - master_right_id
+      - phone_id
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createAllowedAccountTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account_type_id
+      - master_right_id
+    updateAllowedAccountTypeInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateAllowedQuoteTypeInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     MasterRight:
       properties:
         is_delete_protected:
@@ -7300,45 +8693,8 @@ components:
       - is_delete_protected
       - id
       - name
-    batchAllowedCompanyEmailInput:
+    createAllowedCompanyPhoneInput:
       properties:
-        company_email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company email address.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    AllowedAccountType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -7351,86 +8707,6 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_type:
-          type: string
-          format: uri
-          description: 'Account type the user role can use.
-
-
-            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the account type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account_type
-      - master_right
-      - account_type_id
-      - master_right_id
-    AllowedCompanyPhone:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the company phone.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        phone:
-          type: string
-          format: uri
-          description: 'Company phone the user role can use for calling/SMS.
-
-
-            Relation to Phone. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Phone'' object for properties.'
         master_right_id:
           type: string
           format: uuid
@@ -7447,1333 +8723,8 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - id
-      - master_right
-      - phone
       - master_right_id
       - phone_id
-    updateAllowedContactTypeInput:
-      properties:
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateAllowedPipelineInput:
-      properties:
-        access_step_documents:
-          type: boolean
-          example: false
-          description: When true, the user role can access documents attached to steps of this pipeline.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateAllowedCompanyPhoneInput:
-      properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    AllowedLeadType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        lead_type:
-          type: string
-          format: uri
-          description: 'Lead type the user role can use.
-
-
-            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the lead type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - lead_type
-      - master_right
-      - lead_type_id
-      - master_right_id
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    batchAllowedPipelineInput:
-      properties:
-        access_step_documents:
-          type: boolean
-          example: false
-          description: When true, the user role can access documents attached to steps of this pipeline.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchAllowedAccountTypeInput:
-      properties:
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    AllowedContactType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact_type:
-          type: string
-          format: uri
-          description: 'Contact type the user role can use.
-
-
-            Relation to ContactType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactType'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the contact type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - contact_type
-      - master_right
-      - contact_type_id
-      - master_right_id
-    updateMasterRightInput:
-      properties:
-        access_account_relation_types:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_accounts:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_automatizer:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_online_forms:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_record_detail:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_record_enrichment:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_relationship_charts:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_reports:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_ai_smart_field:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_appointment_scheduler:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_appointment_scheduler_management:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_approval_processes:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_approval_processes_management:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_approvals:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_archive:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_audit:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_audit_log:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_bulk_update:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_calling:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_calling_company_phone:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        access_calling_purchase_phone:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_company_emails:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        access_contacts:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_document_management:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_document_management_company:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_document_management_record:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_duplicate_checker:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_email_notification_enforcement:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_email_notification_settings:
-          type: object
-          description: Default email notification preferences applied to users with this role (which events trigger an email and through which channel).
-        access_entity_account:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_account_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_account_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_account_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_account_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_account_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_account_types:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - All, 2 - Selected'
-          example: 1
-          enum:
-          - 1
-          - 2
-        access_entity_appointment:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_appointment_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_appointment_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_appointment_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_better_navigator:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_better_navigator_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_better_navigator_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_better_navigator_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_better_navigator_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_contact:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_contact_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_contact_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_contact_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_contact_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_contact_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_contact_types:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - All, 2 - Selected'
-          example: 1
-          enum:
-          - 1
-          - 2
-        access_entity_dashboard:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_dashboard_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_dashboard_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_dashboard_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_dashboard_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_content_share_mode:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - PrivateOnly, 1 - Custom, 2 - PublicOnly'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        access_entity_email_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_sequence:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Personal, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        access_entity_email_template:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_email_template_create_delete_folder:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_template_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_template_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_template_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_email_template_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_forecast:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_forecast_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_forecast_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_forecast_edit_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_forecast_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_forecast_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_form_view:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_form_view_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_form_view_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_form_view_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_form_view_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_lead:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_lead_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_lead_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_lead_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_lead_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_lead_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_lead_types:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - All, 2 - Selected'
-          example: 1
-          enum:
-          - 1
-          - 2
-        access_entity_message_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_oppty:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_oppty_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_oppty_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_oppty_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_oppty_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_oppty_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_pipeline:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoPipeline, 1 - Selected, 2 - AllNoDocuments, 3 - AllWithDocuments'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        access_entity_process:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Personal, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        access_entity_profile:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_profile_default_screen_profiles:
-          type: object
-          description: Default screen profile ids assigned to users with this role for each main screen (Navigator, Pipeline, Lead, Account, Contact, Activity, Project, Quote, etc.).
-        access_entity_profile_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_profile_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_profile_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_profile_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_project:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_project_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_project_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_project_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_project_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_project_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_quote:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_quote_copy:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_quote_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_quote_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_quote_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_quote_types:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - All, 2 - Selected'
-          example: 1
-          enum:
-          - 1
-          - 2
-        access_entity_report:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_report_create_delete_folder:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_private:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_schedule_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_schedule_management:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_sharing_custom:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_report_sharing_public:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_target:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 4
-        access_entity_target_delete_not_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_target_delete_owned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_task:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Readonly, 2 - Editor, 3 - EditorOrUnitManger, 4 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-          - 4
-        access_entity_task_delete:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_task_direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Owned, 2 - Current, 3 - CurrentAndParent, 4 - CurrentAndSubunit, 5 - CurrentAndParentAndSubunit, 6 - All'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        access_entity_task_tag_create:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_entity_task_unassigned:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_export:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_feeds:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_foreign_currencies:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_form_and_fields:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_global_settings:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_home_screen:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_import:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_insights:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_leads:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_online_forms:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_online_forms_management:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_opportunity:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_pipeline_configuration:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_print:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_products_services:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_projects:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_quotes:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_sales_roles:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_security:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_units:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_user_and_roles:
-          type: boolean
-          example: false
-          description: Controls access to resource.
-        access_whats_app_company_phone:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoAccess, 1 - Selected, 2 - All'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        allowed_pipelines:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedPipeline, see: ''updateAllowedPipelineInput'' object for properties.'
-          description: Pipelines this user role can use. Effective only when access_entity_pipeline is set to Selected; with All-* values every pipeline is granted.
-        allowed_lead_types:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedLeadType, see: ''updateAllowedLeadTypeInput'' object for properties.'
-          description: Lead types this user role can use. Effective only when access_entity_lead_types is set to Selected.
-        allowed_quote_types:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedQuoteType, see: ''updateAllowedQuoteTypeInput'' object for properties.'
-          description: Quote types this user role can use. Effective only when access_entity_quote_types is set to Selected.
-        allowed_account_types:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedAccountType, see: ''updateAllowedAccountTypeInput'' object for properties.'
-          description: Account types this user role can use. Effective only when access_entity_account_types is set to Selected.
-        allowed_contact_types:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedContactType, see: ''updateAllowedContactTypeInput'' object for properties.'
-          description: Contact types this user role can use. Effective only when access_entity_contact_types is set to Selected.
-        allowed_company_emails:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedCompanyEmail, see: ''updateAllowedCompanyEmailInput'' object for properties.'
-          description: Company email addresses this user role can send from. Effective only when access_company_emails is set to Selected.
-        allowed_company_phones:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AllowedCompanyPhone, see: ''updateAllowedCompanyPhoneInput'' object for properties.'
-          description: Company phones this user role can use for calling/SMS. Effective only when access_calling_company_phone is set to Selected.
-        custom_entities:
-          type: string
-          format: binary
-          example: blob
-          description: Per-custom-entity access settings (access level, allowed types, default screen profile, etc.) for users with this role. One entry per custom entity defined in the space.
-    createAllowedAccountTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - account_type_id
-      - master_right_id
-    AllowedQuoteType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the quote type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        quote_type:
-          type: string
-          format: uri
-          description: 'Quote type the user role can use.
-
-
-            Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - master_right
-      - quote_type
-      - master_right_id
-      - quote_type_id
     updateAllowedCompanyEmailInput:
       properties:
         company_email_id:
@@ -8791,8 +8742,24 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    createAllowedLeadTypeInput:
+    AllowedPipeline:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -8805,45 +8772,46 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        lead_type_id:
+        master_right:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
+          format: uri
+          description: 'User role granted access to the pipeline.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        pipeline:
+          type: string
+          format: uri
+          description: 'Pipeline the user role can use.
+
+
+            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
+        access_step_documents:
+          type: boolean
+          example: false
+          description: When true, the user role can access documents attached to steps of this pipeline.
         master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the user role.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - lead_type_id
+      - is_delete_protected
+      - id
+      - master_right
+      - pipeline
       - master_right_id
-    batchAllowedQuoteTypeInput:
-      properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
+      - pipeline_id
     batchAllowedLeadTypeInput:
       properties:
         lead_type_id:
@@ -8865,3 +8833,35 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    createAllowedContactTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_type_id
+      - master_right_id

@@ -3150,6 +3150,303 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    updateProductPriceListPriceInput:
+      properties:
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    ProductDataExRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        data:
+          type: string
+          format: uri
+          description: 'External data record (Data entity) holding the enrichment payload.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product this enrichment record applies to.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the external data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the enrichment record originates from.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - data
+      - product
+      - data_id
+      - data_set_id
+      - product_id
+    createProductPriceListPriceInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - currency_id
+      - product_id
+      - product_price_list_id
+      - settings
+    batchProductTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchProductPriceListInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createProductPriceListInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''createProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+      required:
+      - name
     ProductPriceListPrice:
       properties:
         is_delete_protected:
@@ -3241,7 +3538,121 @@ components:
       - product_id
       - product_price_list_id
       - settings
-    batchProductTypeInput:
+    createProductInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Product picture.
+
+
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+        allowed_pipelines:
+          type: integer
+          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+            Integer enum value: 1 - All, 2 - Selected'
+          example: 1
+          enum:
+          - 1
+          - 2
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this product.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the product.
+        name:
+          type: string
+          example: string
+          description: Name of the product, shown in catalogues and pickers.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product picture document.
+        product_category_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product category.
+        product_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product type.
+        sku:
+          type: string
+          example: string
+          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
+        unit_symbol:
+          type: string
+          example: string
+          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_pipeline_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPipelineRelation, see: ''createProductPipelineRelationInput'' object for properties.'
+          description: Deprecated pipeline connection.
+        product_pipelines:
+          type: object
+          properties:
+            pipelines:
+              type: array
+              items:
+                type: string
+                description: An id of pipeline entity.
+                format: uuid
+            allowed_pipelines:
+              type: integer
+              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
+
+
+                Integer enum value: 1 - All, 2 - Selected'
+              example: 1
+              enum:
+              - 1
+              - 2
+          required:
+          - pipelines
+          - allowed_pipelines
+          description: Configuration of Pipelines where the Product can be used.
+        picture_source_url:
+          type: string
+          example: string
+          description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
+      required:
+      - name
+    updateProductTypeInput:
       properties:
         form_edit:
           type: object
@@ -3259,10 +3670,324 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    batchProductPipelineRelationInput:
+      properties:
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
+    updateProductPriceListInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+    createProductCategoryInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Product, see: ''createProductInput'' object for properties.'
+          description: All Products in this category.
+      required:
+      - name
+    ProductPriceList:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-form description of the price list.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list expires. Empty means open-ended.
+        is_active:
+          type: boolean
+          example: false
+          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        rules:
+          type: object
+          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the price list becomes active. Empty means immediately.
+        type:
+          type: integer
+          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
+
+
+            Integer enum value: 1 - Standard, 2 - Scheduled'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_price_list_prices:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProductPriceListPrice. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductPriceListPrice'' object for properties.'
+          description: Per-product, per-currency prices configured in the price list.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    createProductPipelineRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - pipeline_id
+      - product_id
+    ProductPipelineRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        pipeline:
+          type: string
+          format: uri
+          description: 'Pipeline in which the product can be added as a line item.
+
+
+            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
+        product:
+          type: string
+          format: uri
+          description: 'Product available in the linked pipeline.
+
+
+            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - pipeline
+      - product
+      - pipeline_id
+      - product_id
+    updateProductCategoryInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Product, see: ''updateProductInput'' object for properties.'
+          description: All Products in this category.
     Product:
       properties:
         is_delete_protected:
@@ -3418,110 +4143,6 @@ components:
       - name
       - formatted_name
       - oppty_product_relation_type_id
-    createProductTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the product type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_readonly
-      - name
-    createProductPriceListInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        description:
-          type: string
-          example: string
-          description: Free-form description of the price list.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list expires. Empty means open-ended.
-        is_active:
-          type: boolean
-          example: false
-          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        rules:
-          type: object
-          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list becomes active. Empty means immediately.
-        type:
-          type: integer
-          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
-
-
-            Integer enum value: 1 - Standard, 2 - Scheduled'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_price_list_prices:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProductPriceListPrice, see: ''createProductPriceListPriceInput'' object for properties.'
-          description: Per-product, per-currency prices configured in the price list.
-      required:
-      - name
     batchProductCategoryInput:
       properties:
         name:
@@ -3552,567 +4173,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateProductCategoryInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent category.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to Product, see: ''updateProductInput'' object for properties.'
-          description: All Products in this category.
-    createProductPriceListPriceInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        price:
-          type: number
-          format: double
-          example: 4.32
-          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        product_price_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the price list.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - currency_id
-      - product_id
-      - product_price_list_id
-      - settings
-    ProductCategory:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        parent:
-          type: string
-          format: uri
-          description: 'Parent category in the catalog hierarchy. Empty for top-level categories.
-
-
-            Relation to ProductCategory. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductCategory'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent category.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_relations:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
-          description: All Products in this category.
-      required:
-      - is_delete_protected
-      - id
-      - name
-    createProductPipelineRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - pipeline_id
-      - product_id
-    createProductCategoryInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent category.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to Product, see: ''createProductInput'' object for properties.'
-          description: All Products in this category.
-      required:
-      - name
-    updateProductPriceListInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-form description of the price list.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list expires. Empty means open-ended.
-        is_active:
-          type: boolean
-          example: false
-          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        rules:
-          type: object
-          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list becomes active. Empty means immediately.
-        type:
-          type: integer
-          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
-
-
-            Integer enum value: 1 - Standard, 2 - Scheduled'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_price_list_prices:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
-          description: Per-product, per-currency prices configured in the price list.
-    ProductPriceList:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        description:
-          type: string
-          example: string
-          description: Free-form description of the price list.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list expires. Empty means open-ended.
-        is_active:
-          type: boolean
-          example: false
-          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        rules:
-          type: object
-          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list becomes active. Empty means immediately.
-        type:
-          type: integer
-          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
-
-
-            Integer enum value: 1 - Standard, 2 - Scheduled'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_price_list_prices:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to ProductPriceListPrice. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductPriceListPrice'' object for properties.'
-          description: Per-product, per-currency prices configured in the price list.
-      required:
-      - is_delete_protected
-      - id
-      - name
-    createProductInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        picture:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Product picture.
-
-
-            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
-        allowed_pipelines:
-          type: integer
-          description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
-
-
-            Integer enum value: 1 - All, 2 - Selected'
-          example: 1
-          enum:
-          - 1
-          - 2
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this product.
-        description:
-          type: string
-          example: string
-          description: Free-form description of the product.
-        name:
-          type: string
-          example: string
-          description: Name of the product, shown in catalogues and pickers.
-        picture_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product picture document.
-        product_category_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product category.
-        product_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product type.
-        sku:
-          type: string
-          example: string
-          description: Stock-keeping unit (SKU) identifier of the product. Must be unique across products.
-        unit_symbol:
-          type: string
-          example: string
-          description: Unit of measure shown next to product quantities (e.g. pcs, kg, hours).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_pipeline_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProductPipelineRelation, see: ''createProductPipelineRelationInput'' object for properties.'
-          description: Deprecated pipeline connection.
-        product_pipelines:
-          type: object
-          properties:
-            pipelines:
-              type: array
-              items:
-                type: string
-                description: An id of pipeline entity.
-                format: uuid
-            allowed_pipelines:
-              type: integer
-              description: 'Whether this product can be added to all pipelines or only the explicitly linked subset (see product_pipeline_relations).
-
-
-                Integer enum value: 1 - All, 2 - Selected'
-              example: 1
-              enum:
-              - 1
-              - 2
-          required:
-          - pipelines
-          - allowed_pipelines
-          description: Configuration of Pipelines where the Product can be used.
-        picture_source_url:
-          type: string
-          example: string
-          description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
-      required:
-      - name
-    batchProductPriceListInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-form description of the price list.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list expires. Empty means open-ended.
-        is_active:
-          type: boolean
-          example: false
-          description: Master switch for the price list. Inactive price lists are not applied to opportunities or quotes regardless of dates.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        rules:
-          type: object
-          description: 'Filter expression — a FieldFilter JSON object — deciding which records (e.g. accounts, opportunities) the price list applies to. Empty when it applies to all records. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/fieldfilter.doc.html'
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the price list becomes active. Empty means immediately.
-        type:
-          type: integer
-          description: 'Distribution model of the price list (e.g. List, Promotion, Discount).
-
-
-            Integer enum value: 1 - Standard, 2 - Scheduled'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        product_price_list_prices:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProductPriceListPrice, see: ''updateProductPriceListPriceInput'' object for properties.'
-          description: Per-product, per-currency prices configured in the price list.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateProductPriceListPriceInput:
-      properties:
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        price:
-          type: number
-          format: double
-          example: 4.32
-          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        product_price_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the price list.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateProductPipelineRelationInput:
-      properties:
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     ProductType:
       properties:
         has_draft:
@@ -4196,6 +4256,23 @@ components:
       - is_readonly
       - name
       - oppty_product_relation_type_id
+    updateProductPipelineRelationInput:
+      properties:
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     batchProductInput:
       properties:
         picture:
@@ -4300,6 +4377,42 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    batchProductPriceListPriceInput:
+      properties:
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: 4.32
+          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the price list.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Error:
       properties:
         http_status:
@@ -4324,6 +4437,44 @@ components:
       required:
       - success
       - http_status
+    createProductTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the product type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_readonly
+      - name
     updateProductInput:
       properties:
         picture:
@@ -4424,7 +4575,7 @@ components:
           type: string
           example: string
           description: Source url of picture. If filled url is loaded and checked content. Currently supports only pictures!!
-    ProductDataExRelation:
+    ProductCategory:
       properties:
         is_delete_protected:
           type: boolean
@@ -4454,186 +4605,35 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        data:
+        parent:
           type: string
           format: uri
-          description: 'External data record (Data entity) holding the enrichment payload.
+          description: 'Parent category in the catalog hierarchy. Empty for top-level categories.
 
 
-            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
-        product:
-          type: string
-          format: uri
-          description: 'Product this enrichment record applies to.
-
-
-            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the external data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the enrichment record originates from.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - data
-      - product
-      - data_id
-      - data_set_id
-      - product_id
-    ProductPipelineRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        pipeline:
-          type: string
-          format: uri
-          description: 'Pipeline in which the product can be added as a line item.
-
-
-            Relation to Pipeline. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Pipeline'' object for properties.'
-        product:
-          type: string
-          format: uri
-          description: 'Product available in the linked pipeline.
-
-
-            Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - pipeline
-      - product
-      - pipeline_id
-      - product_id
-    batchProductPriceListPriceInput:
-      properties:
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        price:
-          type: number
-          format: double
-          example: 4.32
-          description: Price amount stored at 6-decimal precision; values set via the API are rounded.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        product_price_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the price list.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-price access controls (e.g. which user roles can override this price). Stored as a JSON object.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchProductPipelineRelationInput:
-      properties:
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateProductTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing products of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the product type is system-managed and cannot be edited or deleted by users.
+            Relation to ProductCategory. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProductCategory'' object for properties.'
         name:
           type: string
           example: string
           description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent category.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        product_relations:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to Product. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Product'' object for properties.'
+          description: All Products in this category.
+      required:
+      - is_delete_protected
+      - id
+      - name

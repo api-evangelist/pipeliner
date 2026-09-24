@@ -1,8 +1,47 @@
-generated: '2026-09-22'
+generated: '2026-09-23'
 method: derived
 generator: derive-mcp-candidate.py
 source:
-- openapi/pipeliner-openapi.json
+- openapi/pipeliner-account-api-openapi.yml
+- openapi/pipeliner-activity-api-openapi.yml
+- openapi/pipeliner-approval-api-openapi.yml
+- openapi/pipeliner-call-api-openapi.yml
+- openapi/pipeliner-chat-api-openapi.yml
+- openapi/pipeliner-client-api-openapi.yml
+- openapi/pipeliner-company-email-api-openapi.yml
+- openapi/pipeliner-contact-api-openapi.yml
+- openapi/pipeliner-country-api-openapi.yml
+- openapi/pipeliner-currency-api-openapi.yml
+- openapi/pipeliner-custom-entity-api-openapi.yml
+- openapi/pipeliner-data-api-openapi.yml
+- openapi/pipeliner-document-api-openapi.yml
+- openapi/pipeliner-email-api-openapi.yml
+- openapi/pipeliner-email-sequence-api-openapi.yml
+- openapi/pipeliner-entities-api-openapi.yml
+- openapi/pipeliner-field-api-openapi.yml
+- openapi/pipeliner-forecast-api-openapi.yml
+- openapi/pipeliner-form-api-openapi.yml
+- openapi/pipeliner-import-api-openapi.yml
+- openapi/pipeliner-interface-api-openapi.yml
+- openapi/pipeliner-lead-api-openapi.yml
+- openapi/pipeliner-lead-opportunity-api-openapi.yml
+- openapi/pipeliner-masterright-api-openapi.yml
+- openapi/pipeliner-media-api-openapi.yml
+- openapi/pipeliner-memo-api-openapi.yml
+- openapi/pipeliner-message-api-openapi.yml
+- openapi/pipeliner-note-api-openapi.yml
+- openapi/pipeliner-online-api-openapi.yml
+- openapi/pipeliner-opportunity-api-openapi.yml
+- openapi/pipeliner-phone-api-openapi.yml
+- openapi/pipeliner-pipeline-api-openapi.yml
+- openapi/pipeliner-process-api-openapi.yml
+- openapi/pipeliner-product-api-openapi.yml
+- openapi/pipeliner-product-line-items-api-openapi.yml
+- openapi/pipeliner-profile-api-openapi.yml
+- openapi/pipeliner-project-api-openapi.yml
+- openapi/pipeliner-quote-api-openapi.yml
+- openapi/pipeliner-report-api-openapi.yml
+- openapi/pipeliner-salesrole-api-openapi.yml
 status: candidate
 deployment:
   mode: none
@@ -18,198 +57,198 @@ tools:
   method: GET
   path: /entities/Accounts/{id}
   description: Accounts.get
-- name: accounts_delete
-  operationId: Accounts.delete
-  method: DELETE
-  path: /entities/Accounts/{id}
-  description: Accounts.delete
-- name: accounts_update
-  operationId: Accounts.update
-  method: PATCH
-  path: /entities/Accounts/{id}
-  description: Accounts.update
-- name: accounts_list
-  operationId: Accounts.list
+- name: activities_get
+  operationId: Activities.get
   method: GET
-  path: /entities/Accounts
-  description: Accounts.list
-- name: accounts_create
-  operationId: Accounts.create
-  method: POST
-  path: /entities/Accounts
-  description: Accounts.create
-- name: accounts_merge
-  operationId: Accounts.merge
-  method: POST
-  path: /entities/Accounts/merge
-  description: Accounts.merge
-- name: accounts_batch_delete
-  operationId: Accounts.batch_delete
-  method: POST
-  path: /entities/Accounts/batch-delete
-  description: Accounts.batch_delete
-- name: accounts_batch_create_or_update
-  operationId: Accounts.batch_create_or_update
-  method: POST
-  path: /entities/Accounts/batch-modify
-  description: Accounts.batch_create_or_update
-- name: accounts_batch_restore
-  operationId: Accounts.batch_restore
-  method: POST
-  path: /entities/Accounts/batch-restore
-  description: Accounts.batch_restore
-- name: account_data_ex_relations_get
-  operationId: AccountDataExRelations.get
+  path: /entities/Activities/{id}
+  description: Activities.get
+- name: approvals_get
+  operationId: Approvals.get
   method: GET
-  path: /entities/AccountDataExRelations/{id}
-  description: AccountDataExRelations.get
-- name: account_data_ex_relations_list
-  operationId: AccountDataExRelations.list
+  path: /entities/Approvals/{id}
+  description: Approvals.get
+- name: calls_get
+  operationId: Calls.get
   method: GET
-  path: /entities/AccountDataExRelations
-  description: AccountDataExRelations.list
-- name: account_kpis_get
-  operationId: AccountKPIs.get
+  path: /entities/Calls/{id}
+  description: Calls.get
+- name: chat_conversations_get
+  operationId: ChatConversations.get
   method: GET
-  path: /entities/AccountKPIs/{id}
-  description: AccountKPIs.get
-- name: account_kpis_delete
-  operationId: AccountKPIs.delete
-  method: DELETE
-  path: /entities/AccountKPIs/{id}
-  description: AccountKPIs.delete
-- name: account_kpis_update
-  operationId: AccountKPIs.update
-  method: PATCH
-  path: /entities/AccountKPIs/{id}
-  description: AccountKPIs.update
-- name: account_kpis_list
-  operationId: AccountKPIs.list
+  path: /entities/ChatConversations/{id}
+  description: ChatConversations.get
+- name: clients_get
+  operationId: Clients.get
   method: GET
-  path: /entities/AccountKPIs
-  description: AccountKPIs.list
-- name: account_kpis_create
-  operationId: AccountKPIs.create
-  method: POST
-  path: /entities/AccountKPIs
-  description: AccountKPIs.create
-- name: account_kpis_batch_delete
-  operationId: AccountKPIs.batch_delete
-  method: POST
-  path: /entities/AccountKPIs/batch-delete
-  description: AccountKPIs.batch_delete
-- name: account_kpis_batch_create_or_update
-  operationId: AccountKPIs.batch_create_or_update
-  method: POST
-  path: /entities/AccountKPIs/batch-modify
-  description: AccountKPIs.batch_create_or_update
-- name: account_kpis_batch_restore
-  operationId: AccountKPIs.batch_restore
-  method: POST
-  path: /entities/AccountKPIs/batch-restore
-  description: AccountKPIs.batch_restore
-- name: account_product_pricings_get
-  operationId: AccountProductPricings.get
+  path: /entities/Clients/{id}
+  description: Clients.get
+- name: company_emails_get
+  operationId: CompanyEmails.get
   method: GET
-  path: /entities/AccountProductPricings/{id}
-  description: AccountProductPricings.get
-- name: account_product_pricings_delete
-  operationId: AccountProductPricings.delete
-  method: DELETE
-  path: /entities/AccountProductPricings/{id}
-  description: AccountProductPricings.delete
-- name: account_product_pricings_update
-  operationId: AccountProductPricings.update
-  method: PATCH
-  path: /entities/AccountProductPricings/{id}
-  description: AccountProductPricings.update
-- name: account_product_pricings_list
-  operationId: AccountProductPricings.list
+  path: /entities/CompanyEmails/{id}
+  description: CompanyEmails.get
+- name: contacts_get
+  operationId: Contacts.get
   method: GET
-  path: /entities/AccountProductPricings
-  description: AccountProductPricings.list
-- name: account_product_pricings_create
-  operationId: AccountProductPricings.create
-  method: POST
-  path: /entities/AccountProductPricings
-  description: AccountProductPricings.create
-- name: account_product_pricings_batch_delete
-  operationId: AccountProductPricings.batch_delete
-  method: POST
-  path: /entities/AccountProductPricings/batch-delete
-  description: AccountProductPricings.batch_delete
-- name: account_product_pricings_batch_create_or_update
-  operationId: AccountProductPricings.batch_create_or_update
-  method: POST
-  path: /entities/AccountProductPricings/batch-modify
-  description: AccountProductPricings.batch_create_or_update
-- name: account_product_pricings_batch_restore
-  operationId: AccountProductPricings.batch_restore
-  method: POST
-  path: /entities/AccountProductPricings/batch-restore
-  description: AccountProductPricings.batch_restore
-- name: account_relations_get
-  operationId: AccountRelations.get
+  path: /entities/Contacts/{id}
+  description: Contacts.get
+- name: country_crms_get
+  operationId: CountryCrms.get
   method: GET
-  path: /entities/AccountRelations/{id}
-  description: AccountRelations.get
-- name: account_relations_delete
-  operationId: AccountRelations.delete
-  method: DELETE
-  path: /entities/AccountRelations/{id}
-  description: AccountRelations.delete
-- name: account_relations_update
-  operationId: AccountRelations.update
-  method: PATCH
-  path: /entities/AccountRelations/{id}
-  description: AccountRelations.update
-- name: account_relations_list
-  operationId: AccountRelations.list
+  path: /entities/CountryCrms/{id}
+  description: CountryCrms.get
+- name: currencies_get
+  operationId: Currencies.get
   method: GET
-  path: /entities/AccountRelations
-  description: AccountRelations.list
-- name: account_relations_create
-  operationId: AccountRelations.create
-  method: POST
-  path: /entities/AccountRelations
-  description: AccountRelations.create
-- name: account_relations_batch_delete
-  operationId: AccountRelations.batch_delete
-  method: POST
-  path: /entities/AccountRelations/batch-delete
-  description: AccountRelations.batch_delete
-- name: account_relations_batch_create_or_update
-  operationId: AccountRelations.batch_create_or_update
-  method: POST
-  path: /entities/AccountRelations/batch-modify
-  description: AccountRelations.batch_create_or_update
-- name: account_relations_batch_restore
-  operationId: AccountRelations.batch_restore
-  method: POST
-  path: /entities/AccountRelations/batch-restore
-  description: AccountRelations.batch_restore
-- name: account_relation_labels_get
-  operationId: AccountRelationLabels.get
+  path: /entities/Currencies/{id}
+  description: Currencies.get
+- name: '{custom_entity_api_name}_get'
+  operationId: '{custom_entity_api_name}.get'
   method: GET
-  path: /entities/AccountRelationLabels/{id}
-  description: AccountRelationLabels.get
-- name: account_relation_labels_delete
-  operationId: AccountRelationLabels.delete
-  method: DELETE
-  path: /entities/AccountRelationLabels/{id}
-  description: AccountRelationLabels.delete
-- name: account_relation_labels_update
-  operationId: AccountRelationLabels.update
-  method: PATCH
-  path: /entities/AccountRelationLabels/{id}
-  description: AccountRelationLabels.update
-- name: account_relation_labels_list
-  operationId: AccountRelationLabels.list
+  path: /entities/{custom_entity_api_name}/{id}
+  description: CustomEntities.get
+- name: data_get
+  operationId: Data.get
   method: GET
-  path: /entities/AccountRelationLabels
-  description: AccountRelationLabels.list
-- name: account_relation_labels_create
-  operationId: AccountRelationLabels.create
-  method: POST
-  path: /entities/AccountRelationLabels
-  description: AccountRelationLabels.create
+  path: /entities/Data/{id}
+  description: Data.get
+- name: cloud_objects_get
+  operationId: CloudObjects.get
+  method: GET
+  path: /entities/CloudObjects/{id}
+  description: CloudObjects.get
+- name: emails_get
+  operationId: Emails.get
+  method: GET
+  path: /entities/Emails/{id}
+  description: Emails.get
+- name: email_sequences_get
+  operationId: EmailSequences.get
+  method: GET
+  path: /entities/EmailSequences/{id}
+  description: EmailSequences.get
+- name: api_accesses_get
+  operationId: ApiAccesses.get
+  method: GET
+  path: /entities/ApiAccesses/{id}
+  description: ApiAccesses.get
+- name: fields_get
+  operationId: Fields.get
+  method: GET
+  path: /entities/Fields/{id}
+  description: Fields.get
+- name: forecasts_get
+  operationId: Forecasts.get
+  method: GET
+  path: /entities/Forecasts/{id}
+  description: Forecasts.get
+- name: form_views_get
+  operationId: FormViews.get
+  method: GET
+  path: /entities/FormViews/{id}
+  description: FormViews.get
+- name: import_mapping_masks_get
+  operationId: ImportMappingMasks.get
+  method: GET
+  path: /entities/ImportMappingMasks/{id}
+  description: ImportMappingMasks.get
+- name: interface_previews_get
+  operationId: InterfacePreviews.get
+  method: GET
+  path: /entities/InterfacePreviews/{id}
+  description: InterfacePreviews.get
+- name: entity_scorings_get
+  operationId: EntityScorings.get
+  method: GET
+  path: /entities/EntityScorings/{id}
+  description: EntityScorings.get
+- name: leads_get
+  operationId: Leads.get
+  method: GET
+  path: /entities/Leads/{id}
+  description: Leads.get
+- name: allowed_account_types_get
+  operationId: AllowedAccountTypes.get
+  method: GET
+  path: /entities/AllowedAccountTypes/{id}
+  description: AllowedAccountTypes.get
+- name: medias_get
+  operationId: Medias.get
+  method: GET
+  path: /entities/Medias/{id}
+  description: Medias.get
+- name: memos_get
+  operationId: Memos.get
+  method: GET
+  path: /entities/Memos/{id}
+  description: Memos.get
+- name: message_relations_get
+  operationId: MessageRelations.get
+  method: GET
+  path: /entities/MessageRelations/{id}
+  description: MessageRelations.get
+- name: notes_get
+  operationId: Notes.get
+  method: GET
+  path: /entities/Notes/{id}
+  description: Notes.get
+- name: online_forms_get
+  operationId: OnlineForms.get
+  method: GET
+  path: /entities/OnlineForms/{id}
+  description: OnlineForms.get
+- name: entity_fitnesses_get
+  operationId: EntityFitnesses.get
+  method: GET
+  path: /entities/EntityFitnesses/{id}
+  description: EntityFitnesses.get
+- name: phones_get
+  operationId: Phones.get
+  method: GET
+  path: /entities/Phones/{id}
+  description: Phones.get
+- name: pipelines_get
+  operationId: Pipelines.get
+  method: GET
+  path: /entities/Pipelines/{id}
+  description: Pipelines.get
+- name: processes_get
+  operationId: Processes.get
+  method: GET
+  path: /entities/Processes/{id}
+  description: Processes.get
+- name: products_get
+  operationId: Products.get
+  method: GET
+  path: /entities/Products/{id}
+  description: Products.get
+- name: oppty_product_relations_get
+  operationId: OpptyProductRelations.get
+  method: GET
+  path: /entities/OpptyProductRelations/{id}
+  description: OpptyProductRelations.get
+- name: profiles_get
+  operationId: Profiles.get
+  method: GET
+  path: /entities/Profiles/{id}
+  description: Profiles.get
+- name: projects_get
+  operationId: Projects.get
+  method: GET
+  path: /entities/Projects/{id}
+  description: Projects.get
+- name: quotes_get
+  operationId: Quotes.get
+  method: GET
+  path: /entities/Quotes/{id}
+  description: Quotes.get
+- name: reports_get
+  operationId: Reports.get
+  method: GET
+  path: /entities/Reports/{id}
+  description: Reports.get
+- name: sales_roles_get
+  operationId: SalesRoles.get
+  method: GET
+  path: /entities/SalesRoles/{id}
+  description: SalesRoles.get

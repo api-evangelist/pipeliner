@@ -1004,6 +1004,276 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createEntityFitnessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''createEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+    updateEntityFitnessInput:
+      properties:
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+    EntityFitnessIndicator:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        entity_fitness:
+          type: string
+          format: uri
+          description: 'Fitness configuration this indicator belongs to.
+
+
+            Relation to EntityFitness. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EntityFitness'' object for properties.'
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - entity_fitness
+      - description
+      - description_use_lang
+      - entity_fitness_id
+      - how_to_fix
+      - how_to_fix_use_lang
+      - is_enabled
+      - name
+      - name_use_lang
+      - settings
+      - type
+    batchEntityFitnessInput:
+      properties:
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        indicator_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
+          description: Fitness indicators (system or custom rules) defined for this configuration.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateEntityFitnessIndicatorInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Description of what the indicator measures, shown in the UI.
+        description_use_lang:
+          type: boolean
+          example: false
+          description: When true, description is treated as a translation key and localized in the UI.
+        entity_fitness_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the fitness configuration.
+        how_to_fix:
+          type: string
+          example: string
+          description: Suggested remediation text shown to the user when a record triggers this indicator.
+        how_to_fix_use_lang:
+          type: boolean
+          example: false
+          description: When true, how_to_fix is treated as a translation key and localized in the UI.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the indicator is configured but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Display name of the indicator.
+        name_use_lang:
+          type: boolean
+          example: false
+          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     EntityFitness:
       properties:
         is_delete_protected:
@@ -1169,133 +1439,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateEntityFitnessIndicatorInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Description of what the indicator measures, shown in the UI.
-        description_use_lang:
-          type: boolean
-          example: false
-          description: When true, description is treated as a translation key and localized in the UI.
-        entity_fitness_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the fitness configuration.
-        how_to_fix:
-          type: string
-          example: string
-          description: Suggested remediation text shown to the user when a record triggers this indicator.
-        how_to_fix_use_lang:
-          type: boolean
-          example: false
-          description: When true, how_to_fix is treated as a translation key and localized in the UI.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the indicator is configured but not evaluated for records.
-        name:
-          type: string
-          example: string
-          description: Display name of the indicator.
-        name_use_lang:
-          type: boolean
-          example: false
-          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchEntityFitnessInput:
-      properties:
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        indicator_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
-          description: Fitness indicators (system or custom rules) defined for this configuration.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateEntityFitnessInput:
-      properties:
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        indicator_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EntityFitnessIndicator, see: ''updateEntityFitnessIndicatorInput'' object for properties.'
-          description: Fitness indicators (system or custom rules) defined for this configuration.
     createEntityFitnessIndicatorInput:
       properties:
         modified:
@@ -1384,146 +1527,3 @@ components:
       - name_use_lang
       - settings
       - type
-    EntityFitnessIndicator:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        entity_fitness:
-          type: string
-          format: uri
-          description: 'Fitness configuration this indicator belongs to.
-
-
-            Relation to EntityFitness. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EntityFitness'' object for properties.'
-        description:
-          type: string
-          example: string
-          description: Description of what the indicator measures, shown in the UI.
-        description_use_lang:
-          type: boolean
-          example: false
-          description: When true, description is treated as a translation key and localized in the UI.
-        entity_fitness_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the fitness configuration.
-        how_to_fix:
-          type: string
-          example: string
-          description: Suggested remediation text shown to the user when a record triggers this indicator.
-        how_to_fix_use_lang:
-          type: boolean
-          example: false
-          description: When true, how_to_fix is treated as a translation key and localized in the UI.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the indicator is configured but not evaluated for records.
-        name:
-          type: string
-          example: string
-          description: Display name of the indicator.
-        name_use_lang:
-          type: boolean
-          example: false
-          description: When true, name is treated as a translation key and localized in the UI; otherwise the literal text is shown.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Indicator rules. For system indicators contains three thresholds (Notice, Warning, Error); for custom indicators contains user-defined filter rules.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Custom, 2 - LowEmailOutreach, 3 - LowEmailEngagement, 4 - TasksOverdue, 5 - NoFollowUp, 6 - ClosingDateOverdue, 7 - SalesStepVelocityOverdue, 8 - SalesCycleOverdue, 9 - ManyClosingDateUpdates, 10 - MovedToPreviousStep, 11 - RankingDecrease, 12 - ValueDecrease'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - entity_fitness
-      - description
-      - description_use_lang
-      - entity_fitness_id
-      - how_to_fix
-      - how_to_fix_use_lang
-      - is_enabled
-      - name
-      - name_use_lang
-      - settings
-      - type
-    createEntityFitnessInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        indicator_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EntityFitnessIndicator, see: ''createEntityFitnessIndicatorInput'' object for properties.'
-          description: Fitness indicators (system or custom rules) defined for this configuration.

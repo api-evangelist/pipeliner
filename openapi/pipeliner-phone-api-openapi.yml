@@ -508,7 +508,31 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updatePhoneInput:
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchPhoneInput:
       properties:
         error_code:
           type: integer
@@ -555,6 +579,10 @@ components:
           type: boolean
           example: false
           description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     createPhoneInput:
       properties:
         modified:
@@ -618,30 +646,6 @@ components:
       - name
       - type
       - enabled
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     Phone:
       properties:
         is_delete_protected:
@@ -738,7 +742,7 @@ components:
       - name
       - type
       - enabled
-    batchPhoneInput:
+    updatePhoneInput:
       properties:
         error_code:
           type: integer
@@ -785,7 +789,3 @@ components:
           type: boolean
           example: false
           description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

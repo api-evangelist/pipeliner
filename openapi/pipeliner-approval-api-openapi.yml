@@ -1996,6 +1996,319 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    ApprovalApprover:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval:
+          type: string
+          format: uri
+          description: 'Approval this approver is assigned to.
+
+
+            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+        client:
+          type: string
+          format: uri
+          description: 'User responsible for approving (or rejecting) the request.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - approval
+      - client
+      - approval_id
+      - client_id
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createApprovalProcessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+      required:
+      - is_enabled
+      - name
+      - owner_id
+    ApprovalProcess:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the approval process.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          readOnly: true
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        priority:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this process among approval processes for the same record-trigger entity type; lower values are evaluated first. Read-only; managed via update_priority. Null for manual-trigger approval processes.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+          description: Approvals (one per process run) raised by this approval process.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - is_enabled
+      - name
+      - owner_id
+    batchApprovalApproverInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user.
+        comment:
+          type: string
+          example: string
+          description: Comment the user attached when responding to the approval.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Approval:
       properties:
         is_delete_protected:
@@ -2185,64 +2498,6 @@ components:
       - application_id
       - approval_process_id
       - settings
-    createApprovalProcessInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the approval process.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to settings.
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the approval process (e.g. process documentation).
-      required:
-      - is_enabled
-      - name
-      - owner_id
     updateApprovalInput:
       properties:
         account_id:
@@ -2323,90 +2578,6 @@ components:
                 format: uri
             description: 'Relation to ApprovalApprover, see: ''updateApprovalApproverInput'' object for properties.'
           description: Users who must respond to the approval, with their individual responses.
-    batchApprovalInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the triggering user.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        approval_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval process.
-        approval_status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        comment:
-          type: string
-          example: string
-          description: Comment the requester attached when raising the approval.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        approvers:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ApprovalApprover, see: ''updateApprovalApproverInput'' object for properties.'
-          description: Users who must respond to the approval, with their individual responses.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createApprovalProcessActivityLogLineInput:
       properties:
         modified:
@@ -2460,395 +2631,6 @@ components:
       - approval_id
       - data
       - sort_order
-    ApprovalProcess:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner:
-          type: string
-          format: uri
-          description: 'User who owns the approval process.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the approval process.
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-          readOnly: true
-        is_enabled:
-          type: boolean
-          example: false
-          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to settings.
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        priority:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of this process among approval processes for the same record-trigger entity type; lower values are evaluated first. Read-only; managed via update_priority. Null for manual-trigger approval processes.
-        settings:
-          type: object
-          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Files attached to the approval process (e.g. process documentation).
-        activity_logs:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
-          description: Approvals (one per process run) raised by this approval process.
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - is_enabled
-      - name
-      - owner_id
-    ApprovalProcessActivityLogLine:
-      properties:
-        formatted_text:
-          type: string
-          example: string
-          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        approval:
-          type: string
-          format: uri
-          description: 'Approval this log line belongs to.
-
-
-            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
-        approval_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval.
-        data:
-          type: object
-          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its approval run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - formatted_text
-      - is_delete_protected
-      - id
-      - approval
-      - approval_id
-      - data
-      - sort_order
-    batchApprovalProcessActivityLogLineInput:
-      properties:
-        approval_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval.
-        data:
-          type: object
-          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its approval run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateApprovalProcessActivityLogLineInput:
-      properties:
-        approval_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval.
-        data:
-          type: object
-          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its approval run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateApprovalProcessInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the approval process.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to settings.
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the approval process (e.g. process documentation).
-    createApprovalApproverInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        approval_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval.
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user.
-        comment:
-          type: string
-          example: string
-          description: Comment the user attached when responding to the approval.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - approval_id
-      - client_id
     createApprovalInput:
       properties:
         modified:
@@ -2944,8 +2726,104 @@ components:
       required:
       - application_id
       - approval_process_id
-    batchApprovalApproverInput:
+    ApprovalProcessActivityLogLine:
       properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        approval:
+          type: string
+          format: uri
+          description: 'Approval this log line belongs to.
+
+
+            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - formatted_text
+      - is_delete_protected
+      - id
+      - approval
+      - approval_id
+      - data
+      - sort_order
+    createApprovalApproverInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         approval_id:
           type: string
           format: uuid
@@ -2976,10 +2854,9 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
+      required:
+      - approval_id
+      - client_id
     updateApprovalApproverInput:
       properties:
         approval_id:
@@ -3012,6 +2889,210 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    updateApprovalProcessActivityLogLineInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    updateApprovalProcessInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the approval process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the approval process actively raises approvals on matching record events; when false, the process is paused.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Approval process schema as a JSON object conforming to the ApprovalProcessSchema type — trigger, filter, approver settings, and approve/reject nodes. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/approvalprocessschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the approval process (e.g. process documentation).
+    batchApprovalProcessActivityLogLineInput:
+      properties:
+        approval_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval.
+        data:
+          type: object
+          description: Typed JSON payload describing the approval step (e.g. approver decisions, comments).
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its approval run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchApprovalInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the triggering user.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the approval process.
+        approval_status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        comment:
+          type: string
+          example: string
+          description: Comment the requester attached when raising the approval.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        approvers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ApprovalApprover, see: ''updateApprovalApproverInput'' object for properties.'
+          description: Users who must respond to the approval, with their individual responses.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     batchApprovalProcessInput:
       properties:
         description:
@@ -3058,84 +3139,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    ApprovalApprover:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        approval:
-          type: string
-          format: uri
-          description: 'Approval this approver is assigned to.
-
-
-            Relation to Approval. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Approval'' object for properties.'
-        client:
-          type: string
-          format: uri
-          description: 'User responsible for approving (or rejecting) the request.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        approval_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the approval.
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user.
-        comment:
-          type: string
-          example: string
-          description: Comment the user attached when responding to the approval.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Pending, 1 - Approved, 2 - Rejected'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - approval
-      - client
-      - approval_id
-      - client_id

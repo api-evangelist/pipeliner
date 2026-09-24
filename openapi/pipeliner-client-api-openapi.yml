@@ -2158,529 +2158,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchClientStoryReadInput:
-      properties:
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the read appointment or task, or empty when this read points to a message.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the read email or memo, or empty when this read points to an activity.
-        no_follow:
-          type: boolean
-          example: false
-          description: When true, the user explicitly chose not to follow up on this item.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the reading user.
-        read_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the user marked the item as read.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchClientExcludedOpptyInput:
-      properties:
-        is_excluded:
-          type: boolean
-          example: false
-          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateClientFavoriteInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite account.
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite email.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        profile_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite screen profile.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite quote.
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite report.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    ClientSetting:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner:
-          type: string
-          format: uri
-          description: 'User the setting belongs to.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Setting key (unique per user).
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        value:
-          type: object
-          description: Setting value, stored as a JSON document.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - name
-      - owner_id
-      - value
-    batchClientInput:
-      properties:
-        default_unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the default sales unit.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user role.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the user.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Customer, 1 - Support'
-          example: 0
-          enum:
-          - 0
-          - 1
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        unit_membership:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to SalesUnitClientRelation, see: ''updateSalesUnitClientRelationInput'' object for properties.'
-          description: Sales units the user belongs to (as member or manager).
-        appointment_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Appointments marked as favorite by the user.
-        task_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Tasks marked as favorite by the user.
-        account_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Accounts marked as favorite by the user.
-        contact_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Contacts marked as favorite by the user.
-        profile_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Screen profiles marked as favorite by the user.
-        report_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Reports marked as favorite by the user.
-        lead_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Leads marked as favorite by the user.
-        opportunity_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
-          description: Opportunities marked as favorite by the user.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createClientExcludedOpptyInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        is_excluded:
-          type: boolean
-          example: false
-          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_excluded
-      - oppty_id
-      - owner_id
-    createClientInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        default_unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the default sales unit.
-        email:
-          type: string
-          example: string
-          description: Email. Readonly information from UserProfile.
-        first_name:
-          type: string
-          example: string
-          description: First name. Readonly information from UserProfile.
-          readOnly: true
-        last_active:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the user's most recent login or API request.
-          readOnly: true
-        last_name:
-          type: string
-          example: string
-          description: Last name. Readonly information from UserProfile.
-          readOnly: true
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user role.
-        middle_name:
-          type: string
-          example: string
-          description: Middle name. Readonly information from UserProfile.
-          readOnly: true
-        phone:
-          type: string
-          example: string
-          description: Phone number. Readonly information from UserProfile.
-          readOnly: true
-        position:
-          type: string
-          example: string
-          description: Job title or position of the user.
-        region:
-          type: string
-          example: string
-          description: Region. Readonly information from UserProfile.
-          readOnly: true
-        timezone:
-          type: string
-          example: string
-          description: Timezone offset (DEPRECATED)Readonly information from UserProfile.
-          readOnly: true
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Customer, 1 - Support'
-          example: 0
-          enum:
-          - 0
-          - 1
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        unit_membership:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to SalesUnitClientRelation, see: ''createSalesUnitClientRelationInput'' object for properties.'
-          description: Sales units the user belongs to (as member or manager).
-        appointment_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Appointments marked as favorite by the user.
-        task_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Tasks marked as favorite by the user.
-        account_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Accounts marked as favorite by the user.
-        contact_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Contacts marked as favorite by the user.
-        profile_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Screen profiles marked as favorite by the user.
-        report_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Reports marked as favorite by the user.
-        lead_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Leads marked as favorite by the user.
-        opportunity_favorite:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
-          description: Opportunities marked as favorite by the user.
-      required:
-      - default_unit_id
-      - email
-      - master_right_id
-      - unit_membership
     ClientFavorite:
       properties:
         is_delete_protected:
@@ -2913,91 +2390,153 @@ components:
       required:
       - owner_id
       - read_at
-    ClientExcludedOppty:
+    Error:
       properties:
-        is_delete_protected:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
           type: boolean
           example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+      required:
+      - success
+      - http_status
+    updateClientInput:
+      properties:
+        default_unit_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity excluded from the user''s forecast/quota calculations.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'User who excluded the opportunity from their forecast/quota.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        is_excluded:
-          type: boolean
-          example: false
-          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
-        oppty_id:
+          description: Id of the default sales unit.
+        master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity.
-        owner_id:
+          description: Id of the assigned user role.
+        position:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
+          example: string
+          description: Job title or position of the user.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - oppty
-      - owner
-      - is_excluded
-      - oppty_id
-      - owner_id
-    createClientFavoriteInput:
+        unit_membership:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnitClientRelation, see: ''updateSalesUnitClientRelationInput'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+    batchClientFavoriteInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         account_id:
           type: string
           format: uuid
@@ -3058,53 +2597,138 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - owner_id
-    updateClientExcludedOpptyInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateClientFavoriteInput:
       properties:
-        is_excluded:
-          type: boolean
-          example: false
-          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
-        oppty_id:
+        account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity.
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
         owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    Error:
+    batchClientStoryReadInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
+        activity_id:
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
           type: string
-        success:
-          description: Always false on error.
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
           type: boolean
           example: false
-      required:
-      - success
-      - http_status
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateClientStoryReadInput:
+      properties:
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read appointment or task, or empty when this read points to a message.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the read email or memo, or empty when this read points to an activity.
+        no_follow:
+          type: boolean
+          example: false
+          description: When true, the user explicitly chose not to follow up on this item.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the reading user.
+        read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the user marked the item as read.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     Client:
       properties:
         is_delete_protected:
@@ -3342,38 +2966,145 @@ components:
       - formatted_name
       - unit_manager_ids
       - unit_member_ids
-    updateClientStoryReadInput:
+    createClientExcludedOpptyInput:
       properties:
-        activity_id:
+        modified:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the read appointment or task, or empty when this read points to a message.
-        message_id:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the read email or memo, or empty when this read points to an activity.
-        no_follow:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_excluded:
           type: boolean
           example: false
-          description: When true, the user explicitly chose not to follow up on this item.
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
         owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the reading user.
-        read_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the user marked the item as read.
+          description: Id of the user.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    updateClientInput:
+      required:
+      - is_excluded
+      - oppty_id
+      - owner_id
+    createClientFavoriteInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite email.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        profile_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite screen profile.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite quote.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the favorite report.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - owner_id
+    batchClientExcludedOpptyInput:
+      properties:
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchClientInput:
       properties:
         default_unit_id:
           type: string
@@ -3494,72 +3225,31 @@ components:
                 format: uri
             description: 'Relation to ClientFavorite, see: ''updateClientFavoriteInput'' object for properties.'
           description: Opportunities marked as favorite by the user.
-    batchClientFavoriteInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateClientExcludedOpptyInput:
       properties:
-        account_id:
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite account.
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite appointment or task, or empty when not pointing to an activity.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite email.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite lead or opportunity, or empty when not pointing to one.
+          description: Id of the opportunity.
         owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        profile_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite screen profile.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite quote.
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the favorite report.
+          description: Id of the user.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     ClientStoryRead:
       properties:
         is_delete_protected:
@@ -3660,3 +3350,313 @@ components:
       - owner
       - owner_id
       - read_at
+    ClientExcludedOppty:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity excluded from the user''s forecast/quota calculations.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who excluded the opportunity from their forecast/quota.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        is_excluded:
+          type: boolean
+          example: false
+          description: When true, the opportunity is excluded from the user's forecast/quota; when false, the row records that the user explicitly re-included a previously excluded opportunity.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - oppty
+      - owner
+      - is_excluded
+      - oppty_id
+      - owner_id
+    createClientInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the default sales unit.
+        email:
+          type: string
+          example: string
+          description: Email. Readonly information from UserProfile.
+        first_name:
+          type: string
+          example: string
+          description: First name. Readonly information from UserProfile.
+          readOnly: true
+        last_active:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the user's most recent login or API request.
+          readOnly: true
+        last_name:
+          type: string
+          example: string
+          description: Last name. Readonly information from UserProfile.
+          readOnly: true
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user role.
+        middle_name:
+          type: string
+          example: string
+          description: Middle name. Readonly information from UserProfile.
+          readOnly: true
+        phone:
+          type: string
+          example: string
+          description: Phone number. Readonly information from UserProfile.
+          readOnly: true
+        position:
+          type: string
+          example: string
+          description: Job title or position of the user.
+        region:
+          type: string
+          example: string
+          description: Region. Readonly information from UserProfile.
+          readOnly: true
+        timezone:
+          type: string
+          example: string
+          description: Timezone offset (DEPRECATED)Readonly information from UserProfile.
+          readOnly: true
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Customer, 1 - Support'
+          example: 0
+          enum:
+          - 0
+          - 1
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        unit_membership:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnitClientRelation, see: ''createSalesUnitClientRelationInput'' object for properties.'
+          description: Sales units the user belongs to (as member or manager).
+        appointment_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Appointments marked as favorite by the user.
+        task_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Tasks marked as favorite by the user.
+        account_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Accounts marked as favorite by the user.
+        contact_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Contacts marked as favorite by the user.
+        profile_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Screen profiles marked as favorite by the user.
+        report_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Reports marked as favorite by the user.
+        lead_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Leads marked as favorite by the user.
+        opportunity_favorite:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ClientFavorite, see: ''createClientFavoriteInput'' object for properties.'
+          description: Opportunities marked as favorite by the user.
+      required:
+      - default_unit_id
+      - email
+      - master_right_id
+      - unit_membership
+    ClientSetting:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User the setting belongs to.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Setting key (unique per user).
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        value:
+          type: object
+          description: Setting value, stored as a JSON document.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - value

@@ -508,54 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createCountryCrmInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        use_lang:
-          type: boolean
-          example: false
-          description: Whether the country name is a localization key to be translated into the user language rather than displayed verbatim.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
-    batchCountryCrmInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        use_lang:
-          type: boolean
-          example: false
-          description: Whether the country name is a localization key to be translated into the user language rather than displayed verbatim.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     CountryCrm:
       properties:
         is_delete_protected:
@@ -642,3 +594,51 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    batchCountryCrmInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: Whether the country name is a localization key to be translated into the user language rather than displayed verbatim.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createCountryCrmInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: Whether the country name is a localization key to be translated into the user language rather than displayed verbatim.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - name

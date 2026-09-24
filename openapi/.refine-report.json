@@ -1,7 +1,7 @@
 {
   "provider": "pipeliner",
   "sources": [
-    "pipeliner-openapi.json"
+    "_original/pipeliner-openapi.json"
   ],
   "outputs": [
     "pipeliner-account-api-openapi.yml",
@@ -56,17 +56,68 @@
     "pipeliner-webhook-api-openapi.yml",
     "pipeliner-webresource-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/pipeliner-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "pipeliner-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "pipeliner-openapi.json: tagged paths GET /entities/ApiAccesses/{id} -> Entities",
     "pipeliner-openapi.json: tagged paths GET /entities/ApiAccesses -> Entities",
     "pipeliner-openapi.json: declared missing tag: Entities",
-    "apis.yml register: written (+51 apis, 51 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "pipeliner-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-activity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-approval-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-call-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-chat-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-client-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-company-email-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-contact-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-country-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-currency-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-custom-entity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-document-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-email-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-email-sequence-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-entities-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-field-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-forecast-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-form-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-import-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-interface-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-lead-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-lead-opportunity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-masterright-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-media-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-memo-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-message-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-note-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-online-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-opportunity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-phone-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-pipeline-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-process-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-product-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-product-line-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-profile-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-project-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-quote-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-report-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-salesrole-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-salesunit-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-step-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-tag-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-target-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-text-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-timeframe-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-translation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-type-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-unsubscribed-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-webhook-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pipeliner-webresource-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

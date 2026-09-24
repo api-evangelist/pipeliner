@@ -8154,24 +8154,71 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    GhostLeadOpptyContactRelation:
+    batchContactAccountRelationInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+        account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
+          description: Id of the account.
+        comment:
+          type: string
+          example: string
+          description: Free-form note describing this contact-account link.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_assistant:
           type: boolean
           example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
+          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
+        position:
+          type: string
+          example: string
+          description: Job title or position the contact holds at the account.
+        relationship:
+          type: integer
+          description: 'Org-chart relationship of the contact within the account hierarchy.
+
+
+            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Roles the contact holds within the linked account.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createGhostLeadOpptyContactRelationInput:
+      properties:
         modified:
           type: string
           format: date-time
@@ -8185,33 +8232,25 @@ components:
           description: Creation time.
           readOnly: true
         ghost_contact:
-          type: string
-          format: uri
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
           description: 'Placeholder ghost contact placed on the lead/opportunity org chart.
 
 
-            Relation to GhostContact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContact'' object for properties.'
+            Relation to GhostContact, see: ''createGhostContactInput'' object for properties.'
         lead_oppty_contact_group_relation:
-          type: string
-          format: uri
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
           description: 'Org-chart group the ghost contact belongs to, when grouped.
 
 
-            Relation to LeadOpptyContactGroupRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadOpptyContactGroupRelation'' object for properties.'
-        lead:
-          type: string
-          format: uri
-          description: 'Lead whose org chart includes the ghost contact. Set when lead_oppty_id resolves to a Lead.
-
-
-            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity whose org chart includes the ghost contact. Set when lead_oppty_id resolves to an Opportunity.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+            Relation to LeadOpptyContactGroupRelation, see: ''createLeadOpptyContactGroupRelationInput'' object for properties.'
         comment:
           type: string
           example: string
@@ -8242,270 +8281,29 @@ components:
         sales_roles:
           type: array
           items:
-            type: string
-            format: uri
-            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostLeadOpptyContactSalesRoleRelation'' object for properties.'
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation, see: ''createGhostLeadOpptyContactSalesRoleRelationInput'' object for properties.'
           description: Sales roles assigned to the ghost contact on this lead/opportunity.
       required:
-      - is_delete_protected
-      - id
       - ghost_contact
       - ghost_contact_id
       - lead_oppty_id
-    batchGhostLeadOpptyContactSalesRoleRelationInput:
+    batchGhostContactAccountRelationInput:
       properties:
-        ghost_lead_oppty_contact_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
-
-
-            Relation to GhostLeadOpptyContactRelation, see: ''updateGhostLeadOpptyContactRelationInput'' object for properties.'
-        ghost_lead_oppty_contact_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-lead/opportunity placement.
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    GhostLeadOpptyContactSalesRoleRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ghost_lead_oppty_contact_relation:
-          type: string
-          format: uri
-          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
-
-
-            Relation to GhostLeadOpptyContactRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostLeadOpptyContactRelation'' object for properties.'
-        sales_role:
-          type: string
-          format: uri
-          description: 'Sales role assigned to the ghost contact.
-
-
-            Relation to SalesRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesRole'' object for properties.'
-        ghost_lead_oppty_contact_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-lead/opportunity placement.
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - ghost_lead_oppty_contact_relation
-      - sales_role
-      - ghost_lead_oppty_contact_relation_id
-      - sales_role_id
-    createGhostLeadOpptyContactSalesRoleRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ghost_lead_oppty_contact_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
-
-
-            Relation to GhostLeadOpptyContactRelation, see: ''createGhostLeadOpptyContactRelationInput'' object for properties.'
-        ghost_lead_oppty_contact_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-lead/opportunity placement.
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - ghost_lead_oppty_contact_relation
-      - ghost_lead_oppty_contact_relation_id
-      - sales_role_id
-    createGhostContactAccountAccountRoleRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ghost_contact_account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Ghost-contact-on-account placement this role assignment belongs to.
-
-
-            Relation to GhostContactAccountRelation, see: ''createGhostContactAccountRelationInput'' object for properties.'
-        account_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        ghost_contact_account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-account placement.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - ghost_contact_account_relation
-      - account_role_id
-      - ghost_contact_account_relation_id
-    updateContactSharingSalesUnitRelationInput:
-      properties:
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    GhostContactAccountRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account whose org chart includes the ghost contact.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
         ghost_contact:
-          type: string
-          format: uri
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
           description: 'Placeholder ghost contact placed on the account org chart.
 
 
-            Relation to GhostContact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContact'' object for properties.'
+            Relation to GhostContact, see: ''updateGhostContactInput'' object for properties.'
         account_id:
           type: string
           format: uuid
@@ -8540,169 +8338,13 @@ components:
         account_roles:
           type: array
           items:
-            type: string
-            format: uri
-            description: 'Relation to GhostContactAccountAccountRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContactAccountAccountRoleRelation'' object for properties.'
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to GhostContactAccountAccountRoleRelation, see: ''updateGhostContactAccountAccountRoleRelationInput'' object for properties.'
           description: Account roles assigned to the ghost contact on this account.
-      required:
-      - is_delete_protected
-      - id
-      - account
-      - ghost_contact
-      - account_id
-      - ghost_contact_id
-    ContactKPI:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User who triggered the KPI event (e.g. created or archived the contact, sent the first email).
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact this KPI event relates to.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'Contact owner at the time the KPI event occurred.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the triggering user belonged to at the time of the event.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - contact
-      - owner
-      - contact_id
-      - kpi
-      - owner_id
-    batchContactKPIInput:
-      properties:
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
@@ -8782,56 +8424,167 @@ components:
       - is_readonly
       - name
       - settings
-    batchContactAccountRelationInput:
+    updateContactSocialRelationInput:
       properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
+        angellist_url:
           type: string
           example: string
-          description: Free-form note describing this contact-account link.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_assistant:
-          type: boolean
-          example: false
-          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
-        position:
+          description: AngelList profile URL of the contact.
+        crunchbase_url:
           type: string
           example: string
-          description: Job title or position the contact holds at the account.
-        relationship:
-          type: integer
-          description: 'Org-chart relationship of the contact within the account hierarchy.
-
-
-            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
+          description: Crunchbase profile URL of the contact.
+        disqus_url:
+          type: string
+          example: string
+          description: Disqus profile URL of the contact.
+        facebook_id:
+          type: string
+          example: string
+          description: Facebook profile id of the contact.
+        facebook_url:
+          type: string
+          example: string
+          description: Facebook profile URL of the contact.
+        flickr_url:
+          type: string
+          example: string
+          description: Flickr profile URL of the contact.
+        foursquare_url:
+          type: string
+          example: string
+          description: Foursquare profile URL of the contact.
+        google_id:
+          type: string
+          example: string
+          description: Google profile id of the contact.
+        google_plus_url:
+          type: string
+          example: string
+          description: Google+ profile URL of the contact.
+        gravatar_url:
+          type: string
+          example: string
+          description: Gravatar profile URL of the contact.
+        klout_url:
+          type: string
+          example: string
+          description: Klout profile URL of the contact.
+        linkedin_id:
+          type: string
+          example: string
+          description: LinkedIn profile id of the contact.
+        linkedin_url:
+          type: string
+          example: string
+          description: LinkedIn profile URL of the contact.
+        pinterest_url:
+          type: string
+          example: string
+          description: Pinterest profile URL of the contact.
+        quora_url:
+          type: string
+          example: string
+          description: Quora profile URL of the contact.
+        reddit_url:
+          type: string
+          example: string
+          description: Reddit profile URL of the contact.
+        skype_url:
+          type: string
+          example: string
+          description: Skype contact URL or username of the contact.
+        slideshare_url:
+          type: string
+          example: string
+          description: SlideShare profile URL of the contact.
+        twitter_id:
+          type: string
+          example: string
+          description: Twitter (X) user id of the contact.
+        twitter_url:
+          type: string
+          example: string
+          description: Twitter (X) profile URL of the contact.
+        vimeo_url:
+          type: string
+          example: string
+          description: Vimeo profile URL of the contact.
+        wordpress_url:
+          type: string
+          example: string
+          description: WordPress site URL of the contact.
+        xing_url:
+          type: string
+          example: string
+          description: XING profile URL of the contact.
+        yahoo_url:
+          type: string
+          example: string
+          description: Yahoo profile URL of the contact.
+        yelp_url:
+          type: string
+          example: string
+          description: Yelp profile URL of the contact.
+        youtube_url:
+          type: string
+          example: string
+          description: YouTube channel URL of the contact.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        account_roles:
+    batchGhostLeadOpptyContactRelationInput:
+      properties:
+        ghost_contact:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Placeholder ghost contact placed on the lead/opportunity org chart.
+
+
+            Relation to GhostContact, see: ''updateGhostContactInput'' object for properties.'
+        lead_oppty_contact_group_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Org-chart group the ghost contact belongs to, when grouped.
+
+
+            Relation to LeadOpptyContactGroupRelation, see: ''updateLeadOpptyContactGroupRelationInput'' object for properties.'
+        comment:
+          type: string
+          example: string
+          description: Free-text comment shown on the org-chart node.
+        ghost_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the ghost contact.
+        lead_oppty_contact_group_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent org-chart group.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity.
+        position_in_group:
+          type: object
+          description: 'Org-chart layout position of the ghost contact within its group, as a JSON object {"x": <int>, "y": <int>}.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sales_roles:
           type: array
           items:
             type: object
@@ -8839,54 +8592,12 @@ components:
               id:
                 type: string
                 format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Roles the contact holds within the linked account.
+            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation, see: ''updateGhostLeadOpptyContactSalesRoleRelationInput'' object for properties.'
+          description: Sales roles assigned to the ghost contact on this lead/opportunity.
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    createContactSharingClientRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - client_id
-      - contact_id
     batchContactRelationInput:
       properties:
         contact1_id:
@@ -8908,49 +8619,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateGhostLeadOpptyContactSalesRoleRelationInput:
-      properties:
-        ghost_lead_oppty_contact_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
-
-
-            Relation to GhostLeadOpptyContactRelation, see: ''updateGhostLeadOpptyContactRelationInput'' object for properties.'
-        ghost_lead_oppty_contact_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-lead/opportunity placement.
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateGhostContactInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the placeholder contact (org-chart label).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchGhostContactAccountAccountRoleRelationInput:
+    updateGhostContactAccountAccountRoleRelationInput:
       properties:
         ghost_contact_account_relation:
           type: object
@@ -8977,55 +8646,7 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateContactKPIInput:
-      properties:
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchGhostContactAccountRelationInput:
+    updateGhostContactAccountRelationInput:
       properties:
         ghost_contact:
           type: object
@@ -9078,41 +8699,6 @@ components:
                 format: uri
             description: 'Relation to GhostContactAccountAccountRoleRelation, see: ''updateGhostContactAccountAccountRoleRelationInput'' object for properties.'
           description: Account roles assigned to the ghost contact on this account.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchContactRelationLabelInput:
-      properties:
-        contact_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Contact relationship being labelled.
-
-
-            Relation to ContactRelation, see: ''updateContactRelationInput'' object for properties.'
-        contact_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact relationship.
-        contact_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     updateContactRelationTypeInput:
       properties:
         color:
@@ -9129,67 +8715,24 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    updateContactAccountRelationInput:
+    ContactRelation:
       properties:
-        account_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
-          type: string
-          example: string
-          description: Free-form note describing this contact-account link.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_assistant:
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
           type: boolean
           example: false
-          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
-        position:
-          type: string
-          example: string
-          description: Job title or position the contact holds at the account.
-        relationship:
-          type: integer
-          description: 'Org-chart relationship of the contact within the account hierarchy.
-
-
-            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        account_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Roles the contact holds within the linked account.
-    createContactAccountRelationInput:
-      properties:
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -9202,54 +8745,216 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_id:
+        contact1:
+          type: string
+          format: uri
+          description: 'One side of the contact-to-contact relationship.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        contact2:
+          type: string
+          format: uri
+          description: 'Other side of the contact-to-contact relationship.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        contact1_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
-          type: string
-          example: string
-          description: Free-form note describing this contact-account link.
-        contact_id:
+          description: Id of the first related contact.
+        contact2_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_assistant:
-          type: boolean
-          example: false
-          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
-        position:
-          type: string
-          example: string
-          description: Job title or position the contact holds at the account.
-        relationship:
+          description: Id of the second related contact.
+        revision:
           type: integer
-          description: 'Org-chart relationship of the contact within the account hierarchy.
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - contact1
+      - contact2
+      - contact1_id
+      - contact2_id
+    updateContactInput:
+      properties:
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Profile picture associated with the contact.
 
 
-            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        address:
+          type: string
+          example: string
+          description: Street address of the contact.
+        city:
+          type: string
+          example: string
+          description: City of the contact address.
+        comments:
+          type: string
+          example: string
+          description: Free-form notes describing the contact.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type assigned to this contact.
+        country:
+          type: string
+          example: string
+          description: Country of the contact address.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this contact.
+        email1:
+          type: string
+          example: string
+          description: Primary email address of the contact. Used as default recipient for emails sent from Coevera.
+        email2:
+          type: string
+          example: string
+          description: Additional email address.
+        email3:
+          type: string
+          example: string
+          description: Additional email address.
+        email4:
+          type: string
+          example: string
+          description: Additional email address.
+        email5:
+          type: string
+          example: string
+          description: Additional email address.
+        first_name:
+          type: string
+          example: string
+          description: Given name of the contact.
+        gender:
+          type: integer
+          description: 'Gender of the contact (e.g. Male, Female, Other).
+
+
+            Integer enum value: 0 - Unknown, 1 - Male, 2 - Female, 3 - NonBinary'
           example: 0
           enum:
           - 0
           - 1
           - 2
           - 3
+        is_archived:
+          type: boolean
+          example: false
+          description: True when the contact has been archived. Archived contacts remain readable but are hidden from active lists and cannot be edited until reactivated.
+        last_name:
+          type: string
+          example: string
+          description: Family name of the contact.
+        middle_name:
+          type: string
+          example: string
+          description: Middle name of the contact, if applicable.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact owner.
+        phone1:
+          type: string
+          example: string
+          description: Primary phone number of the contact. Used as default target for click-to-call.
+        phone2:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone3:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone4:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone5:
+          type: string
+          example: string
+          description: Additional phone number.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the profile picture document.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the contact.
+        quick_account_name:
+          type: string
+          example: string
+          description: Free-text company name used when the contact is not linked to an actual Account record. Lets integrators capture the company without creating a separate Account.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        state_province:
+          type: string
+          example: string
+          description: State or province of the contact address.
+        title:
+          type: string
+          example: string
+          description: Honorific or salutation prefix (e.g. Mr., Ms., Dr.) shown before the name.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        zip_code:
+          type: string
+          example: string
+          description: ZIP or postal code of the contact address.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        account_roles:
+        social_media:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Social network profiles linked to this contact (e.g. LinkedIn, Facebook).
+
+
+            Relation to ContactSocialRelation, see: ''updateContactSocialRelationInput'' object for properties.'
+        account_relations:
           type: array
           items:
             type: object
@@ -9257,12 +8962,265 @@ components:
               id:
                 type: string
                 format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation, see: ''createContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Roles the contact holds within the linked account.
-      required:
-      - account_id
-      - contact_id
-      - is_primary
+            description: 'Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
+          description: Accounts this contact is linked to. Each link records the role and position the contact has at the related account.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactSharingSalesUnitRelation, see: ''updateContactSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this contact. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactSharingClientRelation, see: ''updateContactSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this contact. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this contact.
+        exchange_entity_id:
+          type: string
+          example: string
+          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
+        gapi_entity_id:
+          type: string
+          example: string
+          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
+        o365_entity_id:
+          type: string
+          example: string
+          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
+        primary_account_account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Roles of Contact in his primary Account.
+        account_position:
+          type: string
+          example: string
+          description: Job position of Contact in his primary Account or quick account position if Contact has no primary Account.
+        is_unsubscribed:
+          type: boolean
+          example: false
+          description: If account has any unsubscribed email.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this contact.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this contact currently matches.
+        primary_account_relationship:
+          type: string
+          example: string
+          description: Org chart relationship of Contact in his primary Account.
+    batchContactAccountAccountRoleRelationInput:
+      properties:
+        contact_account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Contact-account link this role assignment belongs to.
+
+
+            Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
+        account_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account role.
+        contact_account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact-account link.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateContactSharingSalesUnitRelationInput:
+      properties:
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchContactSocialRelationInput:
+      properties:
+        angellist_url:
+          type: string
+          example: string
+          description: AngelList profile URL of the contact.
+        crunchbase_url:
+          type: string
+          example: string
+          description: Crunchbase profile URL of the contact.
+        disqus_url:
+          type: string
+          example: string
+          description: Disqus profile URL of the contact.
+        facebook_id:
+          type: string
+          example: string
+          description: Facebook profile id of the contact.
+        facebook_url:
+          type: string
+          example: string
+          description: Facebook profile URL of the contact.
+        flickr_url:
+          type: string
+          example: string
+          description: Flickr profile URL of the contact.
+        foursquare_url:
+          type: string
+          example: string
+          description: Foursquare profile URL of the contact.
+        google_id:
+          type: string
+          example: string
+          description: Google profile id of the contact.
+        google_plus_url:
+          type: string
+          example: string
+          description: Google+ profile URL of the contact.
+        gravatar_url:
+          type: string
+          example: string
+          description: Gravatar profile URL of the contact.
+        klout_url:
+          type: string
+          example: string
+          description: Klout profile URL of the contact.
+        linkedin_id:
+          type: string
+          example: string
+          description: LinkedIn profile id of the contact.
+        linkedin_url:
+          type: string
+          example: string
+          description: LinkedIn profile URL of the contact.
+        pinterest_url:
+          type: string
+          example: string
+          description: Pinterest profile URL of the contact.
+        quora_url:
+          type: string
+          example: string
+          description: Quora profile URL of the contact.
+        reddit_url:
+          type: string
+          example: string
+          description: Reddit profile URL of the contact.
+        skype_url:
+          type: string
+          example: string
+          description: Skype contact URL or username of the contact.
+        slideshare_url:
+          type: string
+          example: string
+          description: SlideShare profile URL of the contact.
+        twitter_id:
+          type: string
+          example: string
+          description: Twitter (X) user id of the contact.
+        twitter_url:
+          type: string
+          example: string
+          description: Twitter (X) profile URL of the contact.
+        vimeo_url:
+          type: string
+          example: string
+          description: Vimeo profile URL of the contact.
+        wordpress_url:
+          type: string
+          example: string
+          description: WordPress site URL of the contact.
+        xing_url:
+          type: string
+          example: string
+          description: XING profile URL of the contact.
+        yahoo_url:
+          type: string
+          example: string
+          description: Yahoo profile URL of the contact.
+        yelp_url:
+          type: string
+          example: string
+          description: Yelp profile URL of the contact.
+        youtube_url:
+          type: string
+          example: string
+          description: YouTube channel URL of the contact.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Contact:
       properties:
         is_delete_protected:
@@ -9586,49 +9544,33 @@ components:
       - owner_id
       - formatted_name
       - is_favorite
-    createContactRelationLabelInput:
+    batchContactTypeInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact_relation:
+        form_edit:
           type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Contact relationship being labelled.
-
-
-            Relation to ContactRelation, see: ''createContactRelationInput'' object for properties.'
-        contact_relation_id:
+          description: JSON definition of the edit form layout used by the UI when creating or editing contacts of this type. Contains tabs, sections, and field placement.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the contact type is system-managed and cannot be edited or deleted by users.
+        name:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact relationship.
-        contact_relation_type_id:
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - contact_relation
-      - contact_relation_id
-      - contact_relation_type_id
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     updateContactRelationLabelInput:
       properties:
         contact_relation:
@@ -9656,56 +9598,6 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    batchContactRelationTypeInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createContactRelationTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - color
     updateGhostLeadOpptyContactRelationInput:
       properties:
         ghost_contact:
@@ -9809,7 +9701,7 @@ components:
       - is_readonly
       - name
       - settings
-    ContactAccountRelation:
+    ContactRelationType:
       properties:
         is_delete_protected:
           type: boolean
@@ -9839,986 +9731,58 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
           type: string
-          format: uri
-          description: 'Account the contact is linked to.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact linked to the account.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        account_id:
+          example: string
+          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - color
+    batchContactKPIInput:
+      properties:
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
           type: string
-          example: string
-          description: Free-form note describing this contact-account link.
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
         contact_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the contact.
-        is_assistant:
-          type: boolean
-          example: false
-          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
-        position:
-          type: string
-          example: string
-          description: Job title or position the contact holds at the account.
-        relationship:
+        kpi:
           type: integer
-          description: 'Org-chart relationship of the contact within the account hierarchy.
+          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
 
 
-            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
+            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
           example: 1
-          description: Revision when entity was lastly changed.
-        account_roles:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactAccountAccountRoleRelation'' object for properties.'
-          description: Roles the contact holds within the linked account.
-      required:
-      - is_delete_protected
-      - id
-      - account
-      - contact
-      - account_id
-      - contact_id
-      - is_primary
-    createContactInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-        picture:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Profile picture associated with the contact.
-
-
-            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
-        address:
-          type: string
-          example: string
-          description: Street address of the contact.
-        city:
-          type: string
-          example: string
-          description: City of the contact address.
-        comments:
-          type: string
-          example: string
-          description: Free-form notes describing the contact.
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type assigned to this contact.
-        country:
-          type: string
-          example: string
-          description: Country of the contact address.
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this contact.
-        email1:
-          type: string
-          example: string
-          description: Primary email address of the contact. Used as default recipient for emails sent from Coevera.
-        email2:
-          type: string
-          example: string
-          description: Additional email address.
-        email3:
-          type: string
-          example: string
-          description: Additional email address.
-        email4:
-          type: string
-          example: string
-          description: Additional email address.
-        email5:
-          type: string
-          example: string
-          description: Additional email address.
-        first_name:
-          type: string
-          example: string
-          description: Given name of the contact.
-        gender:
-          type: integer
-          description: 'Gender of the contact (e.g. Male, Female, Other).
-
-
-            Integer enum value: 0 - Unknown, 1 - Male, 2 - Female, 3 - NonBinary'
-          example: 0
           enum:
-          - 0
           - 1
           - 2
           - 3
-        is_archived:
-          type: boolean
-          example: false
-          description: True when the contact has been archived. Archived contacts remain readable but are hidden from active lists and cannot be edited until reactivated.
-        last_name:
-          type: string
-          example: string
-          description: Family name of the contact.
-        middle_name:
-          type: string
-          example: string
-          description: Middle name of the contact, if applicable.
+          - 4
         owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner.
-        phone1:
-          type: string
-          example: string
-          description: Primary phone number of the contact. Used as default target for click-to-call.
-        phone2:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone3:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone4:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone5:
-          type: string
-          example: string
-          description: Additional phone number.
-        picture_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the profile picture document.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the contact.
-        quick_account_name:
-          type: string
-          example: string
-          description: Free-text company name used when the contact is not linked to an actual Account record. Lets integrators capture the company without creating a separate Account.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        state_province:
-          type: string
-          example: string
-          description: State or province of the contact address.
-        title:
-          type: string
-          example: string
-          description: Honorific or salutation prefix (e.g. Mr., Ms., Dr.) shown before the name.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        zip_code:
-          type: string
-          example: string
-          description: ZIP or postal code of the contact address.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        social_media:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Social network profiles linked to this contact (e.g. LinkedIn, Facebook).
-
-
-            Relation to ContactSocialRelation, see: ''createContactSocialRelationInput'' object for properties.'
-        account_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactAccountRelation, see: ''createContactAccountRelationInput'' object for properties.'
-          description: Accounts this contact is linked to. Each link records the role and position the contact has at the related account.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactSharingSalesUnitRelation, see: ''createContactSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this contact. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactSharingClientRelation, see: ''createContactSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this contact. Editable only when share_mode allows user sharing.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this contact.
-        primary_account_account_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation, see: ''createContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Roles of Contact in his primary Account.
-        account_position:
-          type: string
-          example: string
-          description: Job position of Contact in his primary Account or quick account position if Contact has no primary Account.
-        is_unsubscribed:
-          type: boolean
-          example: false
-          description: If account has any unsubscribed email.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
-          description: Tag labels applied to this contact.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
-          description: Saved view profiles this contact currently matches.
-        primary_account_relationship:
-          type: string
-          example: string
-          description: Org chart relationship of Contact in his primary Account.
-      required:
-      - owner_id
-    batchGhostLeadOpptyContactRelationInput:
-      properties:
-        ghost_contact:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Placeholder ghost contact placed on the lead/opportunity org chart.
-
-
-            Relation to GhostContact, see: ''updateGhostContactInput'' object for properties.'
-        lead_oppty_contact_group_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Org-chart group the ghost contact belongs to, when grouped.
-
-
-            Relation to LeadOpptyContactGroupRelation, see: ''updateLeadOpptyContactGroupRelationInput'' object for properties.'
-        comment:
-          type: string
-          example: string
-          description: Free-text comment shown on the org-chart node.
-        ghost_contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost contact.
-        lead_oppty_contact_group_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent org-chart group.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity.
-        position_in_group:
-          type: object
-          description: 'Org-chart layout position of the ghost contact within its group, as a JSON object {"x": <int>, "y": <int>}.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sales_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation, see: ''updateGhostLeadOpptyContactSalesRoleRelationInput'' object for properties.'
-          description: Sales roles assigned to the ghost contact on this lead/opportunity.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchContactAccountAccountRoleRelationInput:
-      properties:
-        contact_account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Contact-account link this role assignment belongs to.
-
-
-            Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
-        account_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        contact_account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact-account link.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createGhostContactAccountRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ghost_contact:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Placeholder ghost contact placed on the account org chart.
-
-
-            Relation to GhostContact, see: ''createGhostContactInput'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
-          type: string
-          example: string
-          description: Free-text comment shown on the org-chart node.
-        ghost_contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost contact.
-        is_assistant:
-          type: boolean
-          example: false
-          description: True when the ghost contact is rendered as an assistant of its parent in the org chart.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the ghost contact is rendered as a sibling rather than a child in the org chart.
-        position:
-          type: string
-          example: string
-          description: Position label shown on the org chart for the ghost contact.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        account_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to GhostContactAccountAccountRoleRelation, see: ''createGhostContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Account roles assigned to the ghost contact on this account.
-      required:
-      - ghost_contact
-      - account_id
-      - ghost_contact_id
-    GhostContact:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the placeholder contact (org-chart label).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - name
-    updateContactInput:
-      properties:
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-        picture:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Profile picture associated with the contact.
-
-
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
-        address:
-          type: string
-          example: string
-          description: Street address of the contact.
-        city:
-          type: string
-          example: string
-          description: City of the contact address.
-        comments:
-          type: string
-          example: string
-          description: Free-form notes describing the contact.
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type assigned to this contact.
-        country:
-          type: string
-          example: string
-          description: Country of the contact address.
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this contact.
-        email1:
-          type: string
-          example: string
-          description: Primary email address of the contact. Used as default recipient for emails sent from Coevera.
-        email2:
-          type: string
-          example: string
-          description: Additional email address.
-        email3:
-          type: string
-          example: string
-          description: Additional email address.
-        email4:
-          type: string
-          example: string
-          description: Additional email address.
-        email5:
-          type: string
-          example: string
-          description: Additional email address.
-        first_name:
-          type: string
-          example: string
-          description: Given name of the contact.
-        gender:
-          type: integer
-          description: 'Gender of the contact (e.g. Male, Female, Other).
-
-
-            Integer enum value: 0 - Unknown, 1 - Male, 2 - Female, 3 - NonBinary'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        is_archived:
-          type: boolean
-          example: false
-          description: True when the contact has been archived. Archived contacts remain readable but are hidden from active lists and cannot be edited until reactivated.
-        last_name:
-          type: string
-          example: string
-          description: Family name of the contact.
-        middle_name:
-          type: string
-          example: string
-          description: Middle name of the contact, if applicable.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner.
-        phone1:
-          type: string
-          example: string
-          description: Primary phone number of the contact. Used as default target for click-to-call.
-        phone2:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone3:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone4:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone5:
-          type: string
-          example: string
-          description: Additional phone number.
-        picture_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the profile picture document.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the contact.
-        quick_account_name:
-          type: string
-          example: string
-          description: Free-text company name used when the contact is not linked to an actual Account record. Lets integrators capture the company without creating a separate Account.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        state_province:
-          type: string
-          example: string
-          description: State or province of the contact address.
-        title:
-          type: string
-          example: string
-          description: Honorific or salutation prefix (e.g. Mr., Ms., Dr.) shown before the name.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        zip_code:
-          type: string
-          example: string
-          description: ZIP or postal code of the contact address.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        social_media:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Social network profiles linked to this contact (e.g. LinkedIn, Facebook).
-
-
-            Relation to ContactSocialRelation, see: ''updateContactSocialRelationInput'' object for properties.'
-        account_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
-          description: Accounts this contact is linked to. Each link records the role and position the contact has at the related account.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactSharingSalesUnitRelation, see: ''updateContactSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this contact. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactSharingClientRelation, see: ''updateContactSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this contact. Editable only when share_mode allows user sharing.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this contact.
-        exchange_entity_id:
-          type: string
-          example: string
-          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
-        gapi_entity_id:
-          type: string
-          example: string
-          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
-        o365_entity_id:
-          type: string
-          example: string
-          description: External identifier of the record in the linked third-party service (e.g. Google, Microsoft 365, Exchange). Maintained by the sync engine.
-        primary_account_account_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Roles of Contact in his primary Account.
-        account_position:
-          type: string
-          example: string
-          description: Job position of Contact in his primary Account or quick account position if Contact has no primary Account.
-        is_unsubscribed:
-          type: boolean
-          example: false
-          description: If account has any unsubscribed email.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
-          description: Tag labels applied to this contact.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
-          description: Saved view profiles this contact currently matches.
-        primary_account_relationship:
-          type: string
-          example: string
-          description: Org chart relationship of Contact in his primary Account.
-    createGhostLeadOpptyContactRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ghost_contact:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Placeholder ghost contact placed on the lead/opportunity org chart.
-
-
-            Relation to GhostContact, see: ''createGhostContactInput'' object for properties.'
-        lead_oppty_contact_group_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Org-chart group the ghost contact belongs to, when grouped.
-
-
-            Relation to LeadOpptyContactGroupRelation, see: ''createLeadOpptyContactGroupRelationInput'' object for properties.'
-        comment:
-          type: string
-          example: string
-          description: Free-text comment shown on the org-chart node.
-        ghost_contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost contact.
-        lead_oppty_contact_group_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent org-chart group.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity.
-        position_in_group:
-          type: object
-          description: 'Org-chart layout position of the ghost contact within its group, as a JSON object {"x": <int>, "y": <int>}.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sales_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation, see: ''createGhostLeadOpptyContactSalesRoleRelationInput'' object for properties.'
-          description: Sales roles assigned to the ghost contact on this lead/opportunity.
-      required:
-      - ghost_contact
-      - ghost_contact_id
-      - lead_oppty_id
-    ContactDataExRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact:
-          type: string
-          format: uri
-          description: 'Contact this data relation row applies to.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        data:
-          type: string
-          format: uri
-          description: 'Data record holding the additional fields linked to this contact.
-
-
-            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the linked fields belong to.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - contact
-      - data
-      - contact_id
-      - data_id
-      - data_set_id
-    batchContactSharingSalesUnitRelationInput:
-      properties:
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
+          description: Id of the contact owner at the time of the event.
         unit_id:
           type: string
           format: uuid
@@ -10833,7 +9797,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createContactAccountAccountRoleRelationInput:
+    createGhostLeadOpptyContactSalesRoleRelationInput:
       properties:
         modified:
           type: string
@@ -10847,362 +9811,35 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        contact_account_relation:
+        ghost_lead_oppty_contact_relation:
           type: object
           properties:
             id:
               type: string
               format: uri
-          description: 'Contact-account link this role assignment belongs to.
+          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
 
 
-            Relation to ContactAccountRelation, see: ''createContactAccountRelationInput'' object for properties.'
-        account_role_id:
+            Relation to GhostLeadOpptyContactRelation, see: ''createGhostLeadOpptyContactRelationInput'' object for properties.'
+        ghost_lead_oppty_contact_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        contact_account_relation_id:
+          description: Id of the ghost-contact-lead/opportunity placement.
+        sales_role_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact-account link.
+          description: Id of the sales role.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - contact_account_relation
-      - account_role_id
-      - contact_account_relation_id
-    ContactSharingClientRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User the contact is shared with.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact being shared.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - client
-      - contact
-      - client_id
-      - contact_id
-    createContactSharingSalesUnitRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - contact_id
-      - unit_id
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateGhostContactAccountAccountRoleRelationInput:
-      properties:
-        ghost_contact_account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Ghost-contact-on-account placement this role assignment belongs to.
-
-
-            Relation to GhostContactAccountRelation, see: ''updateGhostContactAccountRelationInput'' object for properties.'
-        account_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        ghost_contact_account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost-contact-account placement.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createContactSocialRelationInput:
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity. Must match with Contact id.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        angellist_url:
-          type: string
-          example: string
-          description: AngelList profile URL of the contact.
-        crunchbase_url:
-          type: string
-          example: string
-          description: Crunchbase profile URL of the contact.
-        disqus_url:
-          type: string
-          example: string
-          description: Disqus profile URL of the contact.
-        facebook_id:
-          type: string
-          example: string
-          description: Facebook profile id of the contact.
-        facebook_url:
-          type: string
-          example: string
-          description: Facebook profile URL of the contact.
-        flickr_url:
-          type: string
-          example: string
-          description: Flickr profile URL of the contact.
-        foursquare_url:
-          type: string
-          example: string
-          description: Foursquare profile URL of the contact.
-        google_id:
-          type: string
-          example: string
-          description: Google profile id of the contact.
-        google_plus_url:
-          type: string
-          example: string
-          description: Google+ profile URL of the contact.
-        gravatar_url:
-          type: string
-          example: string
-          description: Gravatar profile URL of the contact.
-        klout_url:
-          type: string
-          example: string
-          description: Klout profile URL of the contact.
-        linkedin_id:
-          type: string
-          example: string
-          description: LinkedIn profile id of the contact.
-        linkedin_url:
-          type: string
-          example: string
-          description: LinkedIn profile URL of the contact.
-        pinterest_url:
-          type: string
-          example: string
-          description: Pinterest profile URL of the contact.
-        quora_url:
-          type: string
-          example: string
-          description: Quora profile URL of the contact.
-        reddit_url:
-          type: string
-          example: string
-          description: Reddit profile URL of the contact.
-        skype_url:
-          type: string
-          example: string
-          description: Skype contact URL or username of the contact.
-        slideshare_url:
-          type: string
-          example: string
-          description: SlideShare profile URL of the contact.
-        twitter_id:
-          type: string
-          example: string
-          description: Twitter (X) user id of the contact.
-        twitter_url:
-          type: string
-          example: string
-          description: Twitter (X) profile URL of the contact.
-        vimeo_url:
-          type: string
-          example: string
-          description: Vimeo profile URL of the contact.
-        wordpress_url:
-          type: string
-          example: string
-          description: WordPress site URL of the contact.
-        xing_url:
-          type: string
-          example: string
-          description: XING profile URL of the contact.
-        yahoo_url:
-          type: string
-          example: string
-          description: Yahoo profile URL of the contact.
-        yelp_url:
-          type: string
-          example: string
-          description: Yelp profile URL of the contact.
-        youtube_url:
-          type: string
-          example: string
-          description: YouTube channel URL of the contact.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - id
-    updateContactSharingClientRelationInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared contact.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
+      - ghost_lead_oppty_contact_relation
+      - ghost_lead_oppty_contact_relation_id
+      - sales_role_id
     batchContactInput:
       properties:
         created:
@@ -11474,7 +10111,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    ContactRelation:
+    GhostLeadOpptyContactSalesRoleRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -11504,30 +10141,30 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        contact1:
+        ghost_lead_oppty_contact_relation:
           type: string
           format: uri
-          description: 'One side of the contact-to-contact relationship.
+          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
 
 
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        contact2:
+            Relation to GhostLeadOpptyContactRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostLeadOpptyContactRelation'' object for properties.'
+        sales_role:
           type: string
           format: uri
-          description: 'Other side of the contact-to-contact relationship.
+          description: 'Sales role assigned to the ghost contact.
 
 
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        contact1_id:
+            Relation to SalesRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesRole'' object for properties.'
+        ghost_lead_oppty_contact_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related contact.
-        contact2_id:
+          description: Id of the ghost-contact-lead/opportunity placement.
+        sales_role_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related contact.
+          description: Id of the sales role.
         revision:
           type: integer
           format: int32
@@ -11536,38 +10173,38 @@ components:
       required:
       - is_delete_protected
       - id
-      - contact1
-      - contact2
-      - contact1_id
-      - contact2_id
-    updateContactAccountAccountRoleRelationInput:
+      - ghost_lead_oppty_contact_relation
+      - sales_role
+      - ghost_lead_oppty_contact_relation_id
+      - sales_role_id
+    updateGhostLeadOpptyContactSalesRoleRelationInput:
       properties:
-        contact_account_relation:
+        ghost_lead_oppty_contact_relation:
           type: object
           properties:
             id:
               type: string
               format: uri
-          description: 'Contact-account link this role assignment belongs to.
+          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
 
 
-            Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
-        account_role_id:
+            Relation to GhostLeadOpptyContactRelation, see: ''updateGhostLeadOpptyContactRelationInput'' object for properties.'
+        ghost_lead_oppty_contact_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        contact_account_relation_id:
+          description: Id of the ghost-contact-lead/opportunity placement.
+        sales_role_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact-account link.
+          description: Id of the sales role.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    createContactRelationInput:
+    createContactRelationLabelInput:
       properties:
         modified:
           type: string
@@ -11581,34 +10218,57 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        contact1_id:
+        contact_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Contact relationship being labelled.
+
+
+            Relation to ContactRelation, see: ''createContactRelationInput'' object for properties.'
+        contact_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related contact.
-        contact2_id:
+          description: Id of the contact relationship.
+        contact_relation_type_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related contact.
+          description: Id of the relationship type.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - contact1_id
-      - contact2_id
-    batchGhostContactInput:
+      - contact_relation
+      - contact_relation_id
+      - contact_relation_type_id
+    batchContactRelationLabelInput:
       properties:
-        name:
+        contact_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Contact relationship being labelled.
+
+
+            Relation to ContactRelation, see: ''updateContactRelationInput'' object for properties.'
+        contact_relation_id:
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        position:
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact relationship.
+        contact_relation_type_id:
           type: string
-          example: string
-          description: Job title or position of the placeholder contact (org-chart label).
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the relationship type.
         revision:
           type: integer
           format: int32
@@ -11618,23 +10278,114 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateContactRelationInput:
+    ContactKPI:
       properties:
-        contact1_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related contact.
-        contact2_id:
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User who triggered the KPI event (e.g. created or archived the contact, sent the first email).
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact this KPI event relates to.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'Contact owner at the time the KPI event occurred.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the triggering user belonged to at the time of the event.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related contact.
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
+
+
+            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact owner at the time of the event.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - contact
+      - owner
+      - contact_id
+      - kpi
+      - owner_id
     batchContactSharingClientRelationInput:
       properties:
         client_id:
@@ -11666,7 +10417,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    batchContactTypeInput:
+    updateContactTypeInput:
       properties:
         form_edit:
           type: object
@@ -11689,12 +10440,439 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    createContactSharingClientRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - client_id
+      - contact_id
+    createContactAccountRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        comment:
+          type: string
+          example: string
+          description: Free-form note describing this contact-account link.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_assistant:
+          type: boolean
+          example: false
+          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
+        position:
+          type: string
+          example: string
+          description: Job title or position the contact holds at the account.
+        relationship:
+          type: integer
+          description: 'Org-chart relationship of the contact within the account hierarchy.
+
+
+            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation, see: ''createContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Roles the contact holds within the linked account.
+      required:
+      - account_id
+      - contact_id
+      - is_primary
+    batchGhostLeadOpptyContactSalesRoleRelationInput:
+      properties:
+        ghost_lead_oppty_contact_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Ghost-contact-on-lead/opportunity placement this role assignment belongs to.
+
+
+            Relation to GhostLeadOpptyContactRelation, see: ''updateGhostLeadOpptyContactRelationInput'' object for properties.'
+        ghost_lead_oppty_contact_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the ghost-contact-lead/opportunity placement.
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    batchContactSocialRelationInput:
+    createContactKPIInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
+
+
+            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact owner at the time of the event.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_id
+      - kpi
+      - owner_id
+    updateContactAccountRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        comment:
+          type: string
+          example: string
+          description: Free-form note describing this contact-account link.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_assistant:
+          type: boolean
+          example: false
+          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
+        position:
+          type: string
+          example: string
+          description: Job title or position the contact holds at the account.
+        relationship:
+          type: integer
+          description: 'Org-chart relationship of the contact within the account hierarchy.
+
+
+            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation, see: ''updateContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Roles the contact holds within the linked account.
+    createContactAccountAccountRoleRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact_account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Contact-account link this role assignment belongs to.
+
+
+            Relation to ContactAccountRelation, see: ''createContactAccountRelationInput'' object for properties.'
+        account_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account role.
+        contact_account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact-account link.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_account_relation
+      - account_role_id
+      - contact_account_relation_id
+    createContactSharingSalesUnitRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_id
+      - unit_id
+    updateGhostContactInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the placeholder contact (org-chart label).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateContactRelationInput:
+      properties:
+        contact1_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related contact.
+        contact2_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related contact.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createGhostContactInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the placeholder contact (org-chart label).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - name
+    createContactSocialRelationInput:
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity. Must match with Contact id.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         angellist_url:
           type: string
           example: string
@@ -11804,11 +10982,112 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - id
+    batchContactSharingSalesUnitRelationInput:
+      properties:
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    createContactKPIInput:
+    ContactDataExRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact:
+          type: string
+          format: uri
+          description: 'Contact this data relation row applies to.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        data:
+          type: string
+          format: uri
+          description: 'Data record holding the additional fields linked to this contact.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the linked fields belong to.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - contact
+      - data
+      - contact_id
+      - data_id
+      - data_set_id
+    createContactRelationTypeInput:
       properties:
         modified:
           type: string
@@ -11822,128 +11101,138 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        kpi:
+        color:
           type: integer
-          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
+          format: int32
           example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
+          example: string
+          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - contact_id
-      - kpi
-      - owner_id
-    updateGhostContactAccountRelationInput:
+      - color
+    batchGhostContactAccountAccountRoleRelationInput:
       properties:
-        ghost_contact:
+        ghost_contact_account_relation:
           type: object
           properties:
             id:
               type: string
               format: uri
-          description: 'Placeholder ghost contact placed on the account org chart.
+          description: 'Ghost-contact-on-account placement this role assignment belongs to.
 
 
-            Relation to GhostContact, see: ''updateGhostContactInput'' object for properties.'
-        account_id:
+            Relation to GhostContactAccountRelation, see: ''updateGhostContactAccountRelationInput'' object for properties.'
+        account_role_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        comment:
-          type: string
-          example: string
-          description: Free-text comment shown on the org-chart node.
-        ghost_contact_id:
+          description: Id of the account role.
+        ghost_contact_account_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the ghost contact.
-        is_assistant:
-          type: boolean
-          example: false
-          description: True when the ghost contact is rendered as an assistant of its parent in the org chart.
-        is_sibling:
-          type: boolean
-          example: false
-          description: True when the ghost contact is rendered as a sibling rather than a child in the org chart.
-        position:
-          type: string
-          example: string
-          description: Position label shown on the org chart for the ghost contact.
+          description: Id of the ghost-contact-account placement.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        account_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to GhostContactAccountAccountRoleRelation, see: ''updateGhostContactAccountAccountRoleRelationInput'' object for properties.'
-          description: Account roles assigned to the ghost contact on this account.
-    updateContactTypeInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    ContactAccountAccountRoleRelation:
       properties:
-        form_edit:
-          type: object
-          description: JSON definition of the edit form layout used by the UI when creating or editing contacts of this type. Contains tabs, sections, and field placement.
-        is_readonly:
+        is_delete_protected:
           type: boolean
           example: false
-          description: True when the contact type is system-managed and cannot be edited or deleted by users.
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_role:
+          type: string
+          format: uri
+          description: 'Role assigned to the contact at the account.
+
+
+            Relation to AccountRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRole'' object for properties.'
+        contact_account_relation:
+          type: string
+          format: uri
+          description: 'Contact-account link this role assignment belongs to.
+
+
+            Relation to ContactAccountRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactAccountRelation'' object for properties.'
+        account_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account role.
+        contact_account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact-account link.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account_role
+      - contact_account_relation
+      - account_role_id
+      - contact_account_relation_id
+    batchGhostContactInput:
+      properties:
         name:
           type: string
           example: string
           description: Name of the entity and its default text representation.
-        settings:
+        position:
           type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+          example: string
+          description: Job title or position of the placeholder contact (org-chart label).
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     ContactSocialRelation:
       properties:
         is_delete_protected:
@@ -12086,7 +11375,127 @@ components:
       required:
       - is_delete_protected
       - id
-    ContactAccountAccountRoleRelation:
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateContactSharingClientRelationInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createGhostContactAccountRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        ghost_contact:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Placeholder ghost contact placed on the account org chart.
+
+
+            Relation to GhostContact, see: ''createGhostContactInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        comment:
+          type: string
+          example: string
+          description: Free-text comment shown on the org-chart node.
+        ghost_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the ghost contact.
+        is_assistant:
+          type: boolean
+          example: false
+          description: True when the ghost contact is rendered as an assistant of its parent in the org chart.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the ghost contact is rendered as a sibling rather than a child in the org chart.
+        position:
+          type: string
+          example: string
+          description: Position label shown on the org chart for the ghost contact.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to GhostContactAccountAccountRoleRelation, see: ''createGhostContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Account roles assigned to the ghost contact on this account.
+      required:
+      - ghost_contact
+      - account_id
+      - ghost_contact_id
+    GhostLeadOpptyContactRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -12116,71 +11525,74 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_role:
+        ghost_contact:
           type: string
           format: uri
-          description: 'Role assigned to the contact at the account.
+          description: 'Placeholder ghost contact placed on the lead/opportunity org chart.
 
 
-            Relation to AccountRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRole'' object for properties.'
-        contact_account_relation:
+            Relation to GhostContact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContact'' object for properties.'
+        lead_oppty_contact_group_relation:
           type: string
           format: uri
-          description: 'Contact-account link this role assignment belongs to.
+          description: 'Org-chart group the ghost contact belongs to, when grouped.
 
 
-            Relation to ContactAccountRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactAccountRelation'' object for properties.'
-        account_role_id:
+            Relation to LeadOpptyContactGroupRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadOpptyContactGroupRelation'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead whose org chart includes the ghost contact. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity whose org chart includes the ghost contact. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        comment:
+          type: string
+          example: string
+          description: Free-text comment shown on the org-chart node.
+        ghost_contact_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account role.
-        contact_account_relation_id:
+          description: Id of the ghost contact.
+        lead_oppty_contact_group_relation_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact-account link.
+          description: Id of the parent org-chart group.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity.
+        position_in_group:
+          type: object
+          description: 'Org-chart layout position of the ghost contact within its group, as a JSON object {"x": <int>, "y": <int>}.'
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        sales_roles:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to GhostLeadOpptyContactSalesRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostLeadOpptyContactSalesRoleRelation'' object for properties.'
+          description: Sales roles assigned to the ghost contact on this lead/opportunity.
       required:
       - is_delete_protected
       - id
-      - account_role
-      - contact_account_relation
-      - account_role_id
-      - contact_account_relation_id
-    createGhostContactInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        position:
-          type: string
-          example: string
-          description: Job title or position of the placeholder contact (org-chart label).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
+      - ghost_contact
+      - ghost_contact_id
+      - lead_oppty_id
     ContactSharingSalesUnitRelation:
       properties:
         is_delete_protected:
@@ -12257,54 +11669,6 @@ components:
       - unit
       - contact_id
       - unit_id
-    ContactRelationType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - color
     GhostContactAccountAccountRoleRelation:
       properties:
         is_delete_protected:
@@ -12371,117 +11735,182 @@ components:
       - ghost_contact_account_relation
       - account_role_id
       - ghost_contact_account_relation_id
-    updateContactSocialRelationInput:
+    GhostContactAccountRelation:
       properties:
-        angellist_url:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account whose org chart includes the ghost contact.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        ghost_contact:
+          type: string
+          format: uri
+          description: 'Placeholder ghost contact placed on the account org chart.
+
+
+            Relation to GhostContact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContact'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        comment:
           type: string
           example: string
-          description: AngelList profile URL of the contact.
-        crunchbase_url:
+          description: Free-text comment shown on the org-chart node.
+        ghost_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the ghost contact.
+        is_assistant:
+          type: boolean
+          example: false
+          description: True when the ghost contact is rendered as an assistant of its parent in the org chart.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the ghost contact is rendered as a sibling rather than a child in the org chart.
+        position:
           type: string
           example: string
-          description: Crunchbase profile URL of the contact.
-        disqus_url:
-          type: string
-          example: string
-          description: Disqus profile URL of the contact.
-        facebook_id:
-          type: string
-          example: string
-          description: Facebook profile id of the contact.
-        facebook_url:
-          type: string
-          example: string
-          description: Facebook profile URL of the contact.
-        flickr_url:
-          type: string
-          example: string
-          description: Flickr profile URL of the contact.
-        foursquare_url:
-          type: string
-          example: string
-          description: Foursquare profile URL of the contact.
-        google_id:
-          type: string
-          example: string
-          description: Google profile id of the contact.
-        google_plus_url:
-          type: string
-          example: string
-          description: Google+ profile URL of the contact.
-        gravatar_url:
-          type: string
-          example: string
-          description: Gravatar profile URL of the contact.
-        klout_url:
-          type: string
-          example: string
-          description: Klout profile URL of the contact.
-        linkedin_id:
-          type: string
-          example: string
-          description: LinkedIn profile id of the contact.
-        linkedin_url:
-          type: string
-          example: string
-          description: LinkedIn profile URL of the contact.
-        pinterest_url:
-          type: string
-          example: string
-          description: Pinterest profile URL of the contact.
-        quora_url:
-          type: string
-          example: string
-          description: Quora profile URL of the contact.
-        reddit_url:
-          type: string
-          example: string
-          description: Reddit profile URL of the contact.
-        skype_url:
-          type: string
-          example: string
-          description: Skype contact URL or username of the contact.
-        slideshare_url:
-          type: string
-          example: string
-          description: SlideShare profile URL of the contact.
-        twitter_id:
-          type: string
-          example: string
-          description: Twitter (X) user id of the contact.
-        twitter_url:
-          type: string
-          example: string
-          description: Twitter (X) profile URL of the contact.
-        vimeo_url:
-          type: string
-          example: string
-          description: Vimeo profile URL of the contact.
-        wordpress_url:
-          type: string
-          example: string
-          description: WordPress site URL of the contact.
-        xing_url:
-          type: string
-          example: string
-          description: XING profile URL of the contact.
-        yahoo_url:
-          type: string
-          example: string
-          description: Yahoo profile URL of the contact.
-        yelp_url:
-          type: string
-          example: string
-          description: Yelp profile URL of the contact.
-        youtube_url:
-          type: string
-          example: string
-          description: YouTube channel URL of the contact.
+          description: Position label shown on the org chart for the ghost contact.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to GhostContactAccountAccountRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''GhostContactAccountAccountRoleRelation'' object for properties.'
+          description: Account roles assigned to the ghost contact on this account.
+      required:
+      - is_delete_protected
+      - id
+      - account
+      - ghost_contact
+      - account_id
+      - ghost_contact_id
+    updateContactKPIInput:
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: CreateContact, FirstEmailSent, LastEmailSent, Archive.
+
+
+            Integer enum value: 1 - CreateContact, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact owner at the time of the event.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createGhostContactAccountAccountRoleRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        ghost_contact_account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Ghost-contact-on-account placement this role assignment belongs to.
+
+
+            Relation to GhostContactAccountRelation, see: ''createGhostContactAccountRelationInput'' object for properties.'
+        account_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account role.
+        ghost_contact_account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the ghost-contact-account placement.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - ghost_contact_account_relation
+      - account_role_id
+      - ghost_contact_account_relation_id
     ContactRelationLabel:
       properties:
         is_delete_protected:
@@ -12548,3 +11977,574 @@ components:
       - contact_relation_type
       - contact_relation_id
       - contact_relation_type_id
+    batchContactRelationTypeInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Display label of the contact-to-contact relationship type (e.g. Spouse, Colleague).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createContactRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact1_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related contact.
+        contact2_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related contact.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact1_id
+      - contact2_id
+    createContactInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Profile picture associated with the contact.
+
+
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+        address:
+          type: string
+          example: string
+          description: Street address of the contact.
+        city:
+          type: string
+          example: string
+          description: City of the contact address.
+        comments:
+          type: string
+          example: string
+          description: Free-form notes describing the contact.
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type assigned to this contact.
+        country:
+          type: string
+          example: string
+          description: Country of the contact address.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this contact.
+        email1:
+          type: string
+          example: string
+          description: Primary email address of the contact. Used as default recipient for emails sent from Coevera.
+        email2:
+          type: string
+          example: string
+          description: Additional email address.
+        email3:
+          type: string
+          example: string
+          description: Additional email address.
+        email4:
+          type: string
+          example: string
+          description: Additional email address.
+        email5:
+          type: string
+          example: string
+          description: Additional email address.
+        first_name:
+          type: string
+          example: string
+          description: Given name of the contact.
+        gender:
+          type: integer
+          description: 'Gender of the contact (e.g. Male, Female, Other).
+
+
+            Integer enum value: 0 - Unknown, 1 - Male, 2 - Female, 3 - NonBinary'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        is_archived:
+          type: boolean
+          example: false
+          description: True when the contact has been archived. Archived contacts remain readable but are hidden from active lists and cannot be edited until reactivated.
+        last_name:
+          type: string
+          example: string
+          description: Family name of the contact.
+        middle_name:
+          type: string
+          example: string
+          description: Middle name of the contact, if applicable.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact owner.
+        phone1:
+          type: string
+          example: string
+          description: Primary phone number of the contact. Used as default target for click-to-call.
+        phone2:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone3:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone4:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone5:
+          type: string
+          example: string
+          description: Additional phone number.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the profile picture document.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the contact.
+        quick_account_name:
+          type: string
+          example: string
+          description: Free-text company name used when the contact is not linked to an actual Account record. Lets integrators capture the company without creating a separate Account.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        state_province:
+          type: string
+          example: string
+          description: State or province of the contact address.
+        title:
+          type: string
+          example: string
+          description: Honorific or salutation prefix (e.g. Mr., Ms., Dr.) shown before the name.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        zip_code:
+          type: string
+          example: string
+          description: ZIP or postal code of the contact address.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        social_media:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Social network profiles linked to this contact (e.g. LinkedIn, Facebook).
+
+
+            Relation to ContactSocialRelation, see: ''createContactSocialRelationInput'' object for properties.'
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountRelation, see: ''createContactAccountRelationInput'' object for properties.'
+          description: Accounts this contact is linked to. Each link records the role and position the contact has at the related account.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactSharingSalesUnitRelation, see: ''createContactSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this contact. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactSharingClientRelation, see: ''createContactSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this contact. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this contact.
+        primary_account_account_roles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation, see: ''createContactAccountAccountRoleRelationInput'' object for properties.'
+          description: Roles of Contact in his primary Account.
+        account_position:
+          type: string
+          example: string
+          description: Job position of Contact in his primary Account or quick account position if Contact has no primary Account.
+        is_unsubscribed:
+          type: boolean
+          example: false
+          description: If account has any unsubscribed email.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tag labels applied to this contact.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
+          description: Saved view profiles this contact currently matches.
+        primary_account_relationship:
+          type: string
+          example: string
+          description: Org chart relationship of Contact in his primary Account.
+      required:
+      - owner_id
+    GhostContact:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        position:
+          type: string
+          example: string
+          description: Job title or position of the placeholder contact (org-chart label).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    updateContactAccountAccountRoleRelationInput:
+      properties:
+        contact_account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Contact-account link this role assignment belongs to.
+
+
+            Relation to ContactAccountRelation, see: ''updateContactAccountRelationInput'' object for properties.'
+        account_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account role.
+        contact_account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact-account link.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    ContactAccountRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the contact is linked to.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact linked to the account.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        comment:
+          type: string
+          example: string
+          description: Free-form note describing this contact-account link.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_assistant:
+          type: boolean
+          example: false
+          description: True when the contact acts as an assistant on the account org chart. Assistant relations cannot have child relations.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        is_sibling:
+          type: boolean
+          example: false
+          description: True when the contact is a sibling node on the account org chart (no parent/child reporting line).
+        position:
+          type: string
+          example: string
+          description: Job title or position the contact holds at the account.
+        relationship:
+          type: integer
+          description: 'Org-chart relationship of the contact within the account hierarchy.
+
+
+            Integer enum value: 0 - NoRelationship, 1 - Weak, 2 - Moderate, 3 - Strong'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_roles:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ContactAccountAccountRoleRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ContactAccountAccountRoleRelation'' object for properties.'
+          description: Roles the contact holds within the linked account.
+      required:
+      - is_delete_protected
+      - id
+      - account
+      - contact
+      - account_id
+      - contact_id
+      - is_primary
+    ContactSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User the contact is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact being shared.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared contact.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the contact.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - client
+      - contact
+      - client_id
+      - contact_id

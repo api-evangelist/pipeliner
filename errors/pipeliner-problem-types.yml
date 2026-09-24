@@ -1,8 +1,19 @@
-generated: '2026-09-22'
+generated: '2026-09-23'
 method: derived
 generator: derive-problem-types.py
 source:
-- openapi/pipeliner-openapi.json
+- openapi/pipeliner-account-api-openapi.yml
+- openapi/pipeliner-activity-api-openapi.yml
+- openapi/pipeliner-approval-api-openapi.yml
+- openapi/pipeliner-call-api-openapi.yml
+- openapi/pipeliner-chat-api-openapi.yml
+- openapi/pipeliner-client-api-openapi.yml
+- openapi/pipeliner-company-email-api-openapi.yml
+- openapi/pipeliner-contact-api-openapi.yml
+- openapi/pipeliner-country-api-openapi.yml
+- openapi/pipeliner-currency-api-openapi.yml
+- openapi/pipeliner-custom-entity-api-openapi.yml
+- openapi/pipeliner-data-api-openapi.yml
 format: custom
 envelope:
   media_type: application/json

@@ -4972,93 +4972,44 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchEmailContentSharingClientRelationInput:
+    createEmailThreadMailboxClientReadStateInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_id:
+          description: Id of the user whose read state of the email thread is tracked.
+        last_read_at:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateEmailMailboxRelationInput:
-      properties:
-        direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
-          example: 1
-          enum:
-          - 1
-          - 2
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email that belongs to the mailbox.
-        email_is_deleted:
-          type: boolean
-          example: false
-          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code for the email in this mailbox; 0 means the email was processed without error.
-        event_types:
-          type: string
-          example: 2
-          enum:
-          - 2
-          - 4
-          - 8
-          - 16
-          - 32
-          - 64
-          description: Field whose values are strictly defined with an enumeration of values.
-        is_scheduled:
-          type: boolean
-          example: false
-          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when the user last read the email thread in the mailbox.
         mailbox_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the mailbox (connected email account) the email belongs to.
-        sent_or_scheduled_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
+          description: Id of the mailbox (connected email account) the email thread belongs to.
         thread_or_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Standard, 2 - Mass'
-          example: 1
-          enum:
-          - 1
-          - 2
+      required:
+      - client_id
+      - mailbox_id
+      - thread_or_id
     createEmailTemplateSharingSalesUnitRelationInput:
       properties:
         modified:
@@ -5167,146 +5118,7 @@ components:
       - email
       - client_id
       - email_id
-    batchEmailTemplateSharingClientRelationInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateEmailTemplateFolderInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateEmailTemplateInput:
-      properties:
-        body:
-          type: string
-          example: string
-          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
-        email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the template owner.
-        recent_colors:
-          type: object
-          description: List of integers.
-        share_mode:
-          type: integer
-          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        sharing_url_is_enabled:
-          type: boolean
-          example: false
-          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
-        sharing_url_settings:
-          type: object
-          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
-        subject:
-          type: string
-          example: string
-          description: Subject line of emails composed from this template. Supports merge-field placeholders.
-        type:
-          type: integer
-          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
-
-
-            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''updateEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units granted shared access to this template (custom share mode).
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingClientRelation, see: ''updateEmailTemplateSharingClientRelationInput'' object for properties.'
-          description: Users granted shared access to this template (custom share mode).
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the template (used as default attachments).
-    EmailTemplateSharingClientRelation:
+    EmailMailboxRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -5336,111 +5148,89 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        client:
+        email:
           type: string
           format: uri
-          description: 'User the template is shared with.
+          description: 'Email that belongs to the mailbox.
 
 
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        email_template:
-          type: string
-          format: uri
-          description: 'Email template being shared.
-
-
-            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        direction:
           type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
+          description: 'Field whose values are strictly defined with an enumeration of values.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
           example: 1
           enum:
           - 1
           - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - client
-      - email_template
-      - client_id
-      - email_template_id
-    createEmailEventInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
+        email_created:
           type: string
           format: date-time
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        additional_data:
-          type: object
-          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
         email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
+          description: Id of the email that belongs to the mailbox.
+        email_is_deleted:
+          type: boolean
+          example: false
+          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code for the email in this mailbox; 0 means the email was processed without error.
+        event_types:
+          type: string
+          example: 2
+          enum:
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          description: Field whose values are strictly defined with an enumeration of values.
+        is_scheduled:
+          type: boolean
+          example: false
+          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
+        mailbox_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the mailbox (connected email account) the email belongs to.
+        sent_or_scheduled_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
+        thread_or_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
         type:
           type: integer
           description: 'Field whose values are strictly defined with an enumeration of values.
 
 
-            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
+            Integer enum value: 1 - Standard, 2 - Mass'
           example: 1
           enum:
           - 1
           - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        url:
-          type: string
-          example: string
-          description: URL the recipient interacted with. Set for click events; empty for other event types.
       required:
+      - is_delete_protected
+      - id
+      - email
       - email_id
-    updateEmailContentSharingClientRelationInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
+      - mailbox_id
     EmailThreadMailboxClientReadState:
       properties:
         is_delete_protected:
@@ -5505,34 +5295,35 @@ components:
       - client_id
       - mailbox_id
       - thread_or_id
-    updateEmailTemplateSharingSalesUnitRelationInput:
+    updateEmailEventInput:
       properties:
-        email_template_id:
+        additional_data:
+          type: object
+          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
+        email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
+          description: Id of the email message.
+        type:
           type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+          description: 'Field whose values are strictly defined with an enumeration of values.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
+            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
           example: 1
           enum:
           - 1
           - 2
-        unit_id:
+          - 3
+          - 4
+          - 5
+          - 6
+        url:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchEmailInput:
+          example: string
+          description: URL the recipient interacted with. Set for click events; empty for other event types.
+    updateEmailInput:
       properties:
         additional_headers:
           type: object
@@ -5824,919 +5615,6 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Attachments and other documents linked to this email.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    EmailTemplateFolder:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        parent_email_template_folder:
-          type: string
-          format: uri
-          description: 'Parent folder in the template hierarchy. Empty for top-level folders.
-
-
-            Relation to EmailTemplateFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateFolder'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - name
-    EmailEvent:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email:
-          type: string
-          format: uri
-          description: 'Email message the event was reported for.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        additional_data:
-          type: object
-          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        url:
-          type: string
-          example: string
-          description: URL the recipient interacted with. Set for click events; empty for other event types.
-      required:
-      - is_delete_protected
-      - id
-      - email
-      - email_id
-    createEmailTemplateFolderInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
-    batchEmailContentSharingSalesUnitRelationInput:
-      properties:
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchEmailThreadMailboxClientReadStateInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user whose read state of the email thread is tracked.
-        last_read_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when the user last read the email thread in the mailbox.
-        mailbox_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the mailbox (connected email account) the email thread belongs to.
-        thread_or_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createEmailContentSharingSalesUnitRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - email_id
-      - unit_id
-    updateEmailTemplateSharingClientRelationInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchEmailMailboxRelationInput:
-      properties:
-        direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
-          example: 1
-          enum:
-          - 1
-          - 2
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email that belongs to the mailbox.
-        email_is_deleted:
-          type: boolean
-          example: false
-          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code for the email in this mailbox; 0 means the email was processed without error.
-        event_types:
-          type: string
-          example: 2
-          enum:
-          - 2
-          - 4
-          - 8
-          - 16
-          - 32
-          - 64
-          description: Field whose values are strictly defined with an enumeration of values.
-        is_scheduled:
-          type: boolean
-          example: false
-          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
-        mailbox_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the mailbox (connected email account) the email belongs to.
-        sent_or_scheduled_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
-        thread_or_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Standard, 2 - Mass'
-          example: 1
-          enum:
-          - 1
-          - 2
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createEmailMailboxRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        direction:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
-          example: 1
-          enum:
-          - 1
-          - 2
-        email_created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email that belongs to the mailbox.
-        email_is_deleted:
-          type: boolean
-          example: false
-          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code for the email in this mailbox; 0 means the email was processed without error.
-        event_types:
-          type: string
-          example: 2
-          enum:
-          - 2
-          - 4
-          - 8
-          - 16
-          - 32
-          - 64
-          description: Field whose values are strictly defined with an enumeration of values.
-        is_scheduled:
-          type: boolean
-          example: false
-          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
-        mailbox_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the mailbox (connected email account) the email belongs to.
-        sent_or_scheduled_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
-        thread_or_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Standard, 2 - Mass'
-          example: 1
-          enum:
-          - 1
-          - 2
-      required:
-      - email_id
-      - mailbox_id
-    updateEmailEventInput:
-      properties:
-        additional_data:
-          type: object
-          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        url:
-          type: string
-          example: string
-          description: URL the recipient interacted with. Set for click events; empty for other event types.
-    batchEmailEventInput:
-      properties:
-        additional_data:
-          type: object
-          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        url:
-          type: string
-          example: string
-          description: URL the recipient interacted with. Set for click events; empty for other event types.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    EmailTemplate:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_template_folder:
-          type: string
-          format: uri
-          description: 'Folder in the template hierarchy that the template belongs to. Empty for templates at the root level.
-
-
-            Relation to EmailTemplateFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateFolder'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'User who owns the template.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        body:
-          type: string
-          example: string
-          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
-        email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the template owner.
-        recent_colors:
-          type: object
-          description: List of integers.
-        share_mode:
-          type: integer
-          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        sharing_url_is_enabled:
-          type: boolean
-          example: false
-          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
-        sharing_url_settings:
-          type: object
-          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
-        subject:
-          type: string
-          example: string
-          description: Subject line of emails composed from this template. Supports merge-field placeholders.
-        type:
-          type: integer
-          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
-
-
-            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sharing_units:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to EmailTemplateSharingSalesUnitRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateSharingSalesUnitRelation'' object for properties.'
-          description: Sales units granted shared access to this template (custom share mode).
-        sharing_clients:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to EmailTemplateSharingClientRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateSharingClientRelation'' object for properties.'
-          description: Users granted shared access to this template (custom share mode).
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Files attached to the template (used as default attachments).
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - name
-      - owner_id
-      - subject
-      - type
-    batchEmailTemplateFolderInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    EmailContentSharingSalesUnitRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email:
-          type: string
-          format: uri
-          description: 'Email whose body is being shared.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit granted access to the email body.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - email
-      - unit
-      - email_id
-      - unit_id
-    createEmailTemplateSharingClientRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - client_id
-      - email_template_id
-    createEmailTemplateInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        body:
-          type: string
-          example: string
-          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
-        email_template_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the template owner.
-        recent_colors:
-          type: object
-          description: List of integers.
-        share_mode:
-          type: integer
-          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        sharing_url_is_enabled:
-          type: boolean
-          example: false
-          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
-        sharing_url_settings:
-          type: object
-          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
-        subject:
-          type: string
-          example: string
-          description: Subject line of emails composed from this template. Supports merge-field placeholders.
-        type:
-          type: integer
-          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
-
-
-            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''createEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units granted shared access to this template (custom share mode).
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingClientRelation, see: ''createEmailTemplateSharingClientRelationInput'' object for properties.'
-          description: Users granted shared access to this template (custom share mode).
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the template (used as default attachments).
-      required:
-      - name
-      - owner_id
-      - subject
-      - type
-    updateEmailThreadMailboxClientReadStateInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user whose read state of the email thread is tracked.
-        last_read_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when the user last read the email thread in the mailbox.
-        mailbox_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the mailbox (connected email account) the email thread belongs to.
-        thread_or_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-    updateEmailContentSharingSalesUnitRelationInput:
-      properties:
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     createEmailInput:
       properties:
         modified:
@@ -7044,7 +5922,7 @@ components:
       required:
       - direction
       - uid
-    createEmailThreadMailboxClientReadStateInput:
+    createEmailContentSharingClientRelationInput:
       properties:
         modified:
           type: string
@@ -7058,6 +5936,26 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - client_id
+      - email_id
+    updateEmailThreadMailboxClientReadStateInput:
+      properties:
         client_id:
           type: string
           format: uuid
@@ -7078,27 +5976,123 @@ components:
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
-      required:
-      - client_id
-      - mailbox_id
-      - thread_or_id
-    batchEmailTemplateSharingSalesUnitRelationInput:
+    createEmailEventInput:
       properties:
-        email_template_id:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        additional_data:
+          type: object
+          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
+        email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        role:
+          description: Id of the email message.
+        type:
           type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+          description: 'Field whose values are strictly defined with an enumeration of values.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
+            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
           example: 1
           enum:
           - 1
           - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        url:
+          type: string
+          example: string
+          description: URL the recipient interacted with. Set for click events; empty for other event types.
+      required:
+      - email_id
+    EmailEvent:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email:
+          type: string
+          format: uri
+          description: 'Email message the event was reported for.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        additional_data:
+          type: object
+          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email message.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        url:
+          type: string
+          example: string
+          description: URL the recipient interacted with. Set for click events; empty for other event types.
+      required:
+      - is_delete_protected
+      - id
+      - email
+      - email_id
+    updateEmailContentSharingSalesUnitRelationInput:
+      properties:
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
         unit_id:
           type: string
           format: uuid
@@ -7109,10 +6103,80 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    batchEmailEventInput:
+      properties:
+        additional_data:
+          type: object
+          description: Provider-specific extra data captured with the event (e.g. user agent, ip), as a JSON document.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email message.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Open, 2 - Click, 3 - Unsubscribe, 4 - Bounce, 5 - Reply, 6 - BounceSoft'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        url:
+          type: string
+          example: string
+          description: URL the recipient interacted with. Set for click events; empty for other event types.
         id:
           description: ID of object to update.
           type: string
           format: uuid
+    createEmailTemplateSharingClientRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - client_id
+      - email_template_id
     Email:
       properties:
         is_delete_protected:
@@ -7467,146 +6531,13 @@ components:
       - uid
       - is_favorite
       - mailbox_ids
-    batchEmailTemplateInput:
+    batchEmailTemplateSharingClientRelationInput:
       properties:
-        body:
-          type: string
-          example: string
-          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
-        email_template_folder_id:
+        client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the template owner.
-        recent_colors:
-          type: object
-          description: List of integers.
-        share_mode:
-          type: integer
-          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        sharing_url_is_enabled:
-          type: boolean
-          example: false
-          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
-        sharing_url_settings:
-          type: object
-          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
-        subject:
-          type: string
-          example: string
-          description: Subject line of emails composed from this template. Supports merge-field placeholders.
-        type:
-          type: integer
-          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
-
-
-            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''updateEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units granted shared access to this template (custom share mode).
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to EmailTemplateSharingClientRelation, see: ''updateEmailTemplateSharingClientRelationInput'' object for properties.'
-          description: Users granted shared access to this template (custom share mode).
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the template (used as default attachments).
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    EmailTemplateSharingSalesUnitRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_template:
-          type: string
-          format: uri
-          description: 'Email template being shared.
-
-
-            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the template is shared with.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+          description: Id of the user.
         email_template_id:
           type: string
           format: uuid
@@ -7614,7 +6545,7 @@ components:
           description: Id of the email template.
         role:
           type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
 
 
             Integer enum value: 1 - Watcher, 2 - Editor'
@@ -7622,24 +6553,16 @@ components:
           enum:
           - 1
           - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - email_template
-      - unit
-      - email_template_id
-      - unit_id
-    updateEmailInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchEmailInput:
       properties:
         additional_headers:
           type: object
@@ -7931,7 +6854,917 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Attachments and other documents linked to this email.
-    EmailMailboxRelation:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createEmailTemplateInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        body:
+          type: string
+          example: string
+          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
+        email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the template owner.
+        recent_colors:
+          type: object
+          description: List of integers.
+        share_mode:
+          type: integer
+          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        sharing_url_is_enabled:
+          type: boolean
+          example: false
+          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
+        sharing_url_settings:
+          type: object
+          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
+        subject:
+          type: string
+          example: string
+          description: Subject line of emails composed from this template. Supports merge-field placeholders.
+        type:
+          type: integer
+          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
+
+
+            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''createEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units granted shared access to this template (custom share mode).
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingClientRelation, see: ''createEmailTemplateSharingClientRelationInput'' object for properties.'
+          description: Users granted shared access to this template (custom share mode).
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (used as default attachments).
+      required:
+      - name
+      - owner_id
+      - subject
+      - type
+    updateEmailTemplateSharingClientRelationInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    EmailTemplateSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User the template is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        email_template:
+          type: string
+          format: uri
+          description: 'Email template being shared.
+
+
+            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - client
+      - email_template
+      - client_id
+      - email_template_id
+    createEmailTemplateFolderInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - name
+    EmailTemplateSharingSalesUnitRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email_template:
+          type: string
+          format: uri
+          description: 'Email template being shared.
+
+
+            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the template is shared with.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - email_template
+      - unit
+      - email_template_id
+      - unit_id
+    createEmailContentSharingSalesUnitRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - email_id
+      - unit_id
+    updateEmailMailboxRelationInput:
+      properties:
+        direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email that belongs to the mailbox.
+        email_is_deleted:
+          type: boolean
+          example: false
+          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code for the email in this mailbox; 0 means the email was processed without error.
+        event_types:
+          type: string
+          example: 2
+          enum:
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          description: Field whose values are strictly defined with an enumeration of values.
+        is_scheduled:
+          type: boolean
+          example: false
+          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
+        mailbox_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the mailbox (connected email account) the email belongs to.
+        sent_or_scheduled_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
+        thread_or_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Standard, 2 - Mass'
+          example: 1
+          enum:
+          - 1
+          - 2
+    updateEmailTemplateInput:
+      properties:
+        body:
+          type: string
+          example: string
+          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
+        email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the template owner.
+        recent_colors:
+          type: object
+          description: List of integers.
+        share_mode:
+          type: integer
+          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        sharing_url_is_enabled:
+          type: boolean
+          example: false
+          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
+        sharing_url_settings:
+          type: object
+          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
+        subject:
+          type: string
+          example: string
+          description: Subject line of emails composed from this template. Supports merge-field placeholders.
+        type:
+          type: integer
+          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
+
+
+            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''updateEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units granted shared access to this template (custom share mode).
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingClientRelation, see: ''updateEmailTemplateSharingClientRelationInput'' object for properties.'
+          description: Users granted shared access to this template (custom share mode).
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (used as default attachments).
+    EmailTemplateFolder:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        parent_email_template_folder:
+          type: string
+          format: uri
+          description: 'Parent folder in the template hierarchy. Empty for top-level folders.
+
+
+            Relation to EmailTemplateFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateFolder'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    updateEmailTemplateFolderInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateEmailTemplateSharingSalesUnitRelationInput:
+      properties:
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchEmailThreadMailboxClientReadStateInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user whose read state of the email thread is tracked.
+        last_read_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when the user last read the email thread in the mailbox.
+        mailbox_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the mailbox (connected email account) the email thread belongs to.
+        thread_or_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchEmailTemplateInput:
+      properties:
+        body:
+          type: string
+          example: string
+          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
+        email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the template owner.
+        recent_colors:
+          type: object
+          description: List of integers.
+        share_mode:
+          type: integer
+          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        sharing_url_is_enabled:
+          type: boolean
+          example: false
+          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
+        sharing_url_settings:
+          type: object
+          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
+        subject:
+          type: string
+          example: string
+          description: Subject line of emails composed from this template. Supports merge-field placeholders.
+        type:
+          type: integer
+          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
+
+
+            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingSalesUnitRelation, see: ''updateEmailTemplateSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units granted shared access to this template (custom share mode).
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to EmailTemplateSharingClientRelation, see: ''updateEmailTemplateSharingClientRelationInput'' object for properties.'
+          description: Users granted shared access to this template (custom share mode).
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (used as default attachments).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    EmailTemplate:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email_template_folder:
+          type: string
+          format: uri
+          description: 'Folder in the template hierarchy that the template belongs to. Empty for templates at the root level.
+
+
+            Relation to EmailTemplateFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateFolder'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the template.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        body:
+          type: string
+          example: string
+          description: HTML body of the template. May use merge-field placeholders that are filled with record values when the template is composed.
+        email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the template owner.
+        recent_colors:
+          type: object
+          description: List of integers.
+        share_mode:
+          type: integer
+          description: 'Sharing model for the template (e.g. shared with selected sales units, selected users, or open for editing by all).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        sharing_url_is_enabled:
+          type: boolean
+          example: false
+          description: When true, the template's public sharing URL is active and accessible. Setting to false invalidates outstanding sharing URLs.
+        sharing_url_settings:
+          type: object
+          description: 'Public sharing-link configuration: resolved URL plus optional personalisation context (entity type, entity id) used to pre-fill merge fields. Empty when no sharing link is configured.'
+        subject:
+          type: string
+          example: string
+          description: Subject line of emails composed from this template. Supports merge-field placeholders.
+        type:
+          type: integer
+          description: 'Template format (e.g. HtmlTemplate, PlainTextTemplate).
+
+
+            Integer enum value: 0 - TextTemplate, 1 - HtmlTemplate, 2 - WysiwygTemplate'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EmailTemplateSharingSalesUnitRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateSharingSalesUnitRelation'' object for properties.'
+          description: Sales units granted shared access to this template (custom share mode).
+        sharing_clients:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EmailTemplateSharingClientRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplateSharingClientRelation'' object for properties.'
+          description: Users granted shared access to this template (custom share mode).
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the template (used as default attachments).
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - subject
+      - type
+    batchEmailContentSharingSalesUnitRelationInput:
+      properties:
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    EmailContentSharingSalesUnitRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -7964,10 +7797,191 @@ components:
         email:
           type: string
           format: uri
-          description: 'Email that belongs to the mailbox.
+          description: 'Email whose body is being shared.
 
 
             Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit granted access to the email body.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - email
+      - unit
+      - email_id
+      - unit_id
+    batchEmailTemplateSharingSalesUnitRelationInput:
+      properties:
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the template.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchEmailTemplateFolderInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_email_template_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateEmailContentSharingClientRelationInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchEmailMailboxRelationInput:
+      properties:
+        direction:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email that belongs to the mailbox.
+        email_is_deleted:
+          type: boolean
+          example: false
+          description: Denormalized flag indicating that the related email has been deleted from this mailbox; such relations are hidden from the inbox view.
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code for the email in this mailbox; 0 means the email was processed without error.
+        event_types:
+          type: string
+          example: 2
+          enum:
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          description: Field whose values are strictly defined with an enumeration of values.
+        is_scheduled:
+          type: boolean
+          example: false
+          description: Whether the email is scheduled to be sent at a future time and has not been sent yet.
+        mailbox_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the mailbox (connected email account) the email belongs to.
+        sent_or_scheduled_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when the email was sent, or its scheduled send time if it has not been sent yet.
+        thread_or_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email thread, or the id of the email itself when it does not belong to a thread.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Standard, 2 - Mass'
+          example: 1
+          enum:
+          - 1
+          - 2
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createEmailMailboxRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         direction:
           type: integer
           description: 'Field whose values are strictly defined with an enumeration of values.
@@ -8039,25 +8053,10 @@ components:
           - 1
           - 2
       required:
-      - is_delete_protected
-      - id
-      - email
       - email_id
       - mailbox_id
-    createEmailContentSharingClientRelationInput:
+    batchEmailContentSharingClientRelationInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         client_id:
           type: string
           format: uuid
@@ -8073,6 +8072,7 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - client_id
-      - email_id
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

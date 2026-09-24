@@ -1,18 +1,18 @@
-generated: '2026-09-22'
+generated: '2026-09-23'
 method: derived
 source: the pre-flight dossier, apis.yml pointers, spec servers, well-known, vendors -- nothing fetched here
 generator: derive-hosts.py
 summary:
   hosts: 8
-  own: 0
-  other_domain: 0
+  own: 3
+  other_domain: 4
   platform: 1
   roles:
   - api
-  - identity
   - other
   - portal
   - support
+  - website
 hosts:
 - host: api.coevera.com
   found_by:
@@ -27,7 +27,7 @@ hosts:
   status: 200
   registrable_domain: coevera.com
   role: api
-  relation: unknown
+  relation: own
 - host: api.pipelinersales.com
   found_by:
   - contract-discovery
@@ -35,7 +35,7 @@ hosts:
   serves: []
   registrable_domain: pipelinersales.com
   role: api
-  relation: unknown
+  relation: other-domain
 - host: developers.pipelinersales.com
   found_by:
   - pointer
@@ -58,7 +58,7 @@ hosts:
   vendor: cloudflare
   registrable_domain: pipelinersales.com
   role: portal
-  relation: unknown
+  relation: other-domain
 - host: help.coevera.com
   found_by:
   - docs-index
@@ -67,7 +67,7 @@ hosts:
   - docs
   registrable_domain: coevera.com
   role: support
-  relation: unknown
+  relation: own
 - host: help.pipelinersales.com
   found_by:
   - pointer
@@ -79,7 +79,7 @@ hosts:
   serves: []
   registrable_domain: pipelinersales.com
   role: support
-  relation: unknown
+  relation: other-domain
 - host: pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com
   found_by:
   - docs-index
@@ -99,7 +99,7 @@ hosts:
   - api
   registrable_domain: pipelinersales.com
   role: api
-  relation: unknown
+  relation: other-domain
 - host: www.coevera.com
   found_by:
   - pointer
@@ -107,6 +107,7 @@ hosts:
   - contract-discovery
   - well-known
   types:
+  - Website
   - Compliance
   - Blog
   - Pricing
@@ -116,5 +117,5 @@ hosts:
   - Login
   serves: []
   registrable_domain: coevera.com
-  role: identity
-  relation: unknown
+  role: website
+  relation: own
