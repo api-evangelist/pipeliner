@@ -508,196 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateCallInput:
-      properties:
-        oppty_product_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Specific opportunity line-item discussed on the call, when applicable.
-
-
-            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        caller_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the calling user.
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user the call was made with.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        oppty_product_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked opportunity product line-item.
-        phone_number:
-          type: string
-          example: string
-          description: External phone number called or received, in E.164 format.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked product.
-        transcription_id:
-          type: string
-          example: string
-          description: External transcription identifier from the calling provider.
-        transcription_language:
-          type: string
-          example: string
-          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
-        transcription_summary:
-          type: string
-          example: string
-          description: AI-generated summary of the call transcription.
-        twilio_call_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the call-log record from the calling provider that this call is associated with.
-        audio_status:
-          type: string
-          example: NoRecording
-          enum:
-          - NoRecording
-          - TranscriptionCompleted
-          - TranscriptionEmpty
-          - TranscriptionError
-          - TranscriptionInProgress
-          - UploadError
-          - Uploaded
-          - Uploading
-          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
-    batchCallInput:
-      properties:
-        oppty_product_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Specific opportunity line-item discussed on the call, when applicable.
-
-
-            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        caller_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the calling user.
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user the call was made with.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        oppty_product_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked opportunity product line-item.
-        phone_number:
-          type: string
-          example: string
-          description: External phone number called or received, in E.164 format.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked product.
-        transcription_id:
-          type: string
-          example: string
-          description: External transcription identifier from the calling provider.
-        transcription_language:
-          type: string
-          example: string
-          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
-        transcription_summary:
-          type: string
-          example: string
-          description: AI-generated summary of the call transcription.
-        twilio_call_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the call-log record from the calling provider that this call is associated with.
-        audio_status:
-          type: string
-          example: NoRecording
-          enum:
-          - NoRecording
-          - TranscriptionCompleted
-          - TranscriptionEmpty
-          - TranscriptionError
-          - TranscriptionInProgress
-          - UploadError
-          - Uploaded
-          - Uploading
-          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createCallInput:
       properties:
         modified:
@@ -795,6 +605,115 @@ components:
       - caller_id
       - twilio_call_log_id
       - audio_status
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchCallInput:
+      properties:
+        oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Call:
       properties:
         is_delete_protected:
@@ -972,3 +891,84 @@ components:
       - twilio_call_log_id
       - twilio_call_sid
       - audio_status
+    updateCallInput:
+      properties:
+        oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Specific opportunity line-item discussed on the call, when applicable.
+
+
+            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        caller_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the calling user.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user the call was made with.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity product line-item.
+        phone_number:
+          type: string
+          example: string
+          description: External phone number called or received, in E.164 format.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked product.
+        transcription_id:
+          type: string
+          example: string
+          description: External transcription identifier from the calling provider.
+        transcription_language:
+          type: string
+          example: string
+          description: Language requested for the transcription as a BCP-47 locale tag (e.g. "en-US").
+        transcription_summary:
+          type: string
+          example: string
+          description: AI-generated summary of the call transcription.
+        twilio_call_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the call-log record from the calling provider that this call is associated with.
+        audio_status:
+          type: string
+          example: NoRecording
+          enum:
+          - NoRecording
+          - TranscriptionCompleted
+          - TranscriptionEmpty
+          - TranscriptionError
+          - TranscriptionInProgress
+          - UploadError
+          - Uploaded
+          - Uploading
+          description: "This is a small hack to force creation of MediaEntity upon Call creation.\n        This field cannot be actually set. Instead, CallRepository.create method handles media creation,\n        if requested."

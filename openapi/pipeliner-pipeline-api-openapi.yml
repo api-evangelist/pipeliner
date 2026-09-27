@@ -508,139 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updatePipelineInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps associated with this Pipeline.
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    Pipeline:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps associated with this Pipeline.
-        opportunity_types:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to OpportunityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpportunityType'' object for properties.'
-          description: Opportunity types that follow this pipeline.
-      required:
-      - is_delete_protected
-      - id
-      - color
-      - name
-      - steps
-      - opportunity_types
-    batchPipelineInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps associated with this Pipeline.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     batchStepInput:
       properties:
         description:
@@ -713,6 +580,139 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    Pipeline:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps associated with this Pipeline.
+        opportunity_types:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to OpportunityType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OpportunityType'' object for properties.'
+          description: Opportunity types that follow this pipeline.
+      required:
+      - is_delete_protected
+      - id
+      - color
+      - name
+      - steps
+      - opportunity_types
+    updatePipelineInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps associated with this Pipeline.
+    batchPipelineInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the pipeline label, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps associated with this Pipeline.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     createPipelineInput:
       properties:
         modified:

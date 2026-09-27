@@ -508,30 +508,148 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    updateForecastInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the forecast.
         name:
-          description: Name of the API error
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
           type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Forecast configuration as a JSON object conforming to the BetterForecastSchema type: currency, period (year + quarter/month), breakdown levels (type), items and quotas, and column layout. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/betterforecastschema.doc.html'
+        share_mode:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        share_mode_params:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          description: Bit flags fine-tuning sharing behavior (e.g. allow editing for shared users).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        shared_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Client, see: ''updateClientInput'' object for properties.'
+          description: Users granted shared access to this forecast (custom share mode).
+        shared_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnit, see: ''updateSalesUnitInput'' object for properties.'
+          description: Sales units granted shared access to this forecast (custom share mode).
+    createForecastInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the forecast.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Forecast configuration as a JSON object conforming to the BetterForecastSchema type: currency, period (year + quarter/month), breakdown levels (type), items and quotas, and column layout. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/betterforecastschema.doc.html'
+        share_mode:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        share_mode_params:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          description: Bit flags fine-tuning sharing behavior (e.g. allow editing for shared users).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        shared_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to Client, see: ''createClientInput'' object for properties.'
+          description: Users granted shared access to this forecast (custom share mode).
+        shared_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to SalesUnit, see: ''createSalesUnitInput'' object for properties.'
+          description: Sales units granted shared access to this forecast (custom share mode).
       required:
-      - success
-      - http_status
+      - name
+      - owner_id
+      - settings
+      - shared_clients
+      - shared_units
     Forecast:
       properties:
         is_delete_protected:
@@ -683,68 +801,30 @@ components:
       - type
       - shared_clients
       - shared_units
-    updateForecastInput:
+    Error:
       properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the forecast.
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
         name:
+          description: Name of the API error
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Forecast configuration as a JSON object conforming to the BetterForecastSchema type: currency, period (year + quarter/month), breakdown levels (type), items and quotas, and column layout. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/betterforecastschema.doc.html'
-        share_mode:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        share_mode_params:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          description: Bit flags fine-tuning sharing behavior (e.g. allow editing for shared users).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        shared_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to Client, see: ''updateClientInput'' object for properties.'
-          description: Users granted shared access to this forecast (custom share mode).
-        shared_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to SalesUnit, see: ''updateSalesUnitInput'' object for properties.'
-          description: Sales units granted shared access to this forecast (custom share mode).
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     batchForecastInput:
       properties:
         description:
@@ -811,83 +891,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createForecastInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the forecast.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Forecast configuration as a JSON object conforming to the BetterForecastSchema type: currency, period (year + quarter/month), breakdown levels (type), items and quotas, and column layout. Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/betterforecastschema.doc.html'
-        share_mode:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        share_mode_params:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          description: Bit flags fine-tuning sharing behavior (e.g. allow editing for shared users).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        shared_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to Client, see: ''createClientInput'' object for properties.'
-          description: Users granted shared access to this forecast (custom share mode).
-        shared_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to SalesUnit, see: ''createSalesUnitInput'' object for properties.'
-          description: Sales units granted shared access to this forecast (custom share mode).
-      required:
-      - name
-      - owner_id
-      - settings
-      - shared_clients
-      - shared_units

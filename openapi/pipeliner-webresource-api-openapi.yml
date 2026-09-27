@@ -508,31 +508,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    batchWebresourceInput:
+    updateWebresourceInput:
       properties:
         display_param:
           type: string
@@ -568,10 +544,6 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     Webresource:
       properties:
         is_delete_protected:
@@ -652,6 +624,30 @@ components:
       - display_param
       - entity
       - name
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     createWebresourceInput:
       properties:
         modified:
@@ -709,7 +705,7 @@ components:
       - display_param
       - entity
       - name
-    updateWebresourceInput:
+    batchWebresourceInput:
       properties:
         display_param:
           type: string
@@ -745,3 +741,7 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

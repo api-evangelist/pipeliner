@@ -1004,6 +1004,169 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    updateWebhookInput:
+      properties:
+        insecure_ssl:
+          type: boolean
+          example: false
+          description: If True, remote side ssl certificate will not be validated when delivering notifications.
+        options:
+          type: object
+          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
+        signature:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
+        url:
+          type: string
+          example: string
+          description: Target URL that webhook event payloads are POSTed to.
+        events:
+          type: array
+          items:
+            type: string
+            example: '*'
+            enum:
+            - '*'
+            - Account.*
+            - Account.Create
+            - Account.Delete
+            - Account.DocumentLinked
+            - Account.OwnerChanged
+            - Account.Update
+            - ActivityRelation.*
+            - ActivityRelation.Create
+            - ActivityRelation.Delete
+            - ActivityRelation.Update
+            - Appointment.*
+            - Appointment.Comment
+            - Appointment.Create
+            - Appointment.Delete
+            - Appointment.DocumentLinked
+            - Appointment.OwnerChanged
+            - Appointment.Update
+            - Contact.*
+            - Contact.Create
+            - Contact.Delete
+            - Contact.DocumentLinked
+            - Contact.OwnerChanged
+            - Contact.Update
+            - ContactAccountRelation.*
+            - ContactAccountRelation.Create
+            - ContactAccountRelation.Delete
+            - ContactAccountRelation.Update
+            - Currency.*
+            - Currency.Create
+            - Currency.Delete
+            - Currency.Update
+            - CurrencyExchangeRate.*
+            - CurrencyExchangeRate.Create
+            - CurrencyExchangeRate.Delete
+            - CurrencyExchangeRate.Update
+            - CurrencyExchangeRatesList.*
+            - CurrencyExchangeRatesList.Create
+            - CurrencyExchangeRatesList.Delete
+            - CurrencyExchangeRatesList.Update
+            - CustomEntity.*
+            - CustomEntity.Create
+            - CustomEntity.Delete
+            - CustomEntity.DocumentLinked
+            - CustomEntity.OwnerChanged
+            - CustomEntity.Update
+            - Email.*
+            - Email.Create
+            - Email.Delete
+            - Email.DocumentLinked
+            - Email.Update
+            - Lead.*
+            - Lead.BackToLead
+            - Lead.Create
+            - Lead.Delete
+            - Lead.DocumentLinked
+            - Lead.Lost
+            - Lead.OwnerChanged
+            - Lead.Update
+            - LeadOpptyAccountRelation.*
+            - LeadOpptyAccountRelation.Create
+            - LeadOpptyAccountRelation.Delete
+            - LeadOpptyAccountRelation.Update
+            - LeadOpptyContactRelation.*
+            - LeadOpptyContactRelation.Create
+            - LeadOpptyContactRelation.Delete
+            - LeadOpptyContactRelation.Update
+            - Memo.*
+            - Memo.Comment
+            - Memo.Create
+            - Memo.Delete
+            - Memo.DocumentLinked
+            - Memo.Update
+            - Message.*
+            - Message.Create
+            - Message.Delete
+            - Message.DocumentLinked
+            - Message.Update
+            - Note.*
+            - Note.Create
+            - Note.Delete
+            - Note.Update
+            - Opportunity.*
+            - Opportunity.Create
+            - Opportunity.Delete
+            - Opportunity.DocumentLinked
+            - Opportunity.Lost
+            - Opportunity.Move
+            - Opportunity.OwnerChanged
+            - Opportunity.Qualify
+            - Opportunity.Update
+            - Opportunity.Won
+            - OpptyProductRelation.*
+            - OpptyProductRelation.Create
+            - OpptyProductRelation.Delete
+            - OpptyProductRelation.Update
+            - Product.*
+            - Product.Create
+            - Product.Delete
+            - Product.Update
+            - ProductPriceList.*
+            - ProductPriceList.Create
+            - ProductPriceList.Delete
+            - ProductPriceList.Update
+            - ProductPriceListPrice.*
+            - ProductPriceListPrice.Create
+            - ProductPriceListPrice.Delete
+            - ProductPriceListPrice.Update
+            - Project.*
+            - Project.Create
+            - Project.Delete
+            - Project.DocumentLinked
+            - Project.OwnerChanged
+            - Project.Update
+            - Quote.*
+            - Quote.Create
+            - Quote.Delete
+            - Quote.DocumentLinked
+            - Quote.Lost
+            - Quote.Move
+            - Quote.OwnerChanged
+            - Quote.Update
+            - Quote.Won
+            - QuoteAccountRelation.*
+            - QuoteAccountRelation.Create
+            - QuoteAccountRelation.Delete
+            - QuoteAccountRelation.Update
+            - QuoteContactRelation.*
+            - QuoteContactRelation.Create
+            - QuoteContactRelation.Delete
+            - QuoteContactRelation.Update
+            - Task.*
+            - Task.Comment
+            - Task.Create
+            - Task.Delete
+            - Task.DocumentLinked
+            - Task.OwnerChanged
+            - Task.Update
+          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
     Webhook:
       properties:
         is_delete_protected:
@@ -1227,184 +1390,6 @@ components:
       - insecure_ssl
       - url
       - events
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    batchWebhookEventInput:
-      properties:
-        event:
-          type: string
-          example: '*'
-          enum:
-          - '*'
-          - Account.*
-          - Account.Create
-          - Account.Delete
-          - Account.DocumentLinked
-          - Account.OwnerChanged
-          - Account.Update
-          - ActivityRelation.*
-          - ActivityRelation.Create
-          - ActivityRelation.Delete
-          - ActivityRelation.Update
-          - Appointment.*
-          - Appointment.Comment
-          - Appointment.Create
-          - Appointment.Delete
-          - Appointment.DocumentLinked
-          - Appointment.OwnerChanged
-          - Appointment.Update
-          - Contact.*
-          - Contact.Create
-          - Contact.Delete
-          - Contact.DocumentLinked
-          - Contact.OwnerChanged
-          - Contact.Update
-          - ContactAccountRelation.*
-          - ContactAccountRelation.Create
-          - ContactAccountRelation.Delete
-          - ContactAccountRelation.Update
-          - Currency.*
-          - Currency.Create
-          - Currency.Delete
-          - Currency.Update
-          - CurrencyExchangeRate.*
-          - CurrencyExchangeRate.Create
-          - CurrencyExchangeRate.Delete
-          - CurrencyExchangeRate.Update
-          - CurrencyExchangeRatesList.*
-          - CurrencyExchangeRatesList.Create
-          - CurrencyExchangeRatesList.Delete
-          - CurrencyExchangeRatesList.Update
-          - CustomEntity.*
-          - CustomEntity.Create
-          - CustomEntity.Delete
-          - CustomEntity.DocumentLinked
-          - CustomEntity.OwnerChanged
-          - CustomEntity.Update
-          - Email.*
-          - Email.Create
-          - Email.Delete
-          - Email.DocumentLinked
-          - Email.Update
-          - Lead.*
-          - Lead.BackToLead
-          - Lead.Create
-          - Lead.Delete
-          - Lead.DocumentLinked
-          - Lead.Lost
-          - Lead.OwnerChanged
-          - Lead.Update
-          - LeadOpptyAccountRelation.*
-          - LeadOpptyAccountRelation.Create
-          - LeadOpptyAccountRelation.Delete
-          - LeadOpptyAccountRelation.Update
-          - LeadOpptyContactRelation.*
-          - LeadOpptyContactRelation.Create
-          - LeadOpptyContactRelation.Delete
-          - LeadOpptyContactRelation.Update
-          - Memo.*
-          - Memo.Comment
-          - Memo.Create
-          - Memo.Delete
-          - Memo.DocumentLinked
-          - Memo.Update
-          - Message.*
-          - Message.Create
-          - Message.Delete
-          - Message.DocumentLinked
-          - Message.Update
-          - Note.*
-          - Note.Create
-          - Note.Delete
-          - Note.Update
-          - Opportunity.*
-          - Opportunity.Create
-          - Opportunity.Delete
-          - Opportunity.DocumentLinked
-          - Opportunity.Lost
-          - Opportunity.Move
-          - Opportunity.OwnerChanged
-          - Opportunity.Qualify
-          - Opportunity.Update
-          - Opportunity.Won
-          - OpptyProductRelation.*
-          - OpptyProductRelation.Create
-          - OpptyProductRelation.Delete
-          - OpptyProductRelation.Update
-          - Product.*
-          - Product.Create
-          - Product.Delete
-          - Product.Update
-          - ProductPriceList.*
-          - ProductPriceList.Create
-          - ProductPriceList.Delete
-          - ProductPriceList.Update
-          - ProductPriceListPrice.*
-          - ProductPriceListPrice.Create
-          - ProductPriceListPrice.Delete
-          - ProductPriceListPrice.Update
-          - Project.*
-          - Project.Create
-          - Project.Delete
-          - Project.DocumentLinked
-          - Project.OwnerChanged
-          - Project.Update
-          - Quote.*
-          - Quote.Create
-          - Quote.Delete
-          - Quote.DocumentLinked
-          - Quote.Lost
-          - Quote.Move
-          - Quote.OwnerChanged
-          - Quote.Update
-          - Quote.Won
-          - QuoteAccountRelation.*
-          - QuoteAccountRelation.Create
-          - QuoteAccountRelation.Delete
-          - QuoteAccountRelation.Update
-          - QuoteContactRelation.*
-          - QuoteContactRelation.Create
-          - QuoteContactRelation.Delete
-          - QuoteContactRelation.Update
-          - Task.*
-          - Task.Comment
-          - Task.Create
-          - Task.Delete
-          - Task.DocumentLinked
-          - Task.OwnerChanged
-          - Task.Update
-          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
-        webhook_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent webhook.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     updateWebhookEventInput:
       properties:
         event:
@@ -1555,8 +1540,20 @@ components:
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the parent webhook.
-    updateWebhookInput:
+    createWebhookInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         insecure_ssl:
           type: boolean
           example: false
@@ -1718,171 +1715,10 @@ components:
             - Task.OwnerChanged
             - Task.Update
           description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
-    createWebhookEventInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        event:
-          type: string
-          example: '*'
-          enum:
-          - '*'
-          - Account.*
-          - Account.Create
-          - Account.Delete
-          - Account.DocumentLinked
-          - Account.OwnerChanged
-          - Account.Update
-          - ActivityRelation.*
-          - ActivityRelation.Create
-          - ActivityRelation.Delete
-          - ActivityRelation.Update
-          - Appointment.*
-          - Appointment.Comment
-          - Appointment.Create
-          - Appointment.Delete
-          - Appointment.DocumentLinked
-          - Appointment.OwnerChanged
-          - Appointment.Update
-          - Contact.*
-          - Contact.Create
-          - Contact.Delete
-          - Contact.DocumentLinked
-          - Contact.OwnerChanged
-          - Contact.Update
-          - ContactAccountRelation.*
-          - ContactAccountRelation.Create
-          - ContactAccountRelation.Delete
-          - ContactAccountRelation.Update
-          - Currency.*
-          - Currency.Create
-          - Currency.Delete
-          - Currency.Update
-          - CurrencyExchangeRate.*
-          - CurrencyExchangeRate.Create
-          - CurrencyExchangeRate.Delete
-          - CurrencyExchangeRate.Update
-          - CurrencyExchangeRatesList.*
-          - CurrencyExchangeRatesList.Create
-          - CurrencyExchangeRatesList.Delete
-          - CurrencyExchangeRatesList.Update
-          - CustomEntity.*
-          - CustomEntity.Create
-          - CustomEntity.Delete
-          - CustomEntity.DocumentLinked
-          - CustomEntity.OwnerChanged
-          - CustomEntity.Update
-          - Email.*
-          - Email.Create
-          - Email.Delete
-          - Email.DocumentLinked
-          - Email.Update
-          - Lead.*
-          - Lead.BackToLead
-          - Lead.Create
-          - Lead.Delete
-          - Lead.DocumentLinked
-          - Lead.Lost
-          - Lead.OwnerChanged
-          - Lead.Update
-          - LeadOpptyAccountRelation.*
-          - LeadOpptyAccountRelation.Create
-          - LeadOpptyAccountRelation.Delete
-          - LeadOpptyAccountRelation.Update
-          - LeadOpptyContactRelation.*
-          - LeadOpptyContactRelation.Create
-          - LeadOpptyContactRelation.Delete
-          - LeadOpptyContactRelation.Update
-          - Memo.*
-          - Memo.Comment
-          - Memo.Create
-          - Memo.Delete
-          - Memo.DocumentLinked
-          - Memo.Update
-          - Message.*
-          - Message.Create
-          - Message.Delete
-          - Message.DocumentLinked
-          - Message.Update
-          - Note.*
-          - Note.Create
-          - Note.Delete
-          - Note.Update
-          - Opportunity.*
-          - Opportunity.Create
-          - Opportunity.Delete
-          - Opportunity.DocumentLinked
-          - Opportunity.Lost
-          - Opportunity.Move
-          - Opportunity.OwnerChanged
-          - Opportunity.Qualify
-          - Opportunity.Update
-          - Opportunity.Won
-          - OpptyProductRelation.*
-          - OpptyProductRelation.Create
-          - OpptyProductRelation.Delete
-          - OpptyProductRelation.Update
-          - Product.*
-          - Product.Create
-          - Product.Delete
-          - Product.Update
-          - ProductPriceList.*
-          - ProductPriceList.Create
-          - ProductPriceList.Delete
-          - ProductPriceList.Update
-          - ProductPriceListPrice.*
-          - ProductPriceListPrice.Create
-          - ProductPriceListPrice.Delete
-          - ProductPriceListPrice.Update
-          - Project.*
-          - Project.Create
-          - Project.Delete
-          - Project.DocumentLinked
-          - Project.OwnerChanged
-          - Project.Update
-          - Quote.*
-          - Quote.Create
-          - Quote.Delete
-          - Quote.DocumentLinked
-          - Quote.Lost
-          - Quote.Move
-          - Quote.OwnerChanged
-          - Quote.Update
-          - Quote.Won
-          - QuoteAccountRelation.*
-          - QuoteAccountRelation.Create
-          - QuoteAccountRelation.Delete
-          - QuoteAccountRelation.Update
-          - QuoteContactRelation.*
-          - QuoteContactRelation.Create
-          - QuoteContactRelation.Delete
-          - QuoteContactRelation.Update
-          - Task.*
-          - Task.Comment
-          - Task.Create
-          - Task.Delete
-          - Task.DocumentLinked
-          - Task.OwnerChanged
-          - Task.Update
-          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
-        webhook_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent webhook.
       required:
-      - event
-      - webhook_id
+      - insecure_ssl
+      - url
+      - events
     WebhookEvent:
       properties:
         is_delete_protected:
@@ -2074,6 +1910,349 @@ components:
       - webhook
       - event
       - webhook_id
+    createWebhookEventInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+      required:
+      - event
+      - webhook_id
+    batchWebhookEventInput:
+      properties:
+        event:
+          type: string
+          example: '*'
+          enum:
+          - '*'
+          - Account.*
+          - Account.Create
+          - Account.Delete
+          - Account.DocumentLinked
+          - Account.OwnerChanged
+          - Account.Update
+          - ActivityRelation.*
+          - ActivityRelation.Create
+          - ActivityRelation.Delete
+          - ActivityRelation.Update
+          - Appointment.*
+          - Appointment.Comment
+          - Appointment.Create
+          - Appointment.Delete
+          - Appointment.DocumentLinked
+          - Appointment.OwnerChanged
+          - Appointment.Update
+          - Contact.*
+          - Contact.Create
+          - Contact.Delete
+          - Contact.DocumentLinked
+          - Contact.OwnerChanged
+          - Contact.Update
+          - ContactAccountRelation.*
+          - ContactAccountRelation.Create
+          - ContactAccountRelation.Delete
+          - ContactAccountRelation.Update
+          - Currency.*
+          - Currency.Create
+          - Currency.Delete
+          - Currency.Update
+          - CurrencyExchangeRate.*
+          - CurrencyExchangeRate.Create
+          - CurrencyExchangeRate.Delete
+          - CurrencyExchangeRate.Update
+          - CurrencyExchangeRatesList.*
+          - CurrencyExchangeRatesList.Create
+          - CurrencyExchangeRatesList.Delete
+          - CurrencyExchangeRatesList.Update
+          - CustomEntity.*
+          - CustomEntity.Create
+          - CustomEntity.Delete
+          - CustomEntity.DocumentLinked
+          - CustomEntity.OwnerChanged
+          - CustomEntity.Update
+          - Email.*
+          - Email.Create
+          - Email.Delete
+          - Email.DocumentLinked
+          - Email.Update
+          - Lead.*
+          - Lead.BackToLead
+          - Lead.Create
+          - Lead.Delete
+          - Lead.DocumentLinked
+          - Lead.Lost
+          - Lead.OwnerChanged
+          - Lead.Update
+          - LeadOpptyAccountRelation.*
+          - LeadOpptyAccountRelation.Create
+          - LeadOpptyAccountRelation.Delete
+          - LeadOpptyAccountRelation.Update
+          - LeadOpptyContactRelation.*
+          - LeadOpptyContactRelation.Create
+          - LeadOpptyContactRelation.Delete
+          - LeadOpptyContactRelation.Update
+          - Memo.*
+          - Memo.Comment
+          - Memo.Create
+          - Memo.Delete
+          - Memo.DocumentLinked
+          - Memo.Update
+          - Message.*
+          - Message.Create
+          - Message.Delete
+          - Message.DocumentLinked
+          - Message.Update
+          - Note.*
+          - Note.Create
+          - Note.Delete
+          - Note.Update
+          - Opportunity.*
+          - Opportunity.Create
+          - Opportunity.Delete
+          - Opportunity.DocumentLinked
+          - Opportunity.Lost
+          - Opportunity.Move
+          - Opportunity.OwnerChanged
+          - Opportunity.Qualify
+          - Opportunity.Update
+          - Opportunity.Won
+          - OpptyProductRelation.*
+          - OpptyProductRelation.Create
+          - OpptyProductRelation.Delete
+          - OpptyProductRelation.Update
+          - Product.*
+          - Product.Create
+          - Product.Delete
+          - Product.Update
+          - ProductPriceList.*
+          - ProductPriceList.Create
+          - ProductPriceList.Delete
+          - ProductPriceList.Update
+          - ProductPriceListPrice.*
+          - ProductPriceListPrice.Create
+          - ProductPriceListPrice.Delete
+          - ProductPriceListPrice.Update
+          - Project.*
+          - Project.Create
+          - Project.Delete
+          - Project.DocumentLinked
+          - Project.OwnerChanged
+          - Project.Update
+          - Quote.*
+          - Quote.Create
+          - Quote.Delete
+          - Quote.DocumentLinked
+          - Quote.Lost
+          - Quote.Move
+          - Quote.OwnerChanged
+          - Quote.Update
+          - Quote.Won
+          - QuoteAccountRelation.*
+          - QuoteAccountRelation.Create
+          - QuoteAccountRelation.Delete
+          - QuoteAccountRelation.Update
+          - QuoteContactRelation.*
+          - QuoteContactRelation.Create
+          - QuoteContactRelation.Delete
+          - QuoteContactRelation.Update
+          - Task.*
+          - Task.Comment
+          - Task.Create
+          - Task.Delete
+          - Task.DocumentLinked
+          - Task.OwnerChanged
+          - Task.Update
+          description: Event type the parent webhook subscribes to (e.g. Account.Create, Lead.Update). The webhook fires whenever an event of this type occurs in the team space.
+        webhook_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent webhook.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     batchWebhookInput:
       properties:
         insecure_ssl:
@@ -2241,182 +2420,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createWebhookInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        insecure_ssl:
-          type: boolean
-          example: false
-          description: If True, remote side ssl certificate will not be validated when delivering notifications.
-        options:
-          type: object
-          description: "Params in REST API format (snake case), to modify the content of the WebHook.\nYou can set \"entity\" options of the main entity on which the event occurs.\nE.g. Account for events like Account.Create, Account.Update, Account.Delete.\nFor events with a secondary related entity you can also options under key \"related_entity\".\nE.g. for Account.LinkedDocument event, the \"expand\" option of CloudObject(Document)\ncan be set under \"related_entity\" key.\nFilter follows REST API conventions:\nhttp://pipeliner-api-doc.s3-website-eu-west-1.amazonaws.com/latest/rest/space/index.html\nIn addition, to REST params, you can conditionally trigger webhook\nonly when specified fields will change. You can use \"on-field-change\" param and provide\na list of api names on which this change will listen. The \"on-field-change\" option is available for Account,\nAppointment, Task, Contact, Opportunity, Lead, Product Line Item, Project, Quote and Custom Entity.\n\nSuppressing Webhooks\nYou can specify list of strings under \"skip_keys\" key in options.\nWhenever you make an API request with header \"Webhook-Skip-Key\"\nequal to any of the specified skip keys,\nthe Webhook will not be triggered. This can prevent a Webhook loop.\n\nExample:\n{\n    \"entity\": {\n        \"Contact\": {\n            \"expand\": [\n                \"primary_account\",\n                \"primary_contact\",\n                \"task_relations.task\"\n            ],\n            \"load-only\": [\n                \"id\",\n                \"primary_account\",\n                \"primary_contact.first_name\",\n                \"task_relations.task\"\n            ],\n            \"filter\": {\n                \"email1\":  [\"test@example.com\", \"test@example.net\"],\n                \"email2\":  \"test@example.com\"\n            },\n            \"filter-op\": {\"email1\":  \"eq\"},  # optional, default operator is eq\n            \"on-field-change\": [\"email1\"]\n        },\n        \"Account\": {\n            \"filter\": {\n                \"owner_id\":  [\"9900cce6-bcd6-412a-bcd1-1904556c949a\"]\n            }\n        }\n    },\n    \"related_entity\": {\"expand\": [\"contact\"], \"load-only\": [\"id\", \"contact\"]},\n    \"skip_keys\": [\"gmail_sync\", \"custom_integration\"],\n    \"chunk_size\": 100, // defines the size of the chunk, default is 100, max is 100.\n    \"chunk_delay\": 300, // each chunk will be delayed by N * chunk_delay seconds, where N is index of chunk, default is 0.\n    \"custom_entity_api_name\": [\"CE_Name1\", \"CE_Name2\"] // in case of triggered custom entity, this will execute webhooks only for specified ones within the list. Default are all custom entity types.\n}"
-        signature:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Signature to verify webhook (has to be UUID). When signature is set, then all webhook requests will be signed using HMAC-SHA256. This signature will be used as key and request body as message. Signature will be located in "WebHook-Signature" header.
-        url:
-          type: string
-          example: string
-          description: Target URL that webhook event payloads are POSTed to.
-        events:
-          type: array
-          items:
-            type: string
-            example: '*'
-            enum:
-            - '*'
-            - Account.*
-            - Account.Create
-            - Account.Delete
-            - Account.DocumentLinked
-            - Account.OwnerChanged
-            - Account.Update
-            - ActivityRelation.*
-            - ActivityRelation.Create
-            - ActivityRelation.Delete
-            - ActivityRelation.Update
-            - Appointment.*
-            - Appointment.Comment
-            - Appointment.Create
-            - Appointment.Delete
-            - Appointment.DocumentLinked
-            - Appointment.OwnerChanged
-            - Appointment.Update
-            - Contact.*
-            - Contact.Create
-            - Contact.Delete
-            - Contact.DocumentLinked
-            - Contact.OwnerChanged
-            - Contact.Update
-            - ContactAccountRelation.*
-            - ContactAccountRelation.Create
-            - ContactAccountRelation.Delete
-            - ContactAccountRelation.Update
-            - Currency.*
-            - Currency.Create
-            - Currency.Delete
-            - Currency.Update
-            - CurrencyExchangeRate.*
-            - CurrencyExchangeRate.Create
-            - CurrencyExchangeRate.Delete
-            - CurrencyExchangeRate.Update
-            - CurrencyExchangeRatesList.*
-            - CurrencyExchangeRatesList.Create
-            - CurrencyExchangeRatesList.Delete
-            - CurrencyExchangeRatesList.Update
-            - CustomEntity.*
-            - CustomEntity.Create
-            - CustomEntity.Delete
-            - CustomEntity.DocumentLinked
-            - CustomEntity.OwnerChanged
-            - CustomEntity.Update
-            - Email.*
-            - Email.Create
-            - Email.Delete
-            - Email.DocumentLinked
-            - Email.Update
-            - Lead.*
-            - Lead.BackToLead
-            - Lead.Create
-            - Lead.Delete
-            - Lead.DocumentLinked
-            - Lead.Lost
-            - Lead.OwnerChanged
-            - Lead.Update
-            - LeadOpptyAccountRelation.*
-            - LeadOpptyAccountRelation.Create
-            - LeadOpptyAccountRelation.Delete
-            - LeadOpptyAccountRelation.Update
-            - LeadOpptyContactRelation.*
-            - LeadOpptyContactRelation.Create
-            - LeadOpptyContactRelation.Delete
-            - LeadOpptyContactRelation.Update
-            - Memo.*
-            - Memo.Comment
-            - Memo.Create
-            - Memo.Delete
-            - Memo.DocumentLinked
-            - Memo.Update
-            - Message.*
-            - Message.Create
-            - Message.Delete
-            - Message.DocumentLinked
-            - Message.Update
-            - Note.*
-            - Note.Create
-            - Note.Delete
-            - Note.Update
-            - Opportunity.*
-            - Opportunity.Create
-            - Opportunity.Delete
-            - Opportunity.DocumentLinked
-            - Opportunity.Lost
-            - Opportunity.Move
-            - Opportunity.OwnerChanged
-            - Opportunity.Qualify
-            - Opportunity.Update
-            - Opportunity.Won
-            - OpptyProductRelation.*
-            - OpptyProductRelation.Create
-            - OpptyProductRelation.Delete
-            - OpptyProductRelation.Update
-            - Product.*
-            - Product.Create
-            - Product.Delete
-            - Product.Update
-            - ProductPriceList.*
-            - ProductPriceList.Create
-            - ProductPriceList.Delete
-            - ProductPriceList.Update
-            - ProductPriceListPrice.*
-            - ProductPriceListPrice.Create
-            - ProductPriceListPrice.Delete
-            - ProductPriceListPrice.Update
-            - Project.*
-            - Project.Create
-            - Project.Delete
-            - Project.DocumentLinked
-            - Project.OwnerChanged
-            - Project.Update
-            - Quote.*
-            - Quote.Create
-            - Quote.Delete
-            - Quote.DocumentLinked
-            - Quote.Lost
-            - Quote.Move
-            - Quote.OwnerChanged
-            - Quote.Update
-            - Quote.Won
-            - QuoteAccountRelation.*
-            - QuoteAccountRelation.Create
-            - QuoteAccountRelation.Delete
-            - QuoteAccountRelation.Update
-            - QuoteContactRelation.*
-            - QuoteContactRelation.Create
-            - QuoteContactRelation.Delete
-            - QuoteContactRelation.Update
-            - Task.*
-            - Task.Comment
-            - Task.Create
-            - Task.Delete
-            - Task.DocumentLinked
-            - Task.OwnerChanged
-            - Task.Update
-          description: Event types this webhook subscribes to (e.g. Account.Create, Lead.Update). At least one event is required; the webhook fires whenever any subscribed event occurs in the team space.
-      required:
-      - insecure_ssl
-      - url
-      - events

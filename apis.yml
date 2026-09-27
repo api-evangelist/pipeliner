@@ -16,6 +16,12 @@ tags:
 - CRM
 - Sales
 - Automation
+- Pipelines
+- Cloud
+tags_raw:
+- CRM
+- Sales
+- Automation
 - Pipeline
 - Cloud
 maintainers:
@@ -207,6 +213,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Clients
+  tags_raw:
   - Client
   properties:
   - type: OpenAPI
@@ -361,6 +369,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Documents
+  tags_raw:
   - Document
   properties:
   - type: OpenAPI
@@ -537,6 +547,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Interfaces
+  tags_raw:
   - Interface
   properties:
   - type: OpenAPI
@@ -559,6 +571,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Leads
+  tags_raw:
   - Lead
   properties:
   - type: OpenAPI
@@ -779,6 +793,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Pipelines
+  tags_raw:
   - Pipeline
   properties:
   - type: OpenAPI
@@ -801,6 +817,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Processes
+  tags_raw:
   - Process
   properties:
   - type: OpenAPI
@@ -867,6 +885,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Profiles
+  tags_raw:
   - Profile
   properties:
   - type: OpenAPI
@@ -911,6 +931,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Quotes
+  tags_raw:
   - Quote
   properties:
   - type: OpenAPI
@@ -977,6 +999,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Sales Unit
+  tags_raw:
   - SalesUnit
   properties:
   - type: OpenAPI
@@ -1087,6 +1111,8 @@ apis:
   humanURL: https://developers.pipelinersales.com/api-docs
   baseURL: https://us-east.api.pipelinersales.com/api/v100/rest/spaces/{space_id}
   tags:
+  - Time Frame
+  tags_raw:
   - Timeframe
   properties:
   - type: OpenAPI

@@ -508,6 +508,53 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    updateSalesRoleInput:
+      properties:
+        color_code:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createSalesRoleInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color_code:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - color_code
+      - name
     SalesRole:
       properties:
         is_delete_protected:
@@ -601,50 +648,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createSalesRoleInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color_code:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - color_code
-      - name
-    updateSalesRoleInput:
-      properties:
-        color_code:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.

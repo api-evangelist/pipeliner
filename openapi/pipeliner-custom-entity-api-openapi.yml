@@ -1758,532 +1758,22 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchCustomEntityTypeInput:
+    batchEntitySettingsInput:
       properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createCustomEntityInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this record.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the record owner.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the custom entity type.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''createCustomEntitySharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CustomEntitySharingClientRelation, see: ''createCustomEntitySharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this custom entity record.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
-          description: Saved view profiles this custom entity record currently matches.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
-          description: Tag labels applied to this custom entity record.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - owner_id
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    Entity:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        entity_name:
-          type: string
-          example: string
-          description: Stable identifier of the entity (e.g. "Account", "Lead", "Opportunity").
-          readOnly: true
-        table_name:
-          type: string
-          example: string
-          description: Internal storage identifier for the entity. Read-only.
-          readOnly: true
-        table_ex:
-          type: string
-          example: string
-          description: Internal storage identifier for the entity's custom-field data. Read-only.
-          readOnly: true
-        table_data_ex:
-          type: string
-          example: string
-          description: Internal storage identifier for the entity's data relation rows. Read-only.
-          readOnly: true
-        default_view_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the field used as the default display label for records of this entity.
-          readOnly: true
-        abstract_entity_id:
-          type: string
-          example: string
-          description: For sub-entities (e.g. Lead/Opportunity sharing a LeadOppty parent), the entity name of the parent abstract entity. Empty for stand-alone entities.
-          readOnly: true
-        entity_type:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Kind of the entity in the platform: business entity, system schema, custom entity, etc.'
-          readOnly: true
-        preference_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Display order used to sort entities in pickers and navigation lists; lower values appear first.
-          readOnly: true
-        allows_multiple_relation:
-          type: boolean
-          example: false
-          description: True when records of this entity can be linked to multiple records of the same other entity through the same relation.
-          readOnly: true
-        has_draft:
-          type: boolean
-          example: false
-          description: True when records of this entity support drafts (changes go through a draft before being published).
-          readOnly: true
-        access_mode:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Access scope of records of this entity: shared across the entire space, scoped to a sales unit, or owner-only.'
-          readOnly: true
-        icon:
-          type: integer
-          format: int32
-          example: 1
-          description: Numeric icon identifier used to render the entity in the UI.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: True when the entity is marked as deleted (soft-delete). Read-only at the entity-metadata level.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        settings:
-          type: object
-          description: Optional space-level configuration for the entity (e.g. UI/feature flags). Empty when no overrides are set.
-        name_singular:
-          type: string
-          example: string
-          description: Display name of the entity in singular form (e.g. "Account").
-        name_plural:
-          type: string
-          example: string
-          description: Display name of the entity in plural form (e.g. "Accounts").
-      required:
-      - is_delete_protected
-      - id
-      - default_view_field_id
-      - abstract_entity_id
-      - entity_type
-      - preference_order
-      - has_draft
-      - access_mode
-      - icon
-    createEntitySettingsInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         default_list_columns:
           type: string
           format: binary
           example: blob
           description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
-        is_published:
-          type: boolean
-          example: false
-          description: True when the settings are published; false while they exist only as an unpublished draft.
-          readOnly: true
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - default_list_columns
-    createCustomEntityTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-      required:
-      - form_edit
-      - is_readonly
-      - name
-      - settings
-    updateCustomEntityInput:
-      properties:
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this record.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the record owner.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the custom entity type.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''updateCustomEntitySharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CustomEntitySharingClientRelation, see: ''updateCustomEntitySharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this custom entity record.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
-          description: Saved view profiles this custom entity record currently matches.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
-          description: Tag labels applied to this custom entity record.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    CustomEntityType:
-      properties:
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
         id:
+          description: ID of object to update.
           type: string
           format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        entity_api_name:
-          type: string
-          example: string
-          description: API name of the custom entity type (e.g. "Vehicle", "Project_Phase"). Used as the entity name when calling REST endpoints or selecting a concrete custom entity in GraphQL.
-      required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
-      - form_edit
-      - is_readonly
-      - name
-      - settings
-    updateCustomEntityTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
     EntitySettings:
       properties:
         is_delete_protected:
@@ -2435,22 +1925,237 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    batchEntitySettingsInput:
+    createCustomEntityInput:
       properties:
-        default_list_columns:
+        modified:
           type: string
-          format: binary
-          example: blob
-          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''createCustomEntitySharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingClientRelation, see: ''createCustomEntitySharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tag labels applied to this custom entity record.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
+      required:
+      - owner_id
+    createEntitySettingsInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        is_published:
+          type: boolean
+          example: false
+          description: True when the settings are published; false while they exist only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - default_list_columns
+    updateCustomEntityInput:
+      properties:
+        currency_exchange_rates_list_id:
           type: string
           format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this record.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the record owner.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom entity type.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingSalesUnitRelation, see: ''updateCustomEntitySharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this custom entity record. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CustomEntitySharingClientRelation, see: ''updateCustomEntitySharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this custom entity record. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this custom entity record.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this custom entity record currently matches.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this custom entity record.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     CustomEntity:
       properties:
         is_delete_protected:
@@ -2603,6 +2308,110 @@ components:
       - owner_id
       - table_name
       - is_favorite
+    updateCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+    createCustomEntityTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+      required:
+      - form_edit
+      - is_readonly
+      - name
+      - settings
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     updateEntitySettingsInput:
       properties:
         default_list_columns:
@@ -2615,3 +2424,194 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    Entity:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        entity_name:
+          type: string
+          example: string
+          description: Stable identifier of the entity (e.g. "Account", "Lead", "Opportunity").
+          readOnly: true
+        table_name:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity. Read-only.
+          readOnly: true
+        table_ex:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity's custom-field data. Read-only.
+          readOnly: true
+        table_data_ex:
+          type: string
+          example: string
+          description: Internal storage identifier for the entity's data relation rows. Read-only.
+          readOnly: true
+        default_view_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the field used as the default display label for records of this entity.
+          readOnly: true
+        abstract_entity_id:
+          type: string
+          example: string
+          description: For sub-entities (e.g. Lead/Opportunity sharing a LeadOppty parent), the entity name of the parent abstract entity. Empty for stand-alone entities.
+          readOnly: true
+        entity_type:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Kind of the entity in the platform: business entity, system schema, custom entity, etc.'
+          readOnly: true
+        preference_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Display order used to sort entities in pickers and navigation lists; lower values appear first.
+          readOnly: true
+        allows_multiple_relation:
+          type: boolean
+          example: false
+          description: True when records of this entity can be linked to multiple records of the same other entity through the same relation.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: True when records of this entity support drafts (changes go through a draft before being published).
+          readOnly: true
+        access_mode:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Access scope of records of this entity: shared across the entire space, scoped to a sales unit, or owner-only.'
+          readOnly: true
+        icon:
+          type: integer
+          format: int32
+          example: 1
+          description: Numeric icon identifier used to render the entity in the UI.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: True when the entity is marked as deleted (soft-delete). Read-only at the entity-metadata level.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        settings:
+          type: object
+          description: Optional space-level configuration for the entity (e.g. UI/feature flags). Empty when no overrides are set.
+        name_singular:
+          type: string
+          example: string
+          description: Display name of the entity in singular form (e.g. "Account").
+        name_plural:
+          type: string
+          example: string
+          description: Display name of the entity in plural form (e.g. "Accounts").
+      required:
+      - is_delete_protected
+      - id
+      - default_view_field_id
+      - abstract_entity_id
+      - entity_type
+      - preference_order
+      - has_draft
+      - access_mode
+      - icon
+    CustomEntityType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity type (e.g. "Vehicle", "Project_Phase"). Used as the entity name when calling REST endpoints or selecting a concrete custom entity in GraphQL.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - form_edit
+      - is_readonly
+      - name
+      - settings

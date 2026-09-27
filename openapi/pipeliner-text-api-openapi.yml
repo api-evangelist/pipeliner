@@ -1561,6 +1561,125 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    TextMessageConversationRelations:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the conversation is linked to, or empty when not linked.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the conversation is linked to, or empty when not linked.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the conversation is linked to. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the conversation is linked to. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project the conversation is linked to.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the conversation is linked to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        text_message_conversation:
+          type: string
+          format: uri
+          description: 'Conversation this link belongs to.
+
+
+            Relation to TextMessageConversation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversation'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - text_message_conversation
+      - text_message_conversation_id
     createTextMessageInput:
       properties:
         modified:
@@ -1644,6 +1763,266 @@ components:
       required:
       - content
       - direction
+    batchTextMessageConversationInput:
+      properties:
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sender phone.
+        recipient_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched account.
+        recipient_contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the matched contact.
+        recipient_phone_number:
+          type: string
+          example: string
+          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
+          description: Messages exchanged in the conversation, ordered by send time.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Accounts linked to this conversation.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Contacts linked to this conversation.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Projects linked to this conversation.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Leads linked to this conversation.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Opportunities linked to this conversation.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
+          description: Quotes linked to this conversation.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateTextMessageInput:
+      properties:
+        chat_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the chat conversation.
+        content:
+          type: string
+          example: string
+          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
+        datetime_sent:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the message was sent.
+        direction:
+          type: integer
+          description: 'Direction of the message (Incoming, Outgoing).
+
+
+            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        message_sid:
+          type: string
+          example: string
+          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
+        score:
+          type: integer
+          format: int32
+          example: 1
+          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
+        status:
+          type: integer
+          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
+
+
+            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the message (e.g. MMS attachments).
+    batchTextMessageConversationRelationsInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createTextMessageConversationRelationsInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project, or empty when not linked.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote, or empty when not linked.
+        text_message_conversation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the conversation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - text_message_conversation_id
     TextMessage:
       properties:
         is_delete_protected:
@@ -1773,57 +2152,6 @@ components:
       - content_as_html
       - data
       - topic_prompts
-    createTextMessageConversationRelationsInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project, or empty when not linked.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote, or empty when not linked.
-        text_message_conversation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the conversation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - text_message_conversation_id
     createTextMessageConversationInput:
       properties:
         modified:
@@ -1934,7 +2262,7 @@ components:
           description: Quotes linked to this conversation.
       required:
       - phone_id
-    updateTextMessageInput:
+    batchTextMessageInput:
       properties:
         chat_conversation_id:
           type: string
@@ -2002,166 +2330,10 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Files attached to the message (e.g. MMS attachments).
-    batchTextMessageConversationRelationsInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project, or empty when not linked.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote, or empty when not linked.
-        text_message_conversation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the conversation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    TextMessageConversationRelations:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account the conversation is linked to, or empty when not linked.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact the conversation is linked to, or empty when not linked.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        lead:
-          type: string
-          format: uri
-          description: 'Lead the conversation is linked to. Set when lead_oppty_id resolves to a Lead.
-
-
-            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity the conversation is linked to. Set when lead_oppty_id resolves to an Opportunity.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project the conversation is linked to.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the conversation is linked to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        text_message_conversation:
-          type: string
-          format: uri
-          description: 'Conversation this link belongs to.
-
-
-            Relation to TextMessageConversation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessageConversation'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead or opportunity the conversation is linked to, or empty when not linked.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project, or empty when not linked.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote, or empty when not linked.
-        text_message_conversation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the conversation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - text_message_conversation
-      - text_message_conversation_id
     TextMessageConversation:
       properties:
         is_delete_protected:
@@ -2291,106 +2463,6 @@ components:
       - id
       - phone
       - phone_id
-    batchTextMessageConversationInput:
-      properties:
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sender phone.
-        recipient_account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the matched account.
-        recipient_contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the matched contact.
-        recipient_phone_number:
-          type: string
-          example: string
-          description: External phone number of the conversation recipient. Cannot be changed once the conversation has started.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        messages:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
-          description: Messages exchanged in the conversation, ordered by send time.
-        account_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Accounts linked to this conversation.
-        contact_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Contacts linked to this conversation.
-        project_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Projects linked to this conversation.
-        lead_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Leads linked to this conversation.
-        opportunity_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Opportunities linked to this conversation.
-        quote_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
-          description: Quotes linked to this conversation.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     updateTextMessageConversationInput:
       properties:
         phone_id:
@@ -2487,75 +2559,3 @@ components:
                 format: uri
             description: 'Relation to TextMessageConversationRelations, see: ''updateTextMessageConversationRelationsInput'' object for properties.'
           description: Quotes linked to this conversation.
-    batchTextMessageInput:
-      properties:
-        chat_conversation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the chat conversation.
-        content:
-          type: string
-          example: string
-          description: Body of the message. May be plain text or a JSON payload (e.g. AI assistant examples / suggestions).
-        datetime_sent:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the message was sent.
-        direction:
-          type: integer
-          description: 'Direction of the message (Incoming, Outgoing).
-
-
-            Integer enum value: 1 - OutgoingEmail, 2 - IncomingEmail'
-          example: 1
-          enum:
-          - 1
-          - 2
-        message_sid:
-          type: string
-          example: string
-          description: External message identifier from the SMS provider (e.g. Twilio Message SID).
-        score:
-          type: integer
-          format: int32
-          example: 1
-          description: Quality score given to the message by the user (e.g. for AI-suggested replies). Used to feed back into the suggestion engine.
-        status:
-          type: integer
-          description: 'Delivery status of the message (e.g. Sent, Delivered, Failed).
-
-
-            Integer enum value: 1 - Sending, 2 - Sent, 3 - Failed, 4 - Received, 5 - Seen'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        text_message_conversation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the conversation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        attachments:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the message (e.g. MMS attachments).
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

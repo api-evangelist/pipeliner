@@ -2492,175 +2492,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchCloudObjectRelationInput:
+    createCloudObjectInput:
       properties:
-        cloud_object:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Cloud object (file) being linked.
-
-
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
-        report_schedule:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Report schedule the file is attached to (e.g. an exported report).
-
-
-            Relation to ReportSchedule, see: ''updateReportScheduleInput'' object for properties.'
-        text_message:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Text message (SMS/MMS) the file is attached to.
-
-
-            Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment or task, or empty when not linked.
-        approval_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked approval process.
-        call_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked call.
-        cloud_object_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder within the parent record, or empty when stored at the record root.
-        cloud_object_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked file.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email sequence.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email template.
-        field_mapping_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked field mapping.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        media_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked media record.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email or memo, or empty when not linked.
-        online_form_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form field the file was uploaded into.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked online form submission.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process.
-        process_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process template.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        report_schedule_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked report schedule.
-        text_message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked text message.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    CloudObjectRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -2673,299 +2506,109 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account the file is attached to, or empty when not attached to an account.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        appointment:
-          type: string
-          format: uri
-          description: 'Appointment the file is attached to. Set when activity_id resolves to an Appointment.
-
-
-            Relation to Appointment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Appointment'' object for properties.'
-        task:
-          type: string
-          format: uri
-          description: 'Task the file is attached to. Set when activity_id resolves to a Task.
-
-
-            Relation to Task. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Task'' object for properties.'
-        approval_process:
-          type: string
-          format: uri
-          description: 'Approval process the file is attached to.
-
-
-            Relation to ApprovalProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ApprovalProcess'' object for properties.'
-        call:
-          type: string
-          format: uri
-          description: 'Call the file is attached to (e.g. a call recording).
-
-
-            Relation to Call. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Call'' object for properties.'
-        cloud_object_folder:
-          type: string
-          format: uri
-          description: 'Folder the file is filed under within the parent record, or empty when stored at the record root.
-
-
-            Relation to CloudObjectFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectFolder'' object for properties.'
-        cloud_object:
-          type: string
-          format: uri
-          description: 'Cloud object (file) being linked.
-
-
-            Relation to CloudObject. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObject'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact the file is attached to, or empty when not attached to a contact.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        custom_entity:
-          type: string
-          format: uri
-          description: 'Custom entity record the file is attached to.
-
-
-            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
-        email_sequence:
-          type: string
-          format: uri
-          description: 'Email sequence the file is attached to.
-
-
-            Relation to EmailSequence. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequence'' object for properties.'
-        email_template:
-          type: string
-          format: uri
-          description: 'Email template the file is attached to as a template attachment.
-
-
-            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
-        field_mapping:
-          type: string
-          format: uri
-          description: 'Field mapping the file is attached to (e.g. an import file).
-
-
-            Relation to FieldMapping. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''FieldMapping'' object for properties.'
-        lead:
-          type: string
-          format: uri
-          description: 'Lead the file is attached to. Set when lead_oppty_id resolves to a Lead.
-
-
-            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity the file is attached to. Set when lead_oppty_id resolves to an Opportunity.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
-        media:
-          type: string
-          format: uri
-          description: 'Media record the file is attached to.
-
-
-            Relation to Media. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Media'' object for properties.'
-        email:
-          type: string
-          format: uri
-          description: 'Email the file is attached to (e.g. an email attachment). Set when message_id resolves to an Email.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        memo:
-          type: string
-          format: uri
-          description: 'Memo the file is attached to. Set when message_id resolves to a Memo.
-
-
-            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
-        online_form_field:
-          type: string
-          format: uri
-          description: 'Online form field the file was uploaded into.
-
-
-            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
-        online_form:
-          type: string
-          format: uri
-          description: 'Online form submission the file was uploaded with.
-
-
-            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
-        process:
-          type: string
-          format: uri
-          description: 'Sales process the file is attached to.
-
-
-            Relation to Process. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Process'' object for properties.'
-        process_template:
-          type: string
-          format: uri
-          description: 'Sales process template the file is attached to.
-
-
-            Relation to ProcessTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessTemplate'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project the file is attached to.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the file is attached to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        report_schedule:
-          type: string
-          format: uri
-          description: 'Report schedule the file is attached to (e.g. an exported report).
-
-
-            Relation to ReportSchedule. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ReportSchedule'' object for properties.'
-        text_message:
-          type: string
-          format: uri
-          description: 'Text message (SMS/MMS) the file is attached to.
-
-
-            Relation to TextMessage. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessage'' object for properties.'
-        account_id:
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        activity_id:
+          description: Id of the producing application.
+        company_cloud_object_folder_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment or task, or empty when not linked.
-        approval_process_id:
+          description: Id of the company folder, or empty when the object is not stored in the company tree.
+        creator_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked approval process.
-        call_id:
+          description: Id of the uploading user.
+        filename:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked call.
-        cloud_object_folder_id:
+          example: string
+          description: File name (with extension) used when downloading the object.
+        is_public:
+          type: boolean
+          example: false
+          description: When true, the object can be served via a public URL (see public_url).
+        mime_type:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder within the parent record, or empty when stored at the record root.
-        cloud_object_id:
+          example: string
+          description: Mime-type of the cloud object Is detected from content.
+          readOnly: true
+        params:
+          type: object
+          description: Additional metadata about the object (e.g. image dimensions, audio duration), as a JSON object.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: -1 - S3FileUpload, 1 - S3File, 2 - S3Image, 3 - GoogleDriveFile, 4 - OneDriveFile, 5 - BoxFile, 6 - DropboxFile, 7 - SharepointFile, 8 - ExternalURL, 9 - AlfrescoFile, 10 - UrlFile'
+          example: -1
+          enum:
+          - -1
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          readOnly: true
+        upload_source:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - EmailTemplate, 2 - RichTextEditor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        url:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked file.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email sequence.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email template.
-        field_mapping_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked field mapping.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        media_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked media record.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email or memo, or empty when not linked.
-        online_form_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form field the file was uploaded into.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked online form submission.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process.
-        process_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process template.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        report_schedule_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked report schedule.
-        text_message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked text message.
+          example: string
+          description: URL of the object. If URL scheme is not defined "http://" is automatically prepended to supplied URL.
+          readOnly: true
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        content:
+          type: string
+          format: binary
+          example: blob
+          description: Data content of the object.
       required:
-      - is_delete_protected
-      - id
+      - filename
+      - type
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     batchCloudObjectTemplateInput:
       properties:
         application_id:
@@ -3307,6 +2950,165 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    createCloudObjectRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        cloud_object:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object (file) being linked.
+
+
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+        report_schedule:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Report schedule the file is attached to (e.g. an exported report).
+
+
+            Relation to ReportSchedule, see: ''createReportScheduleInput'' object for properties.'
+        text_message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Text message (SMS/MMS) the file is attached to.
+
+
+            Relation to TextMessage, see: ''createTextMessageInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment or task, or empty when not linked.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked approval process.
+        call_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked call.
+        cloud_object_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder within the parent record, or empty when stored at the record root.
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked file.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email sequence.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email template.
+        field_mapping_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked field mapping.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        media_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked media record.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email or memo, or empty when not linked.
+        online_form_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form field the file was uploaded into.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked online form submission.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        process_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process template.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        report_schedule_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked report schedule.
+        text_message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked text message.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     updateCloudObjectStepRelationInput:
       properties:
         cloud_object:
@@ -3411,44 +3213,33 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    batchCloudObjectInput:
+    batchCloudObjectStepRelationInput:
       properties:
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the producing application.
-        company_cloud_object_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company folder, or empty when the object is not stored in the company tree.
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the uploading user.
-        filename:
-          type: string
-          example: string
-          description: File name (with extension) used when downloading the object.
-        is_public:
-          type: boolean
-          example: false
-          description: When true, the object can be served via a public URL (see public_url).
-        params:
+        cloud_object:
           type: object
-          description: Additional metadata about the object (e.g. image dimensions, audio duration), as a JSON object.
-        upload_source:
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'File attached to the step.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the attached file.
+        sort_order:
           type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - EmailTemplate, 2 - RichTextEditor'
+          format: int32
           example: 1
-          enum:
-          - 1
-          - 2
+          description: Position of the file within the step's document list.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline step.
         revision:
           type: integer
           format: int32
@@ -3458,6 +3249,123 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    createCloudObjectStepRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        cloud_object:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'File attached to the step.
+
+
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the attached file.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the file within the step's document list.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline step.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - cloud_object
+      - step_id
+    CloudObjectStepRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        cloud_object:
+          type: string
+          format: uri
+          description: 'File attached to the step.
+
+
+            Relation to CloudObject. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObject'' object for properties.'
+        step:
+          type: string
+          format: uri
+          description: 'Pipeline step the file is attached to.
+
+
+            Relation to Step. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Step'' object for properties.'
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the attached file.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the file within the step's document list.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline step.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - cloud_object
+      - step
+      - step_id
     updateCloudObjectRelationInput:
       properties:
         cloud_object:
@@ -3605,102 +3513,7 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    batchCloudObjectStepRelationInput:
-      properties:
-        cloud_object:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'File attached to the step.
-
-
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
-        cloud_object_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the attached file.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the file within the step's document list.
-        step_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline step.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createCloudObjectFolderInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        entity_api_name:
-          type: string
-          example: string
-          description: API name of the custom entity the folder is attached to. Set only for folders on custom entity records; otherwise empty.
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        online_form_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form template, or empty when not associated with a form.
-        parent_cloud_object_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder, or empty for top-level folders.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
-    CloudObjectFolder:
+    CloudObjectRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -3730,58 +3543,291 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        online_form_type:
+        account:
           type: string
           format: uri
-          description: 'Online form template this folder is associated with, when the folder stores form submissions.
+          description: 'Account the file is attached to, or empty when not attached to an account.
 
 
-            Relation to OnlineFormType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormType'' object for properties.'
-        parent_cloud_object_folder:
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        appointment:
           type: string
           format: uri
-          description: 'Parent folder, when this folder is nested. Empty for top-level folders.
+          description: 'Appointment the file is attached to. Set when activity_id resolves to an Appointment.
+
+
+            Relation to Appointment. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Appointment'' object for properties.'
+        task:
+          type: string
+          format: uri
+          description: 'Task the file is attached to. Set when activity_id resolves to a Task.
+
+
+            Relation to Task. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Task'' object for properties.'
+        approval_process:
+          type: string
+          format: uri
+          description: 'Approval process the file is attached to.
+
+
+            Relation to ApprovalProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ApprovalProcess'' object for properties.'
+        call:
+          type: string
+          format: uri
+          description: 'Call the file is attached to (e.g. a call recording).
+
+
+            Relation to Call. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Call'' object for properties.'
+        cloud_object_folder:
+          type: string
+          format: uri
+          description: 'Folder the file is filed under within the parent record, or empty when stored at the record root.
 
 
             Relation to CloudObjectFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectFolder'' object for properties.'
-        entity_api_name:
+        cloud_object:
           type: string
-          example: string
-          description: API name of the custom entity the folder is attached to. Set only for folders on custom entity records; otherwise empty.
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
+          format: uri
+          description: 'Cloud object (file) being linked.
 
 
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        name:
+            Relation to CloudObject. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObject'' object for properties.'
+        contact:
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        online_form_type_id:
+          format: uri
+          description: 'Contact the file is attached to, or empty when not attached to a contact.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        custom_entity:
+          type: string
+          format: uri
+          description: 'Custom entity record the file is attached to.
+
+
+            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
+        email_sequence:
+          type: string
+          format: uri
+          description: 'Email sequence the file is attached to.
+
+
+            Relation to EmailSequence. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequence'' object for properties.'
+        email_template:
+          type: string
+          format: uri
+          description: 'Email template the file is attached to as a template attachment.
+
+
+            Relation to EmailTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailTemplate'' object for properties.'
+        field_mapping:
+          type: string
+          format: uri
+          description: 'Field mapping the file is attached to (e.g. an import file).
+
+
+            Relation to FieldMapping. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''FieldMapping'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the file is attached to. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the file is attached to. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        media:
+          type: string
+          format: uri
+          description: 'Media record the file is attached to.
+
+
+            Relation to Media. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Media'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email the file is attached to (e.g. an email attachment). Set when message_id resolves to an Email.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        memo:
+          type: string
+          format: uri
+          description: 'Memo the file is attached to. Set when message_id resolves to a Memo.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
+        online_form_field:
+          type: string
+          format: uri
+          description: 'Online form field the file was uploaded into.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        online_form:
+          type: string
+          format: uri
+          description: 'Online form submission the file was uploaded with.
+
+
+            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
+        process:
+          type: string
+          format: uri
+          description: 'Sales process the file is attached to.
+
+
+            Relation to Process. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Process'' object for properties.'
+        process_template:
+          type: string
+          format: uri
+          description: 'Sales process template the file is attached to.
+
+
+            Relation to ProcessTemplate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessTemplate'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project the file is attached to.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the file is attached to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        report_schedule:
+          type: string
+          format: uri
+          description: 'Report schedule the file is attached to (e.g. an exported report).
+
+
+            Relation to ReportSchedule. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ReportSchedule'' object for properties.'
+        text_message:
+          type: string
+          format: uri
+          description: 'Text message (SMS/MMS) the file is attached to.
+
+
+            Relation to TextMessage. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TextMessage'' object for properties.'
+        account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form template, or empty when not associated with a form.
-        parent_cloud_object_folder_id:
+          description: Id of the linked account.
+        activity_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder, or empty for top-level folders.
+          description: Id of the linked appointment or task, or empty when not linked.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked approval process.
+        call_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked call.
+        cloud_object_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder within the parent record, or empty when stored at the record root.
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked file.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email sequence.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email template.
+        field_mapping_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked field mapping.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        media_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked media record.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email or memo, or empty when not linked.
+        online_form_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form field the file was uploaded into.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked online form submission.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        process_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process template.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        report_schedule_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked report schedule.
+        text_message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked text message.
         revision:
           type: integer
           format: int32
@@ -3790,7 +3836,6 @@ components:
       required:
       - is_delete_protected
       - id
-      - name
     updateCloudObjectTemplateInput:
       properties:
         application_id:
@@ -4128,12 +4173,44 @@ components:
           type: string
           example: string
           description: API name of the custom entity the template renders. Set only when template_entity_name is "CustomEntity"; otherwise empty.
-    updateCloudObjectFolderInput:
+    createCloudObjectFolderInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         entity_api_name:
           type: string
           example: string
           description: API name of the custom entity the folder is attached to. Set only for folders on custom entity records; otherwise empty.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
         name:
           type: string
           example: string
@@ -4153,165 +4230,8 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    createCloudObjectRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        cloud_object:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Cloud object (file) being linked.
-
-
-            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
-        report_schedule:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Report schedule the file is attached to (e.g. an exported report).
-
-
-            Relation to ReportSchedule, see: ''createReportScheduleInput'' object for properties.'
-        text_message:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Text message (SMS/MMS) the file is attached to.
-
-
-            Relation to TextMessage, see: ''createTextMessageInput'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment or task, or empty when not linked.
-        approval_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked approval process.
-        call_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked call.
-        cloud_object_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the folder within the parent record, or empty when stored at the record root.
-        cloud_object_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked file.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email sequence.
-        email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email template.
-        field_mapping_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked field mapping.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        media_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked media record.
-        message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email or memo, or empty when not linked.
-        online_form_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form field the file was uploaded into.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked online form submission.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process.
-        process_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process template.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        report_schedule_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked report schedule.
-        text_message_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked text message.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
+      required:
+      - name
     createCloudObjectTemplateInput:
       properties:
         modified:
@@ -4690,147 +4610,6 @@ components:
       - filename
       - template_entity_name
       - type
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    createCloudObjectStepRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        cloud_object:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'File attached to the step.
-
-
-            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
-        cloud_object_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the attached file.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the file within the step's document list.
-        step_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline step.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - cloud_object
-      - step_id
-    CloudObjectStepRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        cloud_object:
-          type: string
-          format: uri
-          description: 'File attached to the step.
-
-
-            Relation to CloudObject. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObject'' object for properties.'
-        step:
-          type: string
-          format: uri
-          description: 'Pipeline step the file is attached to.
-
-
-            Relation to Step. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Step'' object for properties.'
-        cloud_object_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the attached file.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the file within the step's document list.
-        step_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline step.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - cloud_object
-      - step
-      - step_id
     CloudObjectTemplate:
       properties:
         is_delete_protected:
@@ -5255,6 +5034,295 @@ components:
       - size
       - template_entity_name
       - type
+    batchCloudObjectInput:
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the producing application.
+        company_cloud_object_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company folder, or empty when the object is not stored in the company tree.
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the uploading user.
+        filename:
+          type: string
+          example: string
+          description: File name (with extension) used when downloading the object.
+        is_public:
+          type: boolean
+          example: false
+          description: When true, the object can be served via a public URL (see public_url).
+        params:
+          type: object
+          description: Additional metadata about the object (e.g. image dimensions, audio duration), as a JSON object.
+        upload_source:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - EmailTemplate, 2 - RichTextEditor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchCloudObjectRelationInput:
+      properties:
+        cloud_object:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object (file) being linked.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        report_schedule:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Report schedule the file is attached to (e.g. an exported report).
+
+
+            Relation to ReportSchedule, see: ''updateReportScheduleInput'' object for properties.'
+        text_message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Text message (SMS/MMS) the file is attached to.
+
+
+            Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment or task, or empty when not linked.
+        approval_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked approval process.
+        call_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked call.
+        cloud_object_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the folder within the parent record, or empty when stored at the record root.
+        cloud_object_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked file.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email sequence.
+        email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email template.
+        field_mapping_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked field mapping.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        media_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked media record.
+        message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email or memo, or empty when not linked.
+        online_form_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form field the file was uploaded into.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked online form submission.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        process_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process template.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        report_schedule_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked report schedule.
+        text_message_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked text message.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    CloudObjectFolder:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        online_form_type:
+          type: string
+          format: uri
+          description: 'Online form template this folder is associated with, when the folder stores form submissions.
+
+
+            Relation to OnlineFormType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormType'' object for properties.'
+        parent_cloud_object_folder:
+          type: string
+          format: uri
+          description: 'Parent folder, when this folder is nested. Empty for top-level folders.
+
+
+            Relation to CloudObjectFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectFolder'' object for properties.'
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity the folder is attached to. Set only for folders on custom entity records; otherwise empty.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        online_form_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form template, or empty when not associated with a form.
+        parent_cloud_object_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder, or empty for top-level folders.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - name
     CloudObject:
       properties:
         is_delete_protected:
@@ -5401,96 +5469,28 @@ components:
       - filename
       - size
       - type
-    createCloudObjectInput:
+    updateCloudObjectFolderInput:
       properties:
-        modified:
+        entity_api_name:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
+          example: string
+          description: API name of the custom entity the folder is attached to. Set only for folders on custom entity records; otherwise empty.
+        name:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        application_id:
+          example: string
+          description: Name of the entity and its default text representation.
+        online_form_type_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the producing application.
-        company_cloud_object_folder_id:
+          description: Id of the online form template, or empty when not associated with a form.
+        parent_cloud_object_folder_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company folder, or empty when the object is not stored in the company tree.
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the uploading user.
-        filename:
-          type: string
-          example: string
-          description: File name (with extension) used when downloading the object.
-        is_public:
-          type: boolean
-          example: false
-          description: When true, the object can be served via a public URL (see public_url).
-        mime_type:
-          type: string
-          example: string
-          description: Mime-type of the cloud object Is detected from content.
-          readOnly: true
-        params:
-          type: object
-          description: Additional metadata about the object (e.g. image dimensions, audio duration), as a JSON object.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: -1 - S3FileUpload, 1 - S3File, 2 - S3Image, 3 - GoogleDriveFile, 4 - OneDriveFile, 5 - BoxFile, 6 - DropboxFile, 7 - SharepointFile, 8 - ExternalURL, 9 - AlfrescoFile, 10 - UrlFile'
-          example: -1
-          enum:
-          - -1
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          readOnly: true
-        upload_source:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - EmailTemplate, 2 - RichTextEditor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        url:
-          type: string
-          example: string
-          description: URL of the object. If URL scheme is not defined "http://" is automatically prepended to supplied URL.
-          readOnly: true
+          description: Id of the parent folder, or empty for top-level folders.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        content:
-          type: string
-          format: binary
-          example: blob
-          description: Data content of the object.
-      required:
-      - filename
-      - type

@@ -1004,6 +1004,379 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    batchTagRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchTagInput:
+      properties:
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Tag:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        creator:
+          type: string
+          format: uri
+          description: 'User who created the tag.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        supported_entities:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          - 128
+          - 256
+          - 512
+          - 1024
+          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - color
+      - name
+    updateTagRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        appointment_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email.
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked opportunity.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked sales process.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        tag_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the tag.
+        task_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked task.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createTagInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        supported_entities:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 4
+          - 8
+          - 16
+          - 32
+          - 64
+          - 128
+          - 256
+          - 512
+          - 1024
+          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - color
+      - name
+    updateTagInput:
+      properties:
+        allowed_entity_type_ids:
+          type: object
+          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+        creator_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the creating user.
+        entity_api_name:
+          type: string
+          example: string
+          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     Error:
       properties:
         http_status:
@@ -1293,376 +1666,3 @@ components:
           description: Revision when entity was lastly changed.
       required:
       - tag_id
-    batchTagInput:
-      properties:
-        allowed_entity_type_ids:
-          type: object
-          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the creating user.
-        entity_api_name:
-          type: string
-          example: string
-          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateTagInput:
-      properties:
-        allowed_entity_type_ids:
-          type: object
-          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the creating user.
-        entity_api_name:
-          type: string
-          example: string
-          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    Tag:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        creator:
-          type: string
-          format: uri
-          description: 'User who created the tag.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        allowed_entity_type_ids:
-          type: object
-          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the creating user.
-        entity_api_name:
-          type: string
-          example: string
-          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        supported_entities:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 4
-          - 8
-          - 16
-          - 32
-          - 64
-          - 128
-          - 256
-          - 512
-          - 1024
-          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - color
-      - name
-    updateTagRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        appointment_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email.
-        lead_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked opportunity.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        tag_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the tag.
-        task_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked task.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createTagInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        allowed_entity_type_ids:
-          type: object
-          description: For tags scoped to specific record types (e.g. specific Account types), the list of type ids the tag can be assigned to. Empty/null means no per-type restriction.
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the tag, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
-        creator_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the creating user.
-        entity_api_name:
-          type: string
-          example: string
-          description: For tags scoped to custom entities, the api name of the custom entity the tag belongs to. Required for custom-entity tags and must be empty for all other tags.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the tag is hidden in pickers and cannot be assigned to new records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        supported_entities:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 4
-          - 8
-          - 16
-          - 32
-          - 64
-          - 128
-          - 256
-          - 512
-          - 1024
-          description: Bit flag of entity kinds the tag can be attached to (Contact, Account, Opportunity, Lead, Project, Email, Process, Appointment, Task).
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the tag name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - color
-      - name
-    batchTagRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        appointment_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email.
-        lead_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked opportunity.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked sales process.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        tag_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the tag.
-        task_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked task.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

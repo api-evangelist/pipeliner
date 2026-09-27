@@ -705,30 +705,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     SalesUnitClientRelation:
       properties:
         is_delete_protected:
@@ -805,6 +781,61 @@ components:
       - unit
       - client_id
       - unit_id
+    updateSalesUnitInput:
+      properties:
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Profile picture (logo) of the sales unit.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent unit, or empty for the root unit.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the picture cloud object.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     createSalesUnitInput:
       properties:
         modified:
@@ -850,37 +881,6 @@ components:
           description: Revision when entity was lastly changed.
       required:
       - name
-    updateSalesUnitInput:
-      properties:
-        picture:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Profile picture (logo) of the sales unit.
-
-
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent unit, or empty for the root unit.
-        picture_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the picture cloud object.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     SalesUnit:
       properties:
         is_delete_protected:

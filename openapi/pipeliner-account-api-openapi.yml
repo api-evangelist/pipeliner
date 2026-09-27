@@ -6666,247 +6666,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updateParentAccountRelationTypeInput:
-      properties:
-        child_label:
-          type: string
-          example: string
-          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
-        parent_label:
-          type: string
-          example: string
-          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createAccountKPIInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: CreateAccount, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateAccount, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - account_id
-      - kpi
-      - owner_id
-    AccountDataExRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account this data relation row belongs to.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        data:
-          type: string
-          format: uri
-          description: 'Data record holding the additional fields linked to the account.
-
-
-            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data set the linked fields belong to.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account
-      - data
-      - account_id
-      - data_id
-      - data_set_id
-    batchAccountTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the account type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createEntityHealthInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, health is configured but not evaluated for records of this type.
-        last_recalculation:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the last full health recalculation across all matching records.
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_enabled
-      - type_id
-    batchAccountProductPricingInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        price:
-          type: number
-          format: double
-          example: '4.32'
-          description: Price applied for this product when sold to this account, in the specified currency.
-        product_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     AccountProductPricing:
       properties:
         is_delete_protected:
@@ -6992,112 +6751,18 @@ components:
       - account_id
       - currency_id
       - product_id
-    batchAccountSocialRelationInput:
+    batchAccountRelationInput:
       properties:
-        angellist_url:
+        account1_id:
           type: string
-          example: string
-          description: AngelList profile URL of the account.
-        crunchbase_url:
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related account.
+        account2_id:
           type: string
-          example: string
-          description: Crunchbase profile URL of the account.
-        disqus_url:
-          type: string
-          example: string
-          description: Disqus profile URL of the account.
-        facebook_id:
-          type: string
-          example: string
-          description: Facebook page or profile id of the account.
-        facebook_url:
-          type: string
-          example: string
-          description: Facebook profile URL of the account.
-        flickr_url:
-          type: string
-          example: string
-          description: Flickr profile URL of the account.
-        foursquare_url:
-          type: string
-          example: string
-          description: Foursquare profile URL of the account.
-        google_id:
-          type: string
-          example: string
-          description: Google business or profile id of the account.
-        google_plus_url:
-          type: string
-          example: string
-          description: Google+ profile URL of the account.
-        gravatar_url:
-          type: string
-          example: string
-          description: Gravatar profile URL of the account.
-        klout_url:
-          type: string
-          example: string
-          description: Klout profile URL of the account.
-        linkedin_id:
-          type: string
-          example: string
-          description: LinkedIn company or profile id of the account.
-        linkedin_url:
-          type: string
-          example: string
-          description: LinkedIn profile URL of the account.
-        pinterest_url:
-          type: string
-          example: string
-          description: Pinterest profile URL of the account.
-        quora_url:
-          type: string
-          example: string
-          description: Quora profile URL of the account.
-        reddit_url:
-          type: string
-          example: string
-          description: Reddit profile URL of the account.
-        skype_url:
-          type: string
-          example: string
-          description: Skype contact URL or username of the account.
-        slideshare_url:
-          type: string
-          example: string
-          description: SlideShare profile URL of the account.
-        twitter_id:
-          type: string
-          example: string
-          description: Twitter (X) user id of the account.
-        twitter_url:
-          type: string
-          example: string
-          description: Twitter (X) profile URL of the account.
-        vimeo_url:
-          type: string
-          example: string
-          description: Vimeo profile URL of the account.
-        wordpress_url:
-          type: string
-          example: string
-          description: WordPress site URL of the account.
-        xing_url:
-          type: string
-          example: string
-          description: XING profile URL of the account.
-        yahoo_url:
-          type: string
-          example: string
-          description: Yahoo profile URL of the account.
-        yelp_url:
-          type: string
-          example: string
-          description: Yelp business URL of the account.
-        youtube_url:
-          type: string
-          example: string
-          description: YouTube channel URL of the account.
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related account.
         revision:
           type: integer
           format: int32
@@ -7107,99 +6772,68 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    AccountRole:
+    batchAccountSharingSalesUnitRelationInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+        account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
+          description: Id of the shared account.
+        role:
           type: integer
-          format: int32
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
           example: 1
-          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
+          enum:
+          - 1
+          - 2
+        unit_id:
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - color
-      - label
-    createAccountTypeInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchAccountProductPricingInput:
       properties:
-        modified:
+        account_id:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        currency_id:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the account type is system-managed and cannot be edited or deleted by users.
-        name:
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: '4.32'
+          description: Price applied for this product when sold to this account, in the specified currency.
+        product_id:
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_readonly
-      - name
-      - settings
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     AccountRelationType:
       properties:
         is_delete_protected:
@@ -7248,7 +6882,108 @@ components:
       - is_delete_protected
       - id
       - color
-    ParentAccountRelationType:
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateAccountRelationLabelInput:
+      properties:
+        account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Account relationship being labelled.
+
+
+            Relation to AccountRelation, see: ''updateAccountRelationInput'' object for properties.'
+        account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account relationship.
+        account_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the relationship type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAccountRelationLabelInput:
+      properties:
+        account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Account relationship being labelled.
+
+
+            Relation to AccountRelation, see: ''updateAccountRelationInput'' object for properties.'
+        account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account relationship.
+        account_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the relationship type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchParentAccountRelationTypeInput:
+      properties:
+        child_label:
+          type: string
+          example: string
+          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
+        parent_label:
+          type: string
+          example: string
+          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    EntityHealth:
       properties:
         is_delete_protected:
           type: boolean
@@ -7278,6 +7013,84 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        type:
+          type: string
+          format: uri
+          description: 'Account type this health configuration applies to.
+
+
+            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, health is configured but not evaluated for records of this type.
+        last_recalculation:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the last full health recalculation across all matching records.
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
+        calculation_progress:
+          type: integer
+          format: int32
+          example: 1
+          description: Progress of the in-flight health recalculation as a percentage (0-100). Null when no recalculation has been queued.
+      required:
+      - is_delete_protected
+      - id
+      - type
+      - entity_type
+      - is_enabled
+      - type_id
+      - settings
+    createParentAccountRelationTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         child_label:
           type: string
           example: string
@@ -7292,28 +7105,67 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - id
       - child_label
       - parent_label
-    AccountType:
+    updateAccountRelationTypeInput:
       properties:
-        has_draft:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createEntityHealthInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_enabled:
           type: boolean
           example: false
-          description: Set to True if draft for entity exists and can be published
+          description: When false, health is configured but not evaluated for records of this type.
+        last_recalculation:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the last full health recalculation across all matching records.
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_enabled
+      - type_id
+    AccountRelationLabel:
+      properties:
         is_delete_protected:
           type: boolean
           example: false
           description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
           readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
         id:
           type: string
           format: uuid
@@ -7325,6 +7177,130 @@ components:
           example: false
           description: Specifies if the entity is considered deleted.
           readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_relation:
+          type: string
+          format: uri
+          description: 'Account relationship being labelled.
+
+
+            Relation to AccountRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRelation'' object for properties.'
+        account_relation_type:
+          type: string
+          format: uri
+          description: 'Type of the relationship (e.g. partner, supplier).
+
+
+            Relation to AccountRelationType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRelationType'' object for properties.'
+        account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account relationship.
+        account_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the relationship type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account_relation
+      - account_relation_type
+      - account_relation_id
+      - account_relation_type_id
+    updateParentAccountRelationTypeInput:
+      properties:
+        child_label:
+          type: string
+          example: string
+          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
+        parent_label:
+          type: string
+          example: string
+          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateAccountRelationInput:
+      properties:
+        account1_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related account.
+        account2_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related account.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createAccountSharingClientRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared account.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the account.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account_id
+      - client_id
+    createAccountTypeInput:
+      properties:
         modified:
           type: string
           format: date-time
@@ -7364,413 +7340,11 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
       - is_readonly
       - name
       - settings
-    createAccountRoleInput:
+    updateAccountSocialRelationInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - color
-      - label
-    updateAccountRelationTypeInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchAccountRelationInput:
-      properties:
-        account1_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related account.
-        account2_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateAccountInput:
-      properties:
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-        picture:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Profile picture or company logo associated with the account.
-
-
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
-        account_class:
-          type: integer
-          description: 'Manual classification grade assigned to the account. Used in segmentation and reporting.
-
-
-            Integer enum value: 1 - NoClass, 2 - ClassA, 3 - ClassB, 4 - ClassC, 5 - ClassD'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type assigned to this account.
-        address:
-          type: string
-          example: string
-          description: Street address of the account.
-        city:
-          type: string
-          example: string
-          description: City of the account address.
-        comments:
-          type: string
-          example: string
-          description: Free-form notes describing the account.
-        country:
-          type: string
-          example: string
-          description: Country of the account address.
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this account.
-        customer_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the customer type.
-        email1:
-          type: string
-          example: string
-          description: Primary email address of the account. Used as default recipient for emails sent from Coevera.
-        email2:
-          type: string
-          example: string
-          description: Additional email address.
-        email3:
-          type: string
-          example: string
-          description: Additional email address.
-        email4:
-          type: string
-          example: string
-          description: Additional email address.
-        email5:
-          type: string
-          example: string
-          description: Additional email address.
-        home_page:
-          type: string
-          example: string
-          description: Website URL of the account. May be auto-filled from the primary email domain when domain extraction is enabled.
-        industry_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the industry classification.
-        is_archived:
-          type: boolean
-          example: false
-          description: True when the account has been archived. Archived accounts remain readable but are hidden from active lists and cannot be edited until reactivated.
-        last_ai_account_hierarchy_applied:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when an AI-suggested account hierarchy was last applied to this account.
-        last_ai_org_chart_applied:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Time when an AI-suggested org chart was last applied to this account.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account owner.
-        parent_account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent account.
-        parent_account_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent-account relationship type.
-        phone1:
-          type: string
-          example: string
-          description: Primary phone number of the account. Used as default target for click-to-call.
-        phone2:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone3:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone4:
-          type: string
-          example: string
-          description: Additional phone number.
-        phone5:
-          type: string
-          example: string
-          description: Additional phone number.
-        picture_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the profile picture document.
-        quick_parent_account_name:
-          type: string
-          example: string
-          description: Free-text parent-account name used when the parent has not been linked to an actual Account record. Lets integrators note the relationship without creating a separate parent Account.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        state_province:
-          type: string
-          example: string
-          description: State or province of the account address.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        zip_code:
-          type: string
-          example: string
-          description: ZIP or postal code of the account address.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        social_media:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Social network profiles linked to this account (e.g. LinkedIn, Facebook).
-
-
-            Relation to AccountSocialRelation, see: ''updateAccountSocialRelationInput'' object for properties.'
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AccountSharingSalesUnitRelation, see: ''updateAccountSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this account. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to AccountSharingClientRelation, see: ''updateAccountSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this account. Editable only when share_mode allows user sharing.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this account.
-        is_unsubscribed:
-          type: boolean
-          example: false
-          description: If account has any unsubscribed email.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
-          description: Tag labels applied to this account.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
-          description: Saved view profiles this account currently matches.
-    AccountRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account1:
-          type: string
-          format: uri
-          description: 'One side of the account-to-account relationship.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        account2:
-          type: string
-          format: uri
-          description: 'Other side of the account-to-account relationship.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        account1_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related account.
-        account2_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account1
-      - account2
-      - account1_id
-      - account2_id
-    createAccountSocialRelationInput:
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity. Must match with Account id.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         angellist_url:
           type: string
           example: string
@@ -7875,84 +7449,6 @@ components:
           type: string
           example: string
           description: YouTube channel URL of the account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - id
-    updateAccountRoleInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchAccountRoleInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateAccountRelationInput:
-      properties:
-        account1_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related account.
-        account2_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateAccountTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the account type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
         revision:
           type: integer
           format: int32
@@ -8213,416 +7709,6 @@ components:
       required:
       - name
       - owner_id
-    updateAccountRelationLabelInput:
-      properties:
-        account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Account relationship being labelled.
-
-
-            Relation to AccountRelation, see: ''updateAccountRelationInput'' object for properties.'
-        account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account relationship.
-        account_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateEntityHealthInput:
-      properties:
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, health is configured but not evaluated for records of this type.
-        last_recalculation:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the last full health recalculation across all matching records.
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
-    AccountSocialRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity. Must match with Account id.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        angellist_url:
-          type: string
-          example: string
-          description: AngelList profile URL of the account.
-        crunchbase_url:
-          type: string
-          example: string
-          description: Crunchbase profile URL of the account.
-        disqus_url:
-          type: string
-          example: string
-          description: Disqus profile URL of the account.
-        facebook_id:
-          type: string
-          example: string
-          description: Facebook page or profile id of the account.
-        facebook_url:
-          type: string
-          example: string
-          description: Facebook profile URL of the account.
-        flickr_url:
-          type: string
-          example: string
-          description: Flickr profile URL of the account.
-        foursquare_url:
-          type: string
-          example: string
-          description: Foursquare profile URL of the account.
-        google_id:
-          type: string
-          example: string
-          description: Google business or profile id of the account.
-        google_plus_url:
-          type: string
-          example: string
-          description: Google+ profile URL of the account.
-        gravatar_url:
-          type: string
-          example: string
-          description: Gravatar profile URL of the account.
-        klout_url:
-          type: string
-          example: string
-          description: Klout profile URL of the account.
-        linkedin_id:
-          type: string
-          example: string
-          description: LinkedIn company or profile id of the account.
-        linkedin_url:
-          type: string
-          example: string
-          description: LinkedIn profile URL of the account.
-        pinterest_url:
-          type: string
-          example: string
-          description: Pinterest profile URL of the account.
-        quora_url:
-          type: string
-          example: string
-          description: Quora profile URL of the account.
-        reddit_url:
-          type: string
-          example: string
-          description: Reddit profile URL of the account.
-        skype_url:
-          type: string
-          example: string
-          description: Skype contact URL or username of the account.
-        slideshare_url:
-          type: string
-          example: string
-          description: SlideShare profile URL of the account.
-        twitter_id:
-          type: string
-          example: string
-          description: Twitter (X) user id of the account.
-        twitter_url:
-          type: string
-          example: string
-          description: Twitter (X) profile URL of the account.
-        vimeo_url:
-          type: string
-          example: string
-          description: Vimeo profile URL of the account.
-        wordpress_url:
-          type: string
-          example: string
-          description: WordPress site URL of the account.
-        xing_url:
-          type: string
-          example: string
-          description: XING profile URL of the account.
-        yahoo_url:
-          type: string
-          example: string
-          description: Yahoo profile URL of the account.
-        yelp_url:
-          type: string
-          example: string
-          description: Yelp business URL of the account.
-        youtube_url:
-          type: string
-          example: string
-          description: YouTube channel URL of the account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-    createParentAccountRelationTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        child_label:
-          type: string
-          example: string
-          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
-        parent_label:
-          type: string
-          example: string
-          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - child_label
-      - parent_label
-    batchEntityHealthInput:
-      properties:
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, health is configured but not evaluated for records of this type.
-        last_recalculation:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the last full health recalculation across all matching records.
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchAccountKPIInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: CreateAccount, FirstEmailSent, LastEmailSent, Archive.
-
-
-            Integer enum value: 1 - CreateAccount, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account owner at the time of the event.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    AccountSharingClientRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account being shared.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        client:
-          type: string
-          format: uri
-          description: 'User the account is shared with.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared account.
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the account.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account
-      - client
-      - account_id
-      - client_id
-    batchAccountRelationLabelInput:
-      properties:
-        account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Account relationship being labelled.
-
-
-            Relation to AccountRelation, see: ''updateAccountRelationInput'' object for properties.'
-        account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account relationship.
-        account_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createAccountSharingSalesUnitRelationInput:
       properties:
         modified:
@@ -8665,7 +7751,7 @@ components:
       required:
       - account_id
       - unit_id
-    AccountSharingSalesUnitRelation:
+    AccountDataExRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -8698,37 +7784,32 @@ components:
         account:
           type: string
           format: uri
-          description: 'Account being shared.
+          description: 'Account this data relation row belongs to.
 
 
             Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        unit:
+        data:
           type: string
           format: uri
-          description: 'Sales unit the account is shared with.
+          description: 'Data record holding the additional fields linked to the account.
 
 
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
         account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared account.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
+          description: Id of the account.
+        data_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
+          description: Id of the data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data set the linked fields belong to.
         revision:
           type: integer
           format: int32
@@ -8738,9 +7819,280 @@ components:
       - is_delete_protected
       - id
       - account
-      - unit
+      - data
       - account_id
-      - unit_id
+      - data_id
+      - data_set_id
+    batchAccountRelationTypeInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchAccountInput:
+      properties:
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+        picture:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Profile picture or company logo associated with the account.
+
+
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+        account_class:
+          type: integer
+          description: 'Manual classification grade assigned to the account. Used in segmentation and reporting.
+
+
+            Integer enum value: 1 - NoClass, 2 - ClassA, 3 - ClassB, 4 - ClassC, 5 - ClassD'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type assigned to this account.
+        address:
+          type: string
+          example: string
+          description: Street address of the account.
+        city:
+          type: string
+          example: string
+          description: City of the account address.
+        comments:
+          type: string
+          example: string
+          description: Free-form notes describing the account.
+        country:
+          type: string
+          example: string
+          description: Country of the account address.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this account.
+        customer_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the customer type.
+        email1:
+          type: string
+          example: string
+          description: Primary email address of the account. Used as default recipient for emails sent from Coevera.
+        email2:
+          type: string
+          example: string
+          description: Additional email address.
+        email3:
+          type: string
+          example: string
+          description: Additional email address.
+        email4:
+          type: string
+          example: string
+          description: Additional email address.
+        email5:
+          type: string
+          example: string
+          description: Additional email address.
+        home_page:
+          type: string
+          example: string
+          description: Website URL of the account. May be auto-filled from the primary email domain when domain extraction is enabled.
+        industry_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the industry classification.
+        is_archived:
+          type: boolean
+          example: false
+          description: True when the account has been archived. Archived accounts remain readable but are hidden from active lists and cannot be edited until reactivated.
+        last_ai_account_hierarchy_applied:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when an AI-suggested account hierarchy was last applied to this account.
+        last_ai_org_chart_applied:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Time when an AI-suggested org chart was last applied to this account.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account owner.
+        parent_account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent account.
+        parent_account_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent-account relationship type.
+        phone1:
+          type: string
+          example: string
+          description: Primary phone number of the account. Used as default target for click-to-call.
+        phone2:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone3:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone4:
+          type: string
+          example: string
+          description: Additional phone number.
+        phone5:
+          type: string
+          example: string
+          description: Additional phone number.
+        picture_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the profile picture document.
+        quick_parent_account_name:
+          type: string
+          example: string
+          description: Free-text parent-account name used when the parent has not been linked to an actual Account record. Lets integrators note the relationship without creating a separate parent Account.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users). The matching sharing_units / sharing_clients lists control who is granted access.
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        state_province:
+          type: string
+          example: string
+          description: State or province of the account address.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        zip_code:
+          type: string
+          example: string
+          description: ZIP or postal code of the account address.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        social_media:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Social network profiles linked to this account (e.g. LinkedIn, Facebook).
+
+
+            Relation to AccountSocialRelation, see: ''updateAccountSocialRelationInput'' object for properties.'
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AccountSharingSalesUnitRelation, see: ''updateAccountSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this account. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to AccountSharingClientRelation, see: ''updateAccountSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this account. Editable only when share_mode allows user sharing.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this account.
+        is_unsubscribed:
+          type: boolean
+          example: false
+          description: If account has any unsubscribed email.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this account.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this account currently matches.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     batchAccountSharingClientRelationInput:
       properties:
         account_id:
@@ -8772,26 +8124,37 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    batchParentAccountRelationTypeInput:
+    batchEntityHealthInput:
       properties:
-        child_label:
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, health is configured but not evaluated for records of this type.
+        last_recalculation:
           type: string
-          example: string
-          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
-        parent_label:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the last full health recalculation across all matching records.
+        type_id:
           type: string
-          example: string
-          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    createAccountRelationLabelInput:
+    createAccountKPIInput:
       properties:
         modified:
           type: string
@@ -8805,49 +8168,54 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Account relationship being labelled.
-
-
-            Relation to AccountRelation, see: ''createAccountRelationInput'' object for properties.'
-        account_relation_id:
+        account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account relationship.
-        account_relation_type_id:
+          description: Id of the account.
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: CreateAccount, FirstEmailSent, LastEmailSent, Archive.
+
+
+            Integer enum value: 1 - CreateAccount, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account owner at the time of the event.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - account_relation
-      - account_relation_id
-      - account_relation_type_id
-    createAccountProductPricingInput:
+      - account_id
+      - kpi
+      - owner_id
+    updateAccountProductPricingInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         account_id:
           type: string
           format: uuid
@@ -8873,12 +8241,56 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - account_id
-      - currency_id
-      - product_id
-    updateAccountSocialRelationInput:
+    createAccountRelationTypeInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - color
+    createAccountSocialRelationInput:
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity. Must match with Account id.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         angellist_url:
           type: string
           example: string
@@ -8988,6 +8400,8 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - id
     Account:
       properties:
         is_delete_protected:
@@ -9327,8 +8741,24 @@ components:
       - owner_id
       - formatted_name
       - is_favorite
-    createAccountSharingClientRelationInput:
+    AccountSocialRelation:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity. Must match with Account id.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -9341,35 +8771,165 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_id:
+        angellist_url:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared account.
-        client_id:
+          example: string
+          description: AngelList profile URL of the account.
+        crunchbase_url:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the account.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
+          example: string
+          description: Crunchbase profile URL of the account.
+        disqus_url:
+          type: string
+          example: string
+          description: Disqus profile URL of the account.
+        facebook_id:
+          type: string
+          example: string
+          description: Facebook page or profile id of the account.
+        facebook_url:
+          type: string
+          example: string
+          description: Facebook profile URL of the account.
+        flickr_url:
+          type: string
+          example: string
+          description: Flickr profile URL of the account.
+        foursquare_url:
+          type: string
+          example: string
+          description: Foursquare profile URL of the account.
+        google_id:
+          type: string
+          example: string
+          description: Google business or profile id of the account.
+        google_plus_url:
+          type: string
+          example: string
+          description: Google+ profile URL of the account.
+        gravatar_url:
+          type: string
+          example: string
+          description: Gravatar profile URL of the account.
+        klout_url:
+          type: string
+          example: string
+          description: Klout profile URL of the account.
+        linkedin_id:
+          type: string
+          example: string
+          description: LinkedIn company or profile id of the account.
+        linkedin_url:
+          type: string
+          example: string
+          description: LinkedIn profile URL of the account.
+        pinterest_url:
+          type: string
+          example: string
+          description: Pinterest profile URL of the account.
+        quora_url:
+          type: string
+          example: string
+          description: Quora profile URL of the account.
+        reddit_url:
+          type: string
+          example: string
+          description: Reddit profile URL of the account.
+        skype_url:
+          type: string
+          example: string
+          description: Skype contact URL or username of the account.
+        slideshare_url:
+          type: string
+          example: string
+          description: SlideShare profile URL of the account.
+        twitter_id:
+          type: string
+          example: string
+          description: Twitter (X) user id of the account.
+        twitter_url:
+          type: string
+          example: string
+          description: Twitter (X) profile URL of the account.
+        vimeo_url:
+          type: string
+          example: string
+          description: Vimeo profile URL of the account.
+        wordpress_url:
+          type: string
+          example: string
+          description: WordPress site URL of the account.
+        xing_url:
+          type: string
+          example: string
+          description: XING profile URL of the account.
+        yahoo_url:
+          type: string
+          example: string
+          description: Yahoo profile URL of the account.
+        yelp_url:
+          type: string
+          example: string
+          description: Yelp business URL of the account.
+        youtube_url:
+          type: string
+          example: string
+          description: YouTube channel URL of the account.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - account_id
-      - client_id
-    batchAccountInput:
+      - is_delete_protected
+      - id
+    updateEntityHealthInput:
+      properties:
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, health is configured but not evaluated for records of this type.
+        last_recalculation:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the last full health recalculation across all matching records.
+        type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
+    batchAccountRoleInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateAccountInput:
       properties:
         created:
           type: string
@@ -9615,11 +9175,73 @@ components:
                 format: uri
             description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
           description: Saved view profiles this account currently matches.
+    AccountRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
         id:
-          description: ID of object to update.
           type: string
           format: uuid
-    updateAccountKPIInput:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account1:
+          type: string
+          format: uri
+          description: 'One side of the account-to-account relationship.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        account2:
+          type: string
+          format: uri
+          description: 'Other side of the account-to-account relationship.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        account1_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related account.
+        account2_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related account.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account1
+      - account2
+      - account1_id
+      - account2_id
+    batchAccountKPIInput:
       properties:
         account_id:
           type: string
@@ -9663,6 +9285,380 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    AccountRole:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - color
+      - label
+    batchAccountSocialRelationInput:
+      properties:
+        angellist_url:
+          type: string
+          example: string
+          description: AngelList profile URL of the account.
+        crunchbase_url:
+          type: string
+          example: string
+          description: Crunchbase profile URL of the account.
+        disqus_url:
+          type: string
+          example: string
+          description: Disqus profile URL of the account.
+        facebook_id:
+          type: string
+          example: string
+          description: Facebook page or profile id of the account.
+        facebook_url:
+          type: string
+          example: string
+          description: Facebook profile URL of the account.
+        flickr_url:
+          type: string
+          example: string
+          description: Flickr profile URL of the account.
+        foursquare_url:
+          type: string
+          example: string
+          description: Foursquare profile URL of the account.
+        google_id:
+          type: string
+          example: string
+          description: Google business or profile id of the account.
+        google_plus_url:
+          type: string
+          example: string
+          description: Google+ profile URL of the account.
+        gravatar_url:
+          type: string
+          example: string
+          description: Gravatar profile URL of the account.
+        klout_url:
+          type: string
+          example: string
+          description: Klout profile URL of the account.
+        linkedin_id:
+          type: string
+          example: string
+          description: LinkedIn company or profile id of the account.
+        linkedin_url:
+          type: string
+          example: string
+          description: LinkedIn profile URL of the account.
+        pinterest_url:
+          type: string
+          example: string
+          description: Pinterest profile URL of the account.
+        quora_url:
+          type: string
+          example: string
+          description: Quora profile URL of the account.
+        reddit_url:
+          type: string
+          example: string
+          description: Reddit profile URL of the account.
+        skype_url:
+          type: string
+          example: string
+          description: Skype contact URL or username of the account.
+        slideshare_url:
+          type: string
+          example: string
+          description: SlideShare profile URL of the account.
+        twitter_id:
+          type: string
+          example: string
+          description: Twitter (X) user id of the account.
+        twitter_url:
+          type: string
+          example: string
+          description: Twitter (X) profile URL of the account.
+        vimeo_url:
+          type: string
+          example: string
+          description: Vimeo profile URL of the account.
+        wordpress_url:
+          type: string
+          example: string
+          description: WordPress site URL of the account.
+        xing_url:
+          type: string
+          example: string
+          description: XING profile URL of the account.
+        yahoo_url:
+          type: string
+          example: string
+          description: Yahoo profile URL of the account.
+        yelp_url:
+          type: string
+          example: string
+          description: Yelp business URL of the account.
+        youtube_url:
+          type: string
+          example: string
+          description: YouTube channel URL of the account.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createAccountRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account1_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the first related account.
+        account2_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the second related account.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account1_id
+      - account2_id
+    AccountType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the account type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - is_readonly
+      - name
+      - settings
+    AccountSharingSalesUnitRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account being shared.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the account is shared with.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared account.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account
+      - unit
+      - account_id
+      - unit_id
+    updateAccountTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the account type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     updateAccountSharingClientRelationInput:
       properties:
         account_id:
@@ -9685,6 +9681,317 @@ components:
           enum:
           - 1
           - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAccountTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the edit form layout used by the UI when creating or editing accounts of this type. Contains tabs, sections, and field placement.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the account type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateAccountSharingSalesUnitRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared account.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    ParentAccountRelationType:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        child_label:
+          type: string
+          example: string
+          description: Label shown for the child side of the parent-child account relation (e.g. "Subsidiary" when the parent is a holding company).
+        parent_label:
+          type: string
+          example: string
+          description: Label shown for the parent side of the parent-child account relation (e.g. "Parent company").
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - child_label
+      - parent_label
+    createAccountRoleInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - color
+      - label
+    createAccountProductPricingInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        price:
+          type: number
+          format: double
+          example: '4.32'
+          description: Price applied for this product when sold to this account, in the specified currency.
+        product_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the product.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account_id
+      - currency_id
+      - product_id
+    createAccountRelationLabelInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Account relationship being labelled.
+
+
+            Relation to AccountRelation, see: ''createAccountRelationInput'' object for properties.'
+        account_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account relationship.
+        account_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the relationship type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account_relation
+      - account_relation_id
+      - account_relation_type_id
+    AccountSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account being shared.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        client:
+          type: string
+          format: uri
+          description: 'User the account is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared account.
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the account.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account
+      - client
+      - account_id
+      - client_id
+    updateAccountRoleInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the role label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        label:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
         revision:
           type: integer
           format: int32
@@ -9798,347 +10105,40 @@ components:
       - account_id
       - kpi
       - owner_id
-    EntityHealth:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        type:
-          type: string
-          format: uri
-          description: 'Account type this health configuration applies to.
-
-
-            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, health is configured but not evaluated for records of this type.
-        last_recalculation:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the last full health recalculation across all matching records.
-        type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: 'Health configuration: indicator filter definitions for healthy and critical-health states. Stored as a versioned JSON document; updates create a new history entry.'
-        calculation_progress:
-          type: integer
-          format: int32
-          example: 1
-          description: Progress of the in-flight health recalculation as a percentage (0-100). Null when no recalculation has been queued.
-      required:
-      - is_delete_protected
-      - id
-      - type
-      - entity_type
-      - is_enabled
-      - type_id
-      - settings
-    batchAccountRelationTypeInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    createAccountRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account1_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the first related account.
-        account2_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the second related account.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - account1_id
-      - account2_id
-    createAccountRelationTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the relationship type label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        label:
-          type: string
-          example: string
-          description: Display label of the account-to-account relationship type (e.g. Partner, Supplier).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - color
-    batchAccountSharingSalesUnitRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared account.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateAccountProductPricingInput:
+    updateAccountKPIInput:
       properties:
         account_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the account.
-        currency_id:
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        price:
-          type: number
-          format: double
-          example: '4.32'
-          description: Price applied for this product when sold to this account, in the specified currency.
-        product_id:
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the product.
-        revision:
+          description: Id of the user who triggered the event.
+        kpi:
           type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    AccountRelationLabel:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_relation:
-          type: string
-          format: uri
-          description: 'Account relationship being labelled.
+          description: 'KPI metric this event represents: CreateAccount, FirstEmailSent, LastEmailSent, Archive.
 
 
-            Relation to AccountRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRelation'' object for properties.'
-        account_relation_type:
-          type: string
-          format: uri
-          description: 'Type of the relationship (e.g. partner, supplier).
-
-
-            Relation to AccountRelationType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountRelationType'' object for properties.'
-        account_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account relationship.
-        account_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the relationship type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account_relation
-      - account_relation_type
-      - account_relation_id
-      - account_relation_type_id
-    updateAccountSharingSalesUnitRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared account.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the account.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
+            Integer enum value: 1 - CreateAccount, 2 - LastEmailSent, 3 - FirstEmailSent, 4 - Archive'
           example: 1
           enum:
           - 1
           - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account owner at the time of the event.
         unit_id:
           type: string
           format: uuid
