@@ -577,6 +577,57 @@ components:
       - id
       - owner
       - owner_id
+    updateChatConversationInput:
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - AiChat, 2 - AiRecordDetail'
+          example: 1
+          enum:
+          - 1
+          - 2
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
+          description: Messages exchanged in the conversation, in chronological order.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
     createChatConversationInput:
       properties:
         modified:
@@ -649,54 +700,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateChatConversationInput:
-      properties:
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - AiChat, 2 - AiRecordDetail'
-          example: 1
-          enum:
-          - 1
-          - 2
-        messages:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TextMessage, see: ''updateTextMessageInput'' object for properties.'
-          description: Messages exchanged in the conversation, in chronological order.

@@ -508,37 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchEntityScoringInput:
-      properties:
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the scoring configuration is defined but not evaluated for records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: Entity scoring definition in json format.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createEntityScoringInput:
       properties:
         modified:
@@ -604,33 +573,30 @@ components:
       - name
       - settings
       - sort_order
-    updateEntityScoringInput:
+    Error:
       properties:
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the scoring configuration is defined but not evaluated for records.
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
         name:
+          description: Name of the API error
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: Entity scoring definition in json format.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
-        use_lang:
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
           type: boolean
           example: false
-          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
+      required:
+      - success
+      - http_status
     EntityScoring:
       properties:
         is_delete_protected:
@@ -714,27 +680,61 @@ components:
       - name
       - settings
       - sort_order
-    Error:
+    updateEntityScoringInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
+        is_enabled:
           type: boolean
           example: false
-      required:
-      - success
-      - http_status
+          description: When false, the scoring configuration is defined but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: Entity scoring definition in json format.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchEntityScoringInput:
+      properties:
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the scoring configuration is defined but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: Entity scoring definition in json format.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

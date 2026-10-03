@@ -1542,8 +1542,28 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createFieldPermissionInput:
+    FieldSequence:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -1556,101 +1576,35 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        field_id:
+        filter:
+          type: object
+          description: Optional filter restricting which records this sequence applies to. Empty means the sequence applies to all records.
+        pattern:
+          type: string
+          example: string
+          description: Pattern template used to generate auto-numbered values (e.g. "{prefix}{year}-{####}").
+        sequence_set_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the custom field.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        permission_level:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        is_published:
-          type: boolean
-          example: false
-          description: True when the permission override is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
+          description: Identifier grouping all sequences (across entity types) that share the same auto-numbering pattern.
+        sort_order:
           type: integer
           format: int32
           example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - field_id
-      - master_right_id
-    createFieldInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        entity_name:
-          type: string
-          example: string
-          description: Related entity name for field (e.g. Account, Contact, Lead, Opportunity, ...)
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: User friendly name for field.
-        type_id:
-          type: string
-          example: string
-          description: 'Type of the field. Supported field types are: checkbox, currency, currency_foreign, date, datetime, dropdown, email, float, input, integer, multiselect_checkbox, phone, radio, sequence, text_area, url'
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Optional custom data set id can be set.
-        parent_options_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: For dependent dropdown/radio fields, id of the parent field whose selected value restricts the options shown on this field.
-        calc_formula:
-          type: string
-          example: string
-          description: Calculated formula used for fields which supports calculation.
-        default_value:
-          type: string
-          example: string
-          description: A default value for field.
-        is_unique:
+          description: Position of this sequence within its sequence set; sequences are evaluated in this order, the first whose filter matches is used.
+        is_published:
           type: boolean
           example: false
-          description: If true, then there will be an API validation if value of entity is unique.
+          description: True when the sequence is published; false while it exists only as an unpublished draft.
           readOnly: true
-        name_translations:
-          type: string
-          format: binary
-          example: blob
-          description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
       required:
-      - entity_name
-      - name
-      - type_id
-      - name_translations
-    batchFieldMappingInput:
+      - is_delete_protected
+      - has_draft
+      - id
+      - pattern
+      - sequence_set_id
+    updateFieldMappingInput:
       properties:
         is_system:
           type: boolean
@@ -1695,10 +1649,273 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Files attached to the mapping (e.g. import source files).
+    FieldMapping:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        is_system:
+          type: boolean
+          example: false
+          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
+        mapping:
+          type: string
+          format: binary
+          example: blob
+          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
+        operation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        source_entity_api_name:
+          type: string
+          example: string
+          description: API name of the source custom entity. Set only when source_entity_name is "CustomEntity"; otherwise empty.
+        target_entity_api_name:
+          type: string
+          example: string
+          description: API name of the target custom entity. Set only when target_entity_name is "CustomEntity"; otherwise empty.
+        type_mappings:
+          type: string
+          format: binary
+          example: blob
+          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        source_entity_name:
+          type: string
+          example: string
+          description: Source entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the source is a custom entity; the API name is then exposed via source_entity_api_name.
+        target_entity_name:
+          type: string
+          example: string
+          description: Target entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the target is a custom entity; the API name is then exposed via target_entity_api_name.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the mapping (e.g. import source files).
+      required:
+      - is_delete_protected
+      - id
+      - is_system
+      - source_entity_name
+      - target_entity_name
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchFieldPermissionInput:
+      properties:
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
+    updateFieldPermissionInput:
+      properties:
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateFieldInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: User friendly name for field.
+        parent_options_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: For dependent dropdown/radio fields, id of the parent field whose selected value restricts the options shown on this field.
+        calc_formula:
+          type: string
+          example: string
+          description: Calculated formula used for fields which supports calculation.
+        default_value:
+          type: string
+          example: string
+          description: A default value for field.
+        name_translations:
+          type: string
+          format: binary
+          example: blob
+          description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
+    FieldPermission:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        field:
+          type: string
+          format: uri
+          description: 'Custom field this permission applies to.
+
+
+            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted (or restricted) on the field.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom field.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        is_published:
+          type: boolean
+          example: false
+          description: True when the permission override is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - field
+      - master_right
+      - field_id
+      - master_right_id
     Field:
       properties:
         is_delete_protected:
@@ -1944,7 +2161,55 @@ components:
       - is_readonly_on_recurrent_appointment
       - is_available_for_webresource
       - is_available_for_advanced_formula
-    updateFieldMappingInput:
+    createFieldPermissionInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the custom field.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        permission_level:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        is_published:
+          type: boolean
+          example: false
+          description: True when the permission override is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - field_id
+      - master_right_id
+    batchFieldMappingInput:
       properties:
         is_system:
           type: boolean
@@ -1989,28 +2254,12 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Files attached to the mapping (e.g. import source files).
-    FieldSequence:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
         id:
+          description: ID of object to update.
           type: string
           format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
+    createFieldInput:
+      properties:
         modified:
           type: string
           format: date-time
@@ -2023,58 +2272,24 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        filter:
-          type: object
-          description: Optional filter restricting which records this sequence applies to. Empty means the sequence applies to all records.
-        pattern:
+        entity_name:
           type: string
           example: string
-          description: Pattern template used to generate auto-numbered values (e.g. "{prefix}{year}-{####}").
-        sequence_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier grouping all sequences (across entity types) that share the same auto-numbering pattern.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of this sequence within its sequence set; sequences are evaluated in this order, the first whose filter matches is used.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the sequence is published; false while it exists only as an unpublished draft.
+          description: Related entity name for field (e.g. Account, Contact, Lead, Opportunity, ...)
           readOnly: true
-      required:
-      - is_delete_protected
-      - has_draft
-      - id
-      - pattern
-      - sequence_set_id
-    updateFieldPermissionInput:
-      properties:
-        permission_level:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateFieldInput:
-      properties:
         name:
           type: string
           example: string
           description: User friendly name for field.
+        type_id:
+          type: string
+          example: string
+          description: 'Type of the field. Supported field types are: checkbox, currency, currency_foreign, date, datetime, dropdown, email, float, input, integer, multiselect_checkbox, phone, radio, sequence, text_area, url'
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Optional custom data set id can be set.
         parent_options_field_id:
           type: string
           format: uuid
@@ -2088,214 +2303,21 @@ components:
           type: string
           example: string
           description: A default value for field.
+        is_unique:
+          type: boolean
+          example: false
+          description: If true, then there will be an API validation if value of entity is unique.
+          readOnly: true
         name_translations:
           type: string
           format: binary
           example: blob
           description: 'Map of locale codes to translated field names (e.g. {"en-US": "First name", "de-DE": "Vorname"}). Empty when no translations are defined.'
-    FieldMapping:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        is_system:
-          type: boolean
-          example: false
-          description: True when the mapping is shipped by the platform and cannot be deleted by the user.
-        mapping:
-          type: string
-          format: binary
-          example: blob
-          description: Default field-to-field mapping template applied when no per-type-pair mapping matches.
-        operation:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Default, 2 - Qualification, 3 - FollowUp, 4 - Parent, 5 - QualificationAndAutocreate, 6 - Conversion'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        source_entity_api_name:
-          type: string
-          example: string
-          description: API name of the source custom entity. Set only when source_entity_name is "CustomEntity"; otherwise empty.
-        target_entity_api_name:
-          type: string
-          example: string
-          description: API name of the target custom entity. Set only when target_entity_name is "CustomEntity"; otherwise empty.
-        type_mappings:
-          type: string
-          format: binary
-          example: blob
-          description: 'Per-type-pair field mappings: each entry binds a set of source/target type ids and the field-to-field mapping that applies when both types match.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        source_entity_name:
-          type: string
-          example: string
-          description: Source entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the source is a custom entity; the API name is then exposed via source_entity_api_name.
-        target_entity_name:
-          type: string
-          example: string
-          description: Target entity kind for the mapping (e.g. Lead, Account, Contact). Returns "CustomEntity" when the target is a custom entity; the API name is then exposed via target_entity_api_name.
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Files attached to the mapping (e.g. import source files).
       required:
-      - is_delete_protected
-      - id
-      - is_system
-      - source_entity_name
-      - target_entity_name
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    FieldPermission:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        field:
-          type: string
-          format: uri
-          description: 'Custom field this permission applies to.
-
-
-            Relation to Field. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Field'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted (or restricted) on the field.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the custom field.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        permission_level:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        is_published:
-          type: boolean
-          example: false
-          description: True when the permission override is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - has_draft
-      - id
-      - field
-      - master_right
-      - field_id
-      - master_right_id
+      - entity_name
+      - name
+      - type_id
+      - name_translations
     createFieldMappingInput:
       properties:
         modified:
@@ -2355,25 +2377,3 @@ components:
           description: Files attached to the mapping (e.g. import source files).
       required:
       - is_system
-    batchFieldPermissionInput:
-      properties:
-        permission_level:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - FullAccess, 2 - Readonly, 3 - NoAccess'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

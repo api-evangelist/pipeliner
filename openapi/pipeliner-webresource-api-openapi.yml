@@ -508,42 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updateWebresourceInput:
-      properties:
-        display_param:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          description: Bit flag controlling how the web resource is displayed (e.g. full-screen, in a tab).
-        entity:
-          type: string
-          example: string
-          description: Name of the entity the web resource is attached to (e.g. "Account", "Lead").
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        request_method:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Get, 2 - Post'
-          example: 1
-          enum:
-          - 1
-          - 2
-        url:
-          type: string
-          example: string
-          description: URL template for the embedded web resource. May reference field values via "{#<field_id>}" placeholders that are substituted with the current record's values.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     Webresource:
       properties:
         is_delete_protected:
@@ -648,6 +612,82 @@ components:
       required:
       - success
       - http_status
+    batchWebresourceInput:
+      properties:
+        display_param:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          description: Bit flag controlling how the web resource is displayed (e.g. full-screen, in a tab).
+        entity:
+          type: string
+          example: string
+          description: Name of the entity the web resource is attached to (e.g. "Account", "Lead").
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        request_method:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Get, 2 - Post'
+          example: 1
+          enum:
+          - 1
+          - 2
+        url:
+          type: string
+          example: string
+          description: URL template for the embedded web resource. May reference field values via "{#<field_id>}" placeholders that are substituted with the current record's values.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateWebresourceInput:
+      properties:
+        display_param:
+          type: string
+          example: 1
+          enum:
+          - 1
+          - 2
+          description: Bit flag controlling how the web resource is displayed (e.g. full-screen, in a tab).
+        entity:
+          type: string
+          example: string
+          description: Name of the entity the web resource is attached to (e.g. "Account", "Lead").
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        request_method:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Get, 2 - Post'
+          example: 1
+          enum:
+          - 1
+          - 2
+        url:
+          type: string
+          example: string
+          description: URL template for the embedded web resource. May reference field values via "{#<field_id>}" placeholders that are substituted with the current record's values.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     createWebresourceInput:
       properties:
         modified:
@@ -705,43 +745,3 @@ components:
       - display_param
       - entity
       - name
-    batchWebresourceInput:
-      properties:
-        display_param:
-          type: string
-          example: 1
-          enum:
-          - 1
-          - 2
-          description: Bit flag controlling how the web resource is displayed (e.g. full-screen, in a tab).
-        entity:
-          type: string
-          example: string
-          description: Name of the entity the web resource is attached to (e.g. "Account", "Lead").
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        request_method:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Get, 2 - Post'
-          example: 1
-          enum:
-          - 1
-          - 2
-        url:
-          type: string
-          example: string
-          description: URL template for the embedded web resource. May reference field values via "{#<field_id>}" placeholders that are substituted with the current record's values.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

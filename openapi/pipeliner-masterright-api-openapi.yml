@@ -3980,24 +3980,8 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    AllowedCompanyEmail:
+    createAllowedPipelineInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -4010,91 +3994,52 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        company_email:
-          type: string
-          format: uri
-          description: 'Company email address the user role can send from.
-
-
-            Relation to CompanyEmail. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CompanyEmail'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the company email address.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        company_email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company email address.
+        access_step_documents:
+          type: boolean
+          example: false
+          description: When true, the user role can access documents attached to steps of this pipeline.
         master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the user role.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the pipeline.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - id
-      - company_email
-      - master_right
-      - company_email_id
       - master_right_id
-    AllowedLeadType:
+      - pipeline_id
+    updateAllowedCompanyPhoneInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+        master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        lead_type:
-          type: string
-          format: uri
-          description: 'Lead type the user role can use.
-
-
-            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the lead type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        lead_type_id:
+          description: Id of the user role.
+        phone_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateAllowedContactTypeInput:
+      properties:
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
         master_right_id:
           type: string
           format: uuid
@@ -4105,13 +4050,6 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - lead_type
-      - master_right
-      - lead_type_id
-      - master_right_id
     createAllowedCompanyPhoneInput:
       properties:
         modified:
@@ -4144,188 +4082,6 @@ components:
       required:
       - master_right_id
       - phone_id
-    createAllowedContactTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - contact_type_id
-      - master_right_id
-    updateAllowedPipelineInput:
-      properties:
-        access_step_documents:
-          type: boolean
-          example: false
-          description: When true, the user role can access documents attached to steps of this pipeline.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    AllowedCompanyPhone:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the company phone.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        phone:
-          type: string
-          format: uri
-          description: 'Company phone the user role can use for calling/SMS.
-
-
-            Relation to Phone. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Phone'' object for properties.'
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - master_right
-      - phone
-      - master_right_id
-      - phone_id
-    batchAllowedCompanyEmailInput:
-      properties:
-        company_email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company email address.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchAllowedCompanyPhoneInput:
-      properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        phone_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchAllowedAccountTypeInput:
-      properties:
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     batchMasterRightInput:
       properties:
         access_account_relation_types:
@@ -5296,25 +5052,45 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateAllowedCompanyPhoneInput:
+    batchAllowedPipelineInput:
       properties:
+        access_step_documents:
+          type: boolean
+          example: false
+          description: When true, the user role can access documents attached to steps of this pipeline.
         master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the user role.
-        phone_id:
+        pipeline_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company phone.
+          description: Id of the pipeline.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    updateAllowedCompanyEmailInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createAllowedCompanyEmailInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         company_email_id:
           type: string
           format: uuid
@@ -5330,6 +5106,145 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - company_email_id
+      - master_right_id
+    AllowedCompanyEmail:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        company_email:
+          type: string
+          format: uri
+          description: 'Company email address the user role can send from.
+
+
+            Relation to CompanyEmail. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CompanyEmail'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the company email address.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        company_email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company email address.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - company_email
+      - master_right
+      - company_email_id
+      - master_right_id
+    updateAllowedQuoteTypeInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAllowedLeadTypeInput:
+      properties:
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createAllowedLeadTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - lead_type_id
+      - master_right_id
     Error:
       properties:
         http_status:
@@ -5420,6 +5335,44 @@ components:
       - master_right
       - contact_type_id
       - master_right_id
+    updateAllowedLeadTypeInput:
+      properties:
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAllowedQuoteTypeInput:
+      properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        quote_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     createMasterRightInput:
       properties:
         modified:
@@ -6400,8 +6353,107 @@ components:
           description: Per-custom-entity access settings (access level, allowed types, default screen profile, etc.) for users with this role. One entry per custom entity defined in the space.
       required:
       - name
-    updateAllowedQuoteTypeInput:
+    batchAllowedCompanyPhoneInput:
       properties:
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    AllowedAccountType:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_type:
+          type: string
+          format: uri
+          description: 'Account type the user role can use.
+
+
+            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the account type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account_type
+      - master_right
+      - account_type_id
+      - master_right_id
+    createAllowedQuoteTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         master_right_id:
           type: string
           format: uuid
@@ -6417,13 +6469,82 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    updateAllowedContactTypeInput:
+      required:
+      - master_right_id
+      - quote_type_id
+    AllowedCompanyPhone:
       properties:
-        contact_type_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the company phone.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        phone:
+          type: string
+          format: uri
+          description: 'Company phone the user role can use for calling/SMS.
+
+
+            Relation to Phone. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Phone'' object for properties.'
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        phone_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the company phone.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - master_right
+      - phone
+      - master_right_id
+      - phone_id
+    batchAllowedAccountTypeInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
         master_right_id:
           type: string
           format: uuid
@@ -6434,6 +6555,76 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    AllowedLeadType:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        lead_type:
+          type: string
+          format: uri
+          description: 'Lead type the user role can use.
+
+
+            Relation to LeadType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''LeadType'' object for properties.'
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the lead type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        lead_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - lead_type
+      - master_right
+      - lead_type_id
+      - master_right_id
     updateMasterRightInput:
       properties:
         access_account_relation_types:
@@ -7400,78 +7591,24 @@ components:
           format: binary
           example: blob
           description: Per-custom-entity access settings (access level, allowed types, default screen profile, etc.) for users with this role. One entry per custom entity defined in the space.
-    createAllowedCompanyEmailInput:
+    AllowedQuoteType:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
           readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        company_email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the company email address.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - company_email_id
-      - master_right_id
-    updateAllowedLeadTypeInput:
-      properties:
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchAllowedContactTypeInput:
-      properties:
-        contact_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
         id:
-          description: ID of object to update.
           type: string
           format: uuid
-    createAllowedQuoteTypeInput:
-      properties:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -7484,6 +7621,20 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        master_right:
+          type: string
+          format: uri
+          description: 'User role granted access to the quote type.
+
+
+            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
+        quote_type:
+          type: string
+          format: uri
+          description: 'Quote type the user role can use.
+
+
+            Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
         master_right_id:
           type: string
           format: uuid
@@ -7500,104 +7651,19 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
+      - is_delete_protected
+      - id
+      - master_right
+      - quote_type
       - master_right_id
       - quote_type_id
-    batchAllowedPipelineInput:
+    batchAllowedCompanyEmailInput:
       properties:
-        access_step_documents:
-          type: boolean
-          example: false
-          description: When true, the user role can access documents attached to steps of this pipeline.
-        master_right_id:
+        company_email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the pipeline.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createAllowedLeadTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - lead_type_id
-      - master_right_id
-    createAllowedAccountTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - account_type_id
-      - master_right_id
-    batchAllowedLeadTypeInput:
-      properties:
-        lead_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead type.
+          description: Id of the company email address.
         master_right_id:
           type: string
           format: uuid
@@ -7682,7 +7748,45 @@ components:
       - pipeline
       - master_right_id
       - pipeline_id
-    createAllowedPipelineInput:
+    updateAllowedAccountTypeInput:
+      properties:
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchAllowedContactTypeInput:
+      properties:
+        contact_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createAllowedAccountTypeInput:
       properties:
         modified:
           type: string
@@ -7696,6 +7800,26 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        account_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account type.
+        master_right_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user role.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - account_type_id
+      - master_right_id
+    updateAllowedPipelineInput:
+      properties:
         access_step_documents:
           type: boolean
           example: false
@@ -7715,48 +7839,8 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - master_right_id
-      - pipeline_id
-    batchAllowedQuoteTypeInput:
+    createAllowedContactTypeInput:
       properties:
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    AllowedQuoteType:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -7769,91 +7853,31 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        master_right:
+        contact_type_id:
           type: string
-          format: uri
-          description: 'User role granted access to the quote type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        quote_type:
-          type: string
-          format: uri
-          description: 'Quote type the user role can use.
-
-
-            Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact type.
         master_right_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the user role.
-        quote_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote type.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - id
-      - master_right
-      - quote_type
+      - contact_type_id
       - master_right_id
-      - quote_type_id
-    AllowedAccountType:
+    updateAllowedCompanyEmailInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+        company_email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_type:
-          type: string
-          format: uri
-          description: 'Account type the user role can use.
-
-
-            Relation to AccountType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''AccountType'' object for properties.'
-        master_right:
-          type: string
-          format: uri
-          description: 'User role granted access to the account type.
-
-
-            Relation to MasterRight. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''MasterRight'' object for properties.'
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
+          description: Id of the company email address.
         master_right_id:
           type: string
           format: uuid
@@ -7864,13 +7888,6 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account_type
-      - master_right
-      - account_type_id
-      - master_right_id
     MasterRight:
       properties:
         is_delete_protected:
@@ -8848,20 +8865,3 @@ components:
       - is_delete_protected
       - id
       - name
-    updateAllowedAccountTypeInput:
-      properties:
-        account_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account type.
-        master_right_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user role.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.

@@ -508,6 +508,37 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    batchInterfacePreviewInput:
+      properties:
+        card_field_ids:
+          type: object
+          description: Ordered ids of fields shown on the record's compact card view.
+        charts:
+          type: object
+          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
+        detail_tabs:
+          type: object
+          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
+        detail_widgets:
+          type: object
+          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
+        field_ids:
+          type: object
+          description: Ordered ids of fields shown in the record's preview pane.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Error:
       properties:
         http_status:
@@ -909,34 +940,3 @@ components:
       - settings
       - entity_type_id
       - entity_type
-    batchInterfacePreviewInput:
-      properties:
-        card_field_ids:
-          type: object
-          description: Ordered ids of fields shown on the record's compact card view.
-        charts:
-          type: object
-          description: Chart configurations shown in the preview, each linked to a related entity (e.g. recent activities, related contacts, comments).
-        detail_tabs:
-          type: object
-          description: Tab configurations shown on the record's detail screen (Detail tab plus related-entity and lookup tabs).
-        detail_widgets:
-          type: object
-          description: Widget configurations shown on the record's detail screen sidebar (e.g. Status, KPIs).
-        field_ids:
-          type: object
-          description: Ordered ids of fields shown in the record's preview pane.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Layout-customization settings for the preview (e.g. is_layout_customization_enabled).
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid

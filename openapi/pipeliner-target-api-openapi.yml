@@ -1004,236 +1004,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updateTargetRelationInput:
-      properties:
-        group_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the group target.
-        user_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user target.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createTargetRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        group_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the group target.
-        user_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user target.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - group_target_id
-      - user_target_id
-    batchTargetRelationInput:
-      properties:
-        group_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the group target.
-        user_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user target.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    TargetRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        group_target:
-          type: string
-          format: uri
-          description: 'Parent group target that aggregates the user target.
-
-
-            Relation to Target. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Target'' object for properties.'
-        user_target:
-          type: string
-          format: uri
-          description: 'Child user target rolling up into the group target.
-
-
-            Relation to Target. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Target'' object for properties.'
-        group_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the group target.
-        user_target_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user target.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - group_target
-      - user_target
-      - group_target_id
-      - user_target_id
-    createTargetInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        calculation_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Revenue, 2 - LeadQualified, 3 - LeadCreated'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the target currency.
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the target.
-        is_active:
-          type: boolean
-          example: false
-          description: When true, the target is currently being tracked; when false, the target is a draft or has been deactivated.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        period_from:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: First date of the active target period. Set when is_active is true; recomputed from settings.period when activated.
-        period_to:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Last date of the active target period.
-        target_client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assignee user.
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - User, 2 - GroupFromUser, 3 - GroupFromExisting, 4 - Simulated'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        child_targets:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TargetRelation, see: ''createTargetRelationInput'' object for properties.'
-          description: User-level child targets that aggregate into this group target.
-      required:
-      - is_active
-      - name
-      - owner_id
-    batchTargetInput:
+    updateTargetInput:
       properties:
         calculation_type:
           type: integer
@@ -1310,34 +1081,6 @@ components:
                 format: uri
             description: 'Relation to TargetRelation, see: ''updateTargetRelationInput'' object for properties.'
           description: User-level child targets that aggregate into this group target.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     Target:
       properties:
         is_delete_protected:
@@ -1475,7 +1218,243 @@ components:
       - name
       - owner_id
       - settings
-    updateTargetInput:
+    batchTargetRelationInput:
+      properties:
+        group_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the group target.
+        user_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user target.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createTargetInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        calculation_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Revenue, 2 - LeadQualified, 3 - LeadCreated'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the target currency.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the target.
+        is_active:
+          type: boolean
+          example: false
+          description: When true, the target is currently being tracked; when false, the target is a draft or has been deactivated.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        period_from:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: First date of the active target period. Set when is_active is true; recomputed from settings.period when activated.
+        period_to:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Last date of the active target period.
+        target_client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assignee user.
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - User, 2 - GroupFromUser, 3 - GroupFromExisting, 4 - Simulated'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        child_targets:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TargetRelation, see: ''createTargetRelationInput'' object for properties.'
+          description: User-level child targets that aggregate into this group target.
+      required:
+      - is_active
+      - name
+      - owner_id
+    TargetRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        group_target:
+          type: string
+          format: uri
+          description: 'Parent group target that aggregates the user target.
+
+
+            Relation to Target. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Target'' object for properties.'
+        user_target:
+          type: string
+          format: uri
+          description: 'Child user target rolling up into the group target.
+
+
+            Relation to Target. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Target'' object for properties.'
+        group_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the group target.
+        user_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user target.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - group_target
+      - user_target
+      - group_target_id
+      - user_target_id
+    createTargetRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        group_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the group target.
+        user_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user target.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - group_target_id
+      - user_target_id
+    batchTargetInput:
       properties:
         calculation_type:
           type: integer
@@ -1552,3 +1531,24 @@ components:
                 format: uri
             description: 'Relation to TargetRelation, see: ''updateTargetRelationInput'' object for properties.'
           description: User-level child targets that aggregate into this group target.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateTargetRelationInput:
+      properties:
+        group_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the group target.
+        user_target_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user target.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.

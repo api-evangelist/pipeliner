@@ -1004,6 +1004,43 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    createMemoCommentInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - comment
+      - memo_id
+      - owner_id
     Error:
       properties:
         http_status:
@@ -1028,8 +1065,180 @@ components:
       required:
       - success
       - http_status
-    updateMemoCommentInput:
+    batchMemoInput:
       properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo author.
+        subject:
+          type: string
+          example: string
+          description: Short summary line of the memo.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingSalesUnitRelation, see: ''updateMessageSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this memo.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageSharingClientRelation, see: ''updateMessageSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this memo.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Accounts this memo is linked to.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Contacts this memo is linked to.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Projects this memo is linked to.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Leads this memo is linked to.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Quotes this memo is linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Opportunities this memo is linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
+          description: Custom entity records this memo is linked to.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this memo.
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to MemoComment, see: ''updateMemoCommentInput'' object for properties.'
+          description: Comments authored on this memo.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    MemoComment:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        memo:
+          type: string
+          format: uri
+          description: 'Memo this comment belongs to.
+
+
+            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'User who authored the comment.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
         comment:
           type: string
           example: string
@@ -1049,6 +1258,14 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - memo
+      - owner
+      - comment
+      - memo_id
+      - owner_id
     batchMemoCommentInput:
       properties:
         comment:
@@ -1200,207 +1417,6 @@ components:
                 format: uri
             description: 'Relation to MemoComment, see: ''updateMemoCommentInput'' object for properties.'
           description: Comments authored on this memo.
-    MemoComment:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        memo:
-          type: string
-          format: uri
-          description: 'Memo this comment belongs to.
-
-
-            Relation to Memo. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Memo'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'User who authored the comment.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        comment:
-          type: string
-          example: string
-          description: Free-form text body of the comment.
-        memo_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the memo.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the comment author.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - memo
-      - owner
-      - comment
-      - memo_id
-      - owner_id
-    batchMemoInput:
-      properties:
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the memo author.
-        subject:
-          type: string
-          example: string
-          description: Short summary line of the memo.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageSharingSalesUnitRelation, see: ''updateMessageSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this memo.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageSharingClientRelation, see: ''updateMessageSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this memo.
-        account_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Accounts this memo is linked to.
-        contact_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Contacts this memo is linked to.
-        project_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Projects this memo is linked to.
-        lead_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Leads this memo is linked to.
-        quote_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Quotes this memo is linked to.
-        opportunity_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Opportunities this memo is linked to.
-        custom_entity_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MessageRelation, see: ''updateMessageRelationInput'' object for properties.'
-          description: Custom entity records this memo is linked to.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this memo.
-        comments:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to MemoComment, see: ''updateMemoCommentInput'' object for properties.'
-          description: Comments authored on this memo.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     Memo:
       properties:
         is_delete_protected:
@@ -1541,43 +1557,6 @@ components:
       - owner_id
       - subject
       - table_name
-    createMemoCommentInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        comment:
-          type: string
-          example: string
-          description: Free-form text body of the comment.
-        memo_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the memo.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the comment author.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - comment
-      - memo_id
-      - owner_id
     createMemoInput:
       properties:
         modified:
@@ -1719,3 +1698,24 @@ components:
       required:
       - owner_id
       - subject
+    updateMemoCommentInput:
+      properties:
+        comment:
+          type: string
+          example: string
+          description: Free-form text body of the comment.
+        memo_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the memo.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the comment author.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.

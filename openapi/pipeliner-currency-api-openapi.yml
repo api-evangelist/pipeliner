@@ -1500,8 +1500,24 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createCurrencyInput:
+    Currency:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -1518,6 +1534,11 @@ components:
           type: string
           example: string
           description: Name of the entity and its default text representation.
+        is_base:
+          type: boolean
+          example: false
+          description: True for the space's base currency. There is exactly one base currency per space and it cannot be deleted.
+          readOnly: true
         symbol:
           type: string
           example: string
@@ -1530,14 +1551,13 @@ components:
         currency_exchange_rates:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CurrencyExchangeRate, see: ''createCurrencyExchangeRateInput'' object for properties.'
+            type: string
+            format: uri
+            description: 'Relation to CurrencyExchangeRate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CurrencyExchangeRate'' object for properties.'
           description: Exchange rates configured for this currency, one per exchange rate list (effective period).
       required:
+      - is_delete_protected
+      - id
       - code
       - currency_exchange_rates
     updateCurrencyInput:
@@ -1557,117 +1577,6 @@ components:
                 format: uri
             description: 'Relation to CurrencyExchangeRate, see: ''updateCurrencyExchangeRateInput'' object for properties.'
           description: Exchange rates configured for this currency, one per exchange rate list (effective period).
-    batchCurrencyExchangeRatesListInput:
-      properties:
-        valid_from:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        currency_exchange_rates:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CurrencyExchangeRate, see: ''updateCurrencyExchangeRateInput'' object for properties.'
-          description: Exchange rates configured in this list — one row per non-base currency in the space.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchCurrencyExchangeRateInput:
-      properties:
-        currency_exchange_rate_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the exchange rate list.
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        exchange_rate:
-          type: number
-          format: double
-          example: '4.32'
-          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createCurrencyExchangeRatesListInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        valid_from:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        currency_exchange_rates:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CurrencyExchangeRate, see: ''createCurrencyExchangeRateInput'' object for properties.'
-          description: Exchange rates configured in this list — one row per non-base currency in the space.
-      required:
-      - valid_from
-      - currency_exchange_rates
-    updateCurrencyExchangeRatesListInput:
-      properties:
-        valid_from:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        currency_exchange_rates:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CurrencyExchangeRate, see: ''updateCurrencyExchangeRateInput'' object for properties.'
-          description: Exchange rates configured in this list — one row per non-base currency in the space.
     CurrencyExchangeRate:
       properties:
         is_delete_protected:
@@ -1739,125 +1648,6 @@ components:
       - currency
       - currency_exchange_rate_list_id
       - currency_id
-    Currency:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        code:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        is_base:
-          type: boolean
-          example: false
-          description: True for the space's base currency. There is exactly one base currency per space and it cannot be deleted.
-          readOnly: true
-        symbol:
-          type: string
-          example: string
-          description: Display symbol of the currency (e.g. "$", "€"). Used when formatting amounts in the UI.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        currency_exchange_rates:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CurrencyExchangeRate. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CurrencyExchangeRate'' object for properties.'
-          description: Exchange rates configured for this currency, one per exchange rate list (effective period).
-      required:
-      - is_delete_protected
-      - id
-      - code
-      - currency_exchange_rates
-    updateCurrencyExchangeRateInput:
-      properties:
-        currency_exchange_rate_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the exchange rate list.
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        exchange_rate:
-          type: number
-          format: double
-          example: '4.32'
-          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createCurrencyExchangeRateInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        currency_exchange_rate_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the exchange rate list.
-        currency_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency.
-        exchange_rate:
-          type: number
-          format: double
-          example: '4.32'
-          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - currency_exchange_rate_list_id
-      - currency_id
     Error:
       properties:
         http_status:
@@ -1882,6 +1672,72 @@ components:
       required:
       - success
       - http_status
+    batchCurrencyExchangeRatesListInput:
+      properties:
+        valid_from:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        currency_exchange_rates:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CurrencyExchangeRate, see: ''updateCurrencyExchangeRateInput'' object for properties.'
+          description: Exchange rates configured in this list — one row per non-base currency in the space.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createCurrencyInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        code:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        symbol:
+          type: string
+          example: string
+          description: Display symbol of the currency (e.g. "$", "€"). Used when formatting amounts in the UI.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        currency_exchange_rates:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CurrencyExchangeRate, see: ''createCurrencyExchangeRateInput'' object for properties.'
+          description: Exchange rates configured for this currency, one per exchange rate list (effective period).
+      required:
+      - code
+      - currency_exchange_rates
     CurrencyExchangeRatesList:
       properties:
         is_delete_protected:
@@ -1955,3 +1811,147 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    batchCurrencyExchangeRateInput:
+      properties:
+        currency_exchange_rate_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the exchange rate list.
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        exchange_rate:
+          type: number
+          format: double
+          example: '4.32'
+          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateCurrencyExchangeRateInput:
+      properties:
+        currency_exchange_rate_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the exchange rate list.
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        exchange_rate:
+          type: number
+          format: double
+          example: '4.32'
+          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateCurrencyExchangeRatesListInput:
+      properties:
+        valid_from:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        currency_exchange_rates:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CurrencyExchangeRate, see: ''updateCurrencyExchangeRateInput'' object for properties.'
+          description: Exchange rates configured in this list — one row per non-base currency in the space.
+    createCurrencyExchangeRatesListInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        valid_from:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Date the exchange rate list becomes effective. The list valid for any given moment is the most recent one whose valid_from is in the past. Time component is truncated to midnight on set.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        currency_exchange_rates:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CurrencyExchangeRate, see: ''createCurrencyExchangeRateInput'' object for properties.'
+          description: Exchange rates configured in this list — one row per non-base currency in the space.
+      required:
+      - valid_from
+      - currency_exchange_rates
+    createCurrencyExchangeRateInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        currency_exchange_rate_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the exchange rate list.
+        currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency.
+        exchange_rate:
+          type: number
+          format: double
+          example: '4.32'
+          description: Multiplier for converting an amount in the base currency into this currency. Must be greater than zero.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - currency_exchange_rate_list_id
+      - currency_id

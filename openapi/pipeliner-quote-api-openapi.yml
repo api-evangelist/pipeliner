@@ -4476,7 +4476,113 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchQuoteProcessInput:
+    QuoteContactRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact:
+          type: string
+          format: uri
+          description: 'Contact linked to the quote.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the contact is linked to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - contact
+      - quote
+      - contact_id
+      - is_primary
+      - quote_id
+    updateQuoteTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
+        form_lost:
+          type: object
+          description: JSON definition of the form shown when archiving (losing) a quote of this type.
+        form_lost_enabled:
+          type: boolean
+          example: false
+          description: True when the lost form is required on archiving quotes of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the quote type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateQuoteProcessInput:
       properties:
         color:
           type: integer
@@ -4497,12 +4603,24 @@ components:
           items:
             $ref: '#/components/schemas/batchStepInput'
           description: Steps that make up this quote process, in evaluation order.
+    QuoteDataExRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
         id:
-          description: ID of object to update.
           type: string
           format: uuid
-    createQuoteSharingClientRelationInput:
-      properties:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -4515,105 +4633,20 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        client_id:
+        data:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
+          format: uri
+          description: 'Data record holding the additional fields linked to this quote.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - client_id
-      - quote_id
-    createQuoteSharingSalesUnitRelationInput:
-      properties:
-        modified:
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        quote:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
+          format: uri
+          description: 'Quote this data relation row applies to.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - quote_id
-      - unit_id
-    updateQuoteSharingClientRelationInput:
-      properties:
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateQuoteDataExRelationInput:
-      properties:
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
         data_id:
           type: string
           format: uuid
@@ -4634,6 +4667,379 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - data
+      - quote
+      - data_id
+      - data_set_id
+      - quote_id
+    QuoteType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        quote_process:
+          type: string
+          format: uri
+          description: 'Quote process (pipeline) this quote type follows.
+
+
+            Relation to QuoteProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteProcess'' object for properties.'
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
+        form_lost:
+          type: object
+          description: JSON definition of the form shown when archiving (losing) a quote of this type.
+        form_lost_enabled:
+          type: boolean
+          example: false
+          description: True when the lost form is required on archiving quotes of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the quote type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        form_lost_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - quote_process
+      - form_lost_enabled
+      - is_readonly
+      - name
+      - quote_process_id
+      - settings
+      - form_lost_api
+    createQuoteContactRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_id
+      - is_primary
+      - quote_id
+    QuoteProcess:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps that make up this quote process, in evaluation order.
+        quote_types:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
+          description: Quote types that follow this quote process.
+      required:
+      - is_delete_protected
+      - id
+      - name
+      - steps
+      - quote_types
+    createQuoteProcessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps that make up this quote process, in evaluation order.
+      required:
+      - name
+      - steps
+    QuoteAccountRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account linked to the quote.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the account is linked to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - account
+      - quote
+      - account_id
+      - is_primary
+      - quote_id
+    createQuoteTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
+        form_lost:
+          type: object
+          description: JSON definition of the form shown when archiving (losing) a quote of this type.
+        form_lost_enabled:
+          type: boolean
+          example: false
+          description: True when the lost form is required on archiving quotes of this type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the quote type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - form_lost_enabled
+      - is_readonly
+      - name
+      - quote_process_id
+      - settings
     Error:
       properties:
         http_status:
@@ -4658,131 +5064,36 @@ components:
       required:
       - success
       - http_status
-    QuoteSharingSalesUnitRelation:
+    batchQuoteTypeInput:
       properties:
-        is_delete_protected:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
+        form_lost:
+          type: object
+          description: JSON definition of the form shown when archiving (losing) a quote of this type.
+        form_lost_enabled:
           type: boolean
           example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
+          description: True when the lost form is required on archiving quotes of this type.
+        is_readonly:
           type: boolean
           example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
+          description: True when the quote type is system-managed and cannot be edited or deleted by users.
+        name:
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        quote:
-          type: string
-          format: uri
-          description: 'Quote being shared.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the quote is shared with.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        quote_id:
+          example: string
+          description: Name of the entity and its default text representation.
+        quote_process_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
+          description: Id of the quote process.
+        settings:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - quote
-      - unit
-      - quote_id
-      - unit_id
-    updateQuoteSharingSalesUnitRelationInput:
-      properties:
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchQuoteSharingSalesUnitRelationInput:
-      properties:
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
         revision:
           type: integer
           format: int32
@@ -4792,82 +5103,31 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    QuoteSharingClientRelation:
+    batchQuoteContactRelationInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
+        contact_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
+          description: Id of the contact.
+        is_primary:
           type: boolean
           example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User the quote is shared with.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote being shared.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
         quote_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared quote.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
+          description: Id of the quote.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - client
-      - quote
-      - client_id
-      - quote_id
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     createQuoteInput:
       properties:
         modified:
@@ -5109,226 +5369,6 @@ components:
       - owner_id
       - step_id
       - total_amount
-    batchStepInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description shown in the step UI.
-        has_readonly_form:
-          type: boolean
-          example: false
-          description: When true, the record form is read-only while a record is in this step.
-        has_version_increment:
-          type: boolean
-          example: false
-          description: When true, transitioning a record into this step bumps its version counter.
-        lead_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead process.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        percent:
-          type: integer
-          format: int32
-          example: 1
-          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
-        quote_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the step within its pipeline or process; lower values appear first.
-        timeframe:
-          type: integer
-          format: int32
-          example: 1
-          description: Expected number of days a record should spend in this step. Used to flag overdue records.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
-          description: Files attached to the step (e.g. step-specific documentation or templates).
-        step_checklists:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
-          description: Checklist items the user must complete before moving a record out of this step.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateQuoteProcessInput:
-      properties:
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps that make up this quote process, in evaluation order.
-    updateQuoteContactRelationInput:
-      properties:
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    QuoteContactRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        contact:
-          type: string
-          format: uri
-          description: 'Contact linked to the quote.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the contact is linked to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - contact
-      - quote
-      - contact_id
-      - is_primary
-      - quote_id
-    updateQuoteTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
-        form_lost:
-          type: object
-          description: JSON definition of the form shown when archiving (losing) a quote of this type.
-        form_lost_enabled:
-          type: boolean
-          example: false
-          description: True when the lost form is required on archiving quotes of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the quote type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        quote_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     createQuoteKPIInput:
       properties:
         modified:
@@ -5389,71 +5429,109 @@ components:
       - kpi
       - owner_id
       - quote_id
-    batchQuoteTypeInput:
+    updateQuoteSharingClientRelationInput:
       properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
-        form_lost:
-          type: object
-          description: JSON definition of the form shown when archiving (losing) a quote of this type.
-        form_lost_enabled:
-          type: boolean
-          example: false
-          description: True when the lost form is required on archiving quotes of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the quote type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        quote_process_id:
+        client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchQuoteDataExRelationInput:
-      properties:
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the linked fields belong to.
+          description: Id of the user.
         quote_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    QuoteSharingSalesUnitRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
         id:
-          description: ID of object to update.
           type: string
           format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        quote:
+          type: string
+          format: uri
+          description: 'Quote being shared.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the quote is shared with.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - quote
+      - unit
+      - quote_id
+      - unit_id
     batchQuoteSharingClientRelationInput:
       properties:
         client_id:
@@ -5485,546 +5563,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createQuoteDataExRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the linked fields belong to.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - data_id
-      - data_set_id
-      - quote_id
-    QuoteAccountRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account linked to the quote.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the account is linked to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - account
-      - quote
-      - account_id
-      - is_primary
-      - quote_id
-    createQuoteProcessInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps that make up this quote process, in evaluation order.
-      required:
-      - name
-      - steps
-    updateQuoteAccountRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchQuoteKPIInput:
-      properties:
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: Create, Accept, Archive, LastMove.
-
-
-            Integer enum value: 1 - Create, 2 - Accept, 3 - Archive, 4 - LastMove'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote owner at the time of the event.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchQuoteAccountRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the account.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createQuoteTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
-        form_lost:
-          type: object
-          description: JSON definition of the form shown when archiving (losing) a quote of this type.
-        form_lost_enabled:
-          type: boolean
-          example: false
-          description: True when the lost form is required on archiving quotes of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the quote type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        quote_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - form_lost_enabled
-      - is_readonly
-      - name
-      - quote_process_id
-      - settings
-    QuoteKPI:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User who triggered the KPI event (e.g. created the quote, accepted it, archived it, moved the record).
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'Quote owner at the time the KPI event occurred.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote this KPI event relates to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the triggering user belonged to at the time of the event.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: Create, Accept, Archive, LastMove.
-
-
-            Integer enum value: 1 - Create, 2 - Accept, 3 - Archive, 4 - LastMove'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote owner at the time of the event.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - quote
-      - kpi
-      - owner_id
-      - quote_id
-    QuoteProcess:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color:
-          type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        steps:
-          type: array
-          items:
-            $ref: '#/components/schemas/batchStepInput'
-          description: Steps that make up this quote process, in evaluation order.
-        quote_types:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to QuoteType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteType'' object for properties.'
-          description: Quote types that follow this quote process.
-      required:
-      - is_delete_protected
-      - id
-      - name
-      - steps
-      - quote_types
-    QuoteDataExRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        data:
-          type: string
-          format: uri
-          description: 'Data record holding the additional fields linked to this quote.
-
-
-            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote this data relation row applies to.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the linked fields belong to.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - data
-      - quote
-      - data_id
-      - data_set_id
-      - quote_id
-    batchQuoteInput:
+    updateQuoteInput:
       properties:
         currency_exchange_rates_list_id:
           type: string
@@ -6248,36 +5787,159 @@ components:
                 format: uri
             description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
           description: Tag labels applied to this quote.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchQuoteContactRelationInput:
+    QuoteKPI:
       properties:
-        contact_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
           type: boolean
           example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User who triggered the KPI event (e.g. created the quote, accepted it, archived it, moved the record).
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'Quote owner at the time the KPI event occurred.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote this KPI event relates to.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the triggering user belonged to at the time of the event.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: Create, Accept, Archive, LastMove.
+
+
+            Integer enum value: 1 - Create, 2 - Accept, 3 - Archive, 4 - LastMove'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote owner at the time of the event.
         quote_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the quote.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - quote
+      - kpi
+      - owner_id
+      - quote_id
+    updateQuoteKPIInput:
+      properties:
+        application_id:
           type: string
           format: uuid
-    createQuoteContactRelationInput:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: Create, Accept, Archive, LastMove.
+
+
+            Integer enum value: 1 - Create, 2 - Accept, 3 - Archive, 4 - LastMove'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote owner at the time of the event.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createQuoteDataExRelationInput:
       properties:
         modified:
           type: string
@@ -6291,15 +5953,16 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        contact_id:
+        data_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+          description: Id of the linked data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the linked fields belong to.
         quote_id:
           type: string
           format: uuid
@@ -6311,8 +5974,8 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - contact_id
-      - is_primary
+      - data_id
+      - data_set_id
       - quote_id
     Quote:
       properties:
@@ -6664,6 +6327,99 @@ components:
       - status
       - formatted_name
       - is_favorite
+    batchStepInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateQuoteContactRelationInput:
+      properties:
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the contact.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     createQuoteAccountRelationInput:
       properties:
         modified:
@@ -6701,35 +6457,8 @@ components:
       - account_id
       - is_primary
       - quote_id
-    QuoteType:
+    createQuoteSharingClientRelationInput:
       properties:
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -6742,67 +6471,60 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        quote_process:
-          type: string
-          format: uri
-          description: 'Quote process (pipeline) this quote type follows.
-
-
-            Relation to QuoteProcess. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''QuoteProcess'' object for properties.'
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing quotes of this type.
-        form_lost:
-          type: object
-          description: JSON definition of the form shown when archiving (losing) a quote of this type.
-        form_lost_enabled:
-          type: boolean
-          example: false
-          description: True when the lost form is required on archiving quotes of this type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the quote type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        quote_process_id:
+        client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        settings:
+          description: Id of the user.
+        quote_id:
           type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        form_lost_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
       required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
-      - quote_process
-      - form_lost_enabled
-      - is_readonly
-      - name
-      - quote_process_id
-      - settings
-      - form_lost_api
-    updateQuoteInput:
+      - client_id
+      - quote_id
+    batchQuoteAccountRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchQuoteInput:
       properties:
         currency_exchange_rates_list_id:
           type: string
@@ -7026,7 +6748,281 @@ components:
                 format: uri
             description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
           description: Tag labels applied to this quote.
-    updateQuoteKPIInput:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    QuoteSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User the quote is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote being shared.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - client
+      - quote
+      - client_id
+      - quote_id
+    batchQuoteSharingSalesUnitRelationInput:
+      properties:
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateQuoteSharingSalesUnitRelationInput:
+      properties:
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateQuoteAccountRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the account.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchQuoteProcessInput:
+      properties:
+        color:
+          type: integer
+          format: int32
+          example: 1
+          description: 'Display color of the quote process label, encoded as an integer packing the RGB components: (red << 16) | (green << 8) | blue.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/batchStepInput'
+          description: Steps that make up this quote process, in evaluation order.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createQuoteSharingSalesUnitRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared quote.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the quote.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - quote_id
+      - unit_id
+    batchQuoteDataExRelationInput:
+      properties:
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the linked fields belong to.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateQuoteDataExRelationInput:
+      properties:
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the linked fields belong to.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchQuoteKPIInput:
       properties:
         application_id:
           type: string
@@ -7070,3 +7066,7 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

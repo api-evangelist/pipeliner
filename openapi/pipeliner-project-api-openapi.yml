@@ -3646,7 +3646,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    ProjectSharingSalesUnitRelation:
+    ProjectObjective:
       properties:
         is_delete_protected:
           type: boolean
@@ -3679,37 +3679,25 @@ components:
         project:
           type: string
           format: uri
-          description: 'Project being shared.
+          description: 'Project this objective belongs to.
 
 
             Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        unit:
+        name:
           type: string
-          format: uri
-          description: 'Sales unit the project is shared with.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+          example: string
+          description: Name of the entity and its default text representation.
         project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
+          description: Id of the project.
+          readOnly: true
+        sort_order:
           type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
+          format: int32
           example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
+          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
         revision:
           type: integer
           format: int32
@@ -3719,27 +3707,11 @@ components:
       - is_delete_protected
       - id
       - project
-      - unit
+      - name
       - project_id
-      - unit_id
-    ProjectKPI:
+      - sort_order
+    createProjectKPIInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
         modified:
           type: string
           format: date-time
@@ -3752,34 +3724,6 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User who triggered the KPI event (project completion).
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        owner:
-          type: string
-          format: uri
-          description: 'Project owner at the time the KPI event occurred.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project this KPI event relates to.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit the triggering user belonged to at the time of the event.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
         application_id:
           type: string
           format: uuid
@@ -3820,10 +3764,6 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - id
-      - owner
-      - project
       - kpi
       - owner_id
       - project_id
@@ -3847,6 +3787,795 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    createProjectObjectiveInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project.
+          readOnly: true
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - name
+      - project_id
+      - sort_order
+    ProjectDataExRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        data:
+          type: string
+          format: uri
+          description: 'External data record (Data entity) holding the enrichment payload.
+
+
+            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project this enrichment record applies to.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the external data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the data set the enrichment record originates from.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - data
+      - project
+      - data_id
+      - data_set_id
+      - project_id
+    ProjectType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
+        icon:
+          type: integer
+          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
+
+
+            Integer enum value: 0 - GeneralIcon, 1 - Account'
+          example: 0
+          enum:
+          - 0
+          - 1
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the project type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - is_readonly
+      - name
+      - settings
+    createProjectInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related account.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this project.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the project.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Planned end date of the project. Must be on or after start_date when both are set.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project owner.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the project starts.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        revenue_goal:
+          type: object
+          properties:
+            base_value:
+              type: number
+              format: double
+              example: '4.32'
+              description: Currency.
+            currency_id:
+              type: string
+              format: uuid
+              example: 01234567-abcd-dcba-ffff-000000000000
+              description: Relation to single entity instance.
+            value_foreign:
+              type: number
+              format: double
+              example: '4.32'
+              description: Decimal number.
+          required:
+          - base_value
+          - currency_id
+          - value_foreign
+          description: Target revenue of the project, stored in the team space base currency with the foreign value and currency code preserved alongside.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this project.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectSharingSalesUnitRelation, see: ''createProjectSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this project. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectSharingClientRelation, see: ''createProjectSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this project. Editable only when share_mode allows user sharing.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectContactRelation, see: ''createProjectContactRelationInput'' object for properties.'
+          description: Contacts linked to this project, including the primary-contact flag.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tag labels applied to this project.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
+          description: Saved view profiles this project currently matches.
+      required:
+      - end_date
+      - name
+      - owner_id
+      - revenue_goal
+    createProjectSharingSalesUnitRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared project.
+        role:
+          type: integer
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - project_id
+      - unit_id
+    batchProjectSharingClientRelationInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared project.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProjectTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
+        icon:
+          type: integer
+          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
+
+
+            Integer enum value: 0 - GeneralIcon, 1 - Account'
+          example: 0
+          enum:
+          - 0
+          - 1
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the project type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createProjectTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
+        icon:
+          type: integer
+          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
+
+
+            Integer enum value: 0 - GeneralIcon, 1 - Account'
+          example: 0
+          enum:
+          - 0
+          - 1
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the project type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_readonly
+      - name
+      - settings
+    ProjectSharingClientRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        client:
+          type: string
+          format: uri
+          description: 'User the project is shared with.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project being shared.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared project.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - client
+      - project
+      - client_id
+      - project_id
+    updateProjectSharingClientRelationInput:
+      properties:
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared project.
+        role:
+          type: integer
+          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateProjectInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related account.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list applied to this project.
+        description:
+          type: string
+          example: string
+          description: Free-form description of the project.
+        end_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Planned end date of the project. Must be on or after start_date when both are set.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project owner.
+        project_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project type.
+        share_mode:
+          type: integer
+          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
+
+
+            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        start_date:
+          type: string
+          format: date
+          example: '2019-01-01'
+          description: Date when the project starts.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        revenue_goal:
+          type: object
+          properties:
+            base_value:
+              type: number
+              format: double
+              example: '4.32'
+              description: Currency.
+            currency_id:
+              type: string
+              format: uuid
+              example: 01234567-abcd-dcba-ffff-000000000000
+              description: Relation to single entity instance.
+            value_foreign:
+              type: number
+              format: double
+              example: '4.32'
+              description: Decimal number.
+          required:
+          - base_value
+          - currency_id
+          - value_foreign
+          description: Target revenue of the project, stored in the team space base currency with the foreign value and currency code preserved alongside.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Documents linked to this project.
+        sharing_units:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectSharingSalesUnitRelation, see: ''updateProjectSharingSalesUnitRelationInput'' object for properties.'
+          description: Sales units that have been granted shared access to this project. Editable only when share_mode allows unit sharing.
+        sharing_clients:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectSharingClientRelation, see: ''updateProjectSharingClientRelationInput'' object for properties.'
+          description: Users that have been granted shared access to this project. Editable only when share_mode allows user sharing.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProjectContactRelation, see: ''updateProjectContactRelationInput'' object for properties.'
+          description: Contacts linked to this project, including the primary-contact flag.
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tag labels applied to this project.
+        static_profiles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
+          description: Saved view profiles this project currently matches.
     batchProjectInput:
       properties:
         account_id:
@@ -3996,145 +4725,7 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    ProjectSharingClientRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client:
-          type: string
-          format: uri
-          description: 'User the project is shared with.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project being shared.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - client
-      - project
-      - client_id
-      - project_id
-    createProjectObjectiveInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
-          readOnly: true
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
-      - project_id
-      - sort_order
-    updateProjectSharingSalesUnitRelationInput:
+    batchProjectSharingSalesUnitRelationInput:
       properties:
         project_id:
           type: string
@@ -4161,79 +4752,63 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    batchProjectTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
-        icon:
-          type: integer
-          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
-
-
-            Integer enum value: 0 - GeneralIcon, 1 - Account'
-          example: 0
-          enum:
-          - 0
-          - 1
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the project type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
         id:
           description: ID of object to update.
           type: string
           format: uuid
-    batchProjectKPIInput:
+    createProjectContactRelationInput:
       properties:
-        application_id:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        contact_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: ProjectCompleted.
-
-
-            Integer enum value: 1 - ProjectCompleted'
-          example: 1
-          enum:
-          - 1
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project owner at the time of the event.
+          description: Id of the contact.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
         project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the project.
-        unit_id:
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - contact_id
+      - is_primary
+      - project_id
+    batchProjectContactRelationInput:
+      properties:
+        contact_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
+          description: Id of the contact.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project.
         revision:
           type: integer
           format: int32
@@ -4243,8 +4818,20 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    batchProjectSharingClientRelationInput:
+    createProjectSharingClientRelationInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         client_id:
           type: string
           format: uuid
@@ -4270,11 +4857,10 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    ProjectContactRelation:
+      required:
+      - client_id
+      - project_id
+    ProjectSharingSalesUnitRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -4304,90 +4890,35 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        contact:
-          type: string
-          format: uri
-          description: 'Contact linked to the project.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
         project:
           type: string
           format: uri
-          description: 'Project the contact is linked to.
+          description: 'Project being shared.
 
 
             Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        contact_id:
+        unit:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
+          format: uri
+          description: 'Sales unit the project is shared with.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
         project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
-        revision:
+          description: Id of the shared project.
+        role:
           type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - contact
-      - project
-      - contact_id
-      - is_primary
-      - project_id
-    createProjectKPIInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: ProjectCompleted.
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
 
 
-            Integer enum value: 1 - ProjectCompleted'
+            Integer enum value: 1 - Watcher, 2 - Editor'
           example: 1
           enum:
           - 1
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project owner at the time of the event.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
+          - 2
         unit_id:
           type: string
           format: uuid
@@ -4399,112 +4930,29 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - kpi
-      - owner_id
+      - is_delete_protected
+      - id
+      - project
+      - unit
       - project_id
-    ProjectDataExRelation:
+      - unit_id
+    updateProjectSharingSalesUnitRelationInput:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        data:
-          type: string
-          format: uri
-          description: 'External data record (Data entity) holding the enrichment payload.
-
-
-            Relation to Data. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Data'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project this enrichment record applies to.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the external data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the data set the enrichment record originates from.
         project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
-        revision:
+          description: Id of the shared project.
+        role:
           type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - data
-      - project
-      - data_id
-      - data_set_id
-      - project_id
-    updateProjectKPIInput:
-      properties:
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who triggered the event.
-        kpi:
-          type: integer
-          description: 'KPI metric this event represents: ProjectCompleted.
+          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
 
 
-            Integer enum value: 1 - ProjectCompleted'
+            Integer enum value: 1 - Watcher, 2 - Editor'
           example: 1
           enum:
           - 1
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project owner at the time of the event.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
+          - 2
         unit_id:
           type: string
           format: uuid
@@ -4771,408 +5219,7 @@ components:
       - is_favorite
       - status
       - formatted_name
-    updateProjectInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the related account.
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this project.
-        description:
-          type: string
-          example: string
-          description: Free-form description of the project.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Planned end date of the project. Must be on or after start_date when both are set.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project owner.
-        project_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project type.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the project starts.
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        revenue_goal:
-          type: object
-          properties:
-            base_value:
-              type: number
-              format: double
-              example: '4.32'
-              description: Currency.
-            currency_id:
-              type: string
-              format: uuid
-              example: 01234567-abcd-dcba-ffff-000000000000
-              description: Relation to single entity instance.
-            value_foreign:
-              type: number
-              format: double
-              example: '4.32'
-              description: Decimal number.
-          required:
-          - base_value
-          - currency_id
-          - value_foreign
-          description: Target revenue of the project, stored in the team space base currency with the foreign value and currency code preserved alongside.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this project.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectSharingSalesUnitRelation, see: ''updateProjectSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this project. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectSharingClientRelation, see: ''updateProjectSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this project. Editable only when share_mode allows user sharing.
-        contact_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectContactRelation, see: ''updateProjectContactRelationInput'' object for properties.'
-          description: Contacts linked to this project, including the primary-contact flag.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
-          description: Tag labels applied to this project.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''updateProfileRelationInput'' object for properties.'
-          description: Saved view profiles this project currently matches.
-    updateProjectTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
-        icon:
-          type: integer
-          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
-
-
-            Integer enum value: 0 - GeneralIcon, 1 - Account'
-          example: 0
-          enum:
-          - 0
-          - 1
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the project type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    ProjectType:
-      properties:
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
-        icon:
-          type: integer
-          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
-
-
-            Integer enum value: 0 - GeneralIcon, 1 - Account'
-          example: 0
-          enum:
-          - 0
-          - 1
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the project type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
-      - is_readonly
-      - name
-      - settings
-    createProjectTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
-        icon:
-          type: integer
-          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
-
-
-            Integer enum value: 0 - GeneralIcon, 1 - Account'
-          example: 0
-          enum:
-          - 0
-          - 1
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the project type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_readonly
-      - name
-      - settings
-    createProjectSharingSalesUnitRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
-          type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - project_id
-      - unit_id
-    createProjectSharingClientRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        client_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
-          type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - client_id
-      - project_id
-    ProjectObjective:
+    ProjectContactRelation:
       properties:
         is_delete_protected:
           type: boolean
@@ -5202,54 +5249,20 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
+        contact:
+          type: string
+          format: uri
+          description: 'Contact linked to the project.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
         project:
           type: string
           format: uri
-          description: 'Project this objective belongs to.
+          description: 'Project the contact is linked to.
 
 
             Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
-          readOnly: true
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - project
-      - name
-      - project_id
-      - sort_order
-    createProjectContactRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         contact_id:
           type: string
           format: uuid
@@ -5270,6 +5283,10 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
+      - is_delete_protected
+      - id
+      - contact
+      - project
       - contact_id
       - is_primary
       - project_id
@@ -5294,69 +5311,34 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-    batchProjectSharingSalesUnitRelationInput:
+    batchProjectTypeInput:
       properties:
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing projects of this type.
+        icon:
           type: integer
-          description: 'Sharing role granting the unit a specific access level (e.g. Read, Edit) on the project.
+          description: 'Icon used to display projects of this type in the UI (e.g. GeneralIcon, Account).
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
+            Integer enum value: 0 - GeneralIcon, 1 - Account'
+          example: 0
           enum:
+          - 0
           - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateProjectObjectiveInput:
-      properties:
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the project type is system-managed and cannot be edited or deleted by users.
         name:
           type: string
           example: string
           description: Name of the entity and its default text representation.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    batchProjectContactRelationInput:
-      properties:
-        contact_id:
+        settings:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the contact.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that represents the primary related entity for this record. Setting is_primary to true on a row automatically clears it on any other primary row.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project.
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
         revision:
           type: integer
           format: int32
@@ -5366,8 +5348,24 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createProjectInput:
+    ProjectKPI:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -5380,56 +5378,63 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account_id:
+        client:
+          type: string
+          format: uri
+          description: 'User who triggered the KPI event (project completion).
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        owner:
+          type: string
+          format: uri
+          description: 'Project owner at the time the KPI event occurred.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project this KPI event relates to.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit the triggering user belonged to at the time of the event.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        application_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the related account.
-        currency_exchange_rates_list_id:
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list applied to this project.
-        description:
-          type: string
-          example: string
-          description: Free-form description of the project.
-        end_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Planned end date of the project. Must be on or after start_date when both are set.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: ProjectCompleted.
+
+
+            Integer enum value: 1 - ProjectCompleted'
+          example: 1
+          enum:
+          - 1
         owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project owner.
-        project_type_id:
+          description: Id of the project owner at the time of the event.
+        project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the project type.
-        share_mode:
-          type: integer
-          description: 'Sharing model applied on top of the owner/unit visibility (e.g. shared with selected sales units or selected users).
-
-
-            Integer enum value: 0 - Standard, 1 - Private, 2 - AllView, 3 - AllEdit'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        start_date:
-          type: string
-          format: date
-          example: '2019-01-01'
-          description: Date when the project starts.
+          description: Id of the project.
         unit_id:
           type: string
           format: uuid
@@ -5440,116 +5445,111 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        revenue_goal:
-          type: object
-          properties:
-            base_value:
-              type: number
-              format: double
-              example: '4.32'
-              description: Currency.
-            currency_id:
-              type: string
-              format: uuid
-              example: 01234567-abcd-dcba-ffff-000000000000
-              description: Relation to single entity instance.
-            value_foreign:
-              type: number
-              format: double
-              example: '4.32'
-              description: Decimal number.
-          required:
-          - base_value
-          - currency_id
-          - value_foreign
-          description: Target revenue of the project, stored in the team space base currency with the foreign value and currency code preserved alongside.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Documents linked to this project.
-        sharing_units:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectSharingSalesUnitRelation, see: ''createProjectSharingSalesUnitRelationInput'' object for properties.'
-          description: Sales units that have been granted shared access to this project. Editable only when share_mode allows unit sharing.
-        sharing_clients:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectSharingClientRelation, see: ''createProjectSharingClientRelationInput'' object for properties.'
-          description: Users that have been granted shared access to this project. Editable only when share_mode allows user sharing.
-        contact_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProjectContactRelation, see: ''createProjectContactRelationInput'' object for properties.'
-          description: Contacts linked to this project, including the primary-contact flag.
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
-          description: Tag labels applied to this project.
-        static_profiles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to ProfileRelation, see: ''createProfileRelationInput'' object for properties.'
-          description: Saved view profiles this project currently matches.
       required:
-      - end_date
-      - name
+      - is_delete_protected
+      - id
+      - owner
+      - project
+      - kpi
       - owner_id
-      - revenue_goal
-    updateProjectSharingClientRelationInput:
+      - project_id
+    batchProjectKPIInput:
       properties:
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
         client_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user.
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: ProjectCompleted.
+
+
+            Integer enum value: 1 - ProjectCompleted'
+          example: 1
+          enum:
+          - 1
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project owner at the time of the event.
         project_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared project.
-        role:
+          description: Id of the project.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
           type: integer
-          description: 'Sharing role granting the user a specific access level (e.g. Read, Edit) on the project.
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateProjectKPIInput:
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Application context in which the KPI event was triggered (e.g. browser, automation, third-party integration).
+        client_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who triggered the event.
+        kpi:
+          type: integer
+          description: 'KPI metric this event represents: ProjectCompleted.
 
 
-            Integer enum value: 1 - Watcher, 2 - Editor'
+            Integer enum value: 1 - ProjectCompleted'
           example: 1
           enum:
           - 1
-          - 2
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project owner at the time of the event.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the project.
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    updateProjectObjectiveInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the row within its sibling set; lower values appear first. The platform reorders neighbouring rows automatically when a value is inserted or changed.
         revision:
           type: integer
           format: int32

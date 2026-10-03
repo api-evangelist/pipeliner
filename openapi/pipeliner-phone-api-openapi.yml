@@ -508,128 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchPhoneInput:
-      properties:
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user, or empty when the phone is a company-level resource.
-        phone_number:
-          type: string
-          example: string
-          description: Phone number in E.164 format (e.g. "+12025550123").
-        twilio_caller_sid:
-          type: string
-          example: string
-          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        enabled:
-          type: boolean
-          example: false
-          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updatePhoneInput:
-      properties:
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the assigned user, or empty when the phone is a company-level resource.
-        phone_number:
-          type: string
-          example: string
-          description: Phone number in E.164 format (e.g. "+12025550123").
-        twilio_caller_sid:
-          type: string
-          example: string
-          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        enabled:
-          type: boolean
-          example: false
-          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     createPhoneInput:
       properties:
         modified:
@@ -693,6 +571,81 @@ components:
       - name
       - type
       - enabled
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchPhoneInput:
+      properties:
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     Phone:
       properties:
         is_delete_protected:
@@ -789,3 +742,50 @@ components:
       - name
       - type
       - enabled
+    updatePhoneInput:
+      properties:
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code recorded for the phone, set on integration failures (e.g. provider rejected the last send) or when the user disables the integration; empty when the phone is healthy.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the assigned user, or empty when the phone is a company-level resource.
+        phone_number:
+          type: string
+          example: string
+          description: Phone number in E.164 format (e.g. "+12025550123").
+        twilio_caller_sid:
+          type: string
+          example: string
+          description: External caller identifier from the calling provider (e.g. Twilio caller SID).
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Calling, 2 - CallingSmsUnassigned, 3 - CallingSmsPersonal, 4 - CallingSmsCompany, 5 - WhatsAppPersonal, 6 - WhatsAppCompany'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        enabled:
+          type: boolean
+          example: false
+          description: False when the user has disabled the calling/SMS integration on this phone (error_code is set to indicate user disablement); true otherwise.
