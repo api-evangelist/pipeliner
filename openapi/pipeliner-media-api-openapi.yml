@@ -508,6 +508,126 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    updateMediaInput:
+      properties:
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment or task, or empty when not linked to an activity.
+        call_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked call, or empty when not linked.
+        data:
+          type: object
+          description: Provider-specific metadata about the media (e.g. transcription identifiers, recording parameters), as a JSON object.
+        description:
+          type: string
+          example: string
+          description: Free-text description of the media.
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code reported by the calling/recording provider when processing failed; empty on success.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - NoRecording, 2 - Uploading, 3 - Uploaded, 4 - Transcoding, 5 - TranscriptionInProgress, 6 - TranscriptionCompleted'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Audio, 2 - Video, 3 - Transcription'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createMediaInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        activity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked appointment or task, or empty when not linked to an activity.
+        call_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked call, or empty when not linked.
+        data:
+          type: object
+          description: Provider-specific metadata about the media (e.g. transcription identifiers, recording parameters), as a JSON object.
+        description:
+          type: string
+          example: string
+          description: Free-text description of the media.
+        error_code:
+          type: integer
+          format: int32
+          example: 1
+          description: Error code reported by the calling/recording provider when processing failed; empty on success.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - NoRecording, 2 - Uploading, 3 - Uploaded, 4 - Transcoding, 5 - TranscriptionInProgress, 6 - TranscriptionCompleted'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Audio, 2 - Video, 3 - Transcription'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     Media:
       properties:
         is_delete_protected:
@@ -702,72 +822,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createMediaInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment or task, or empty when not linked to an activity.
-        call_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked call, or empty when not linked.
-        data:
-          type: object
-          description: Provider-specific metadata about the media (e.g. transcription identifiers, recording parameters), as a JSON object.
-        description:
-          type: string
-          example: string
-          description: Free-text description of the media.
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code reported by the calling/recording provider when processing failed; empty on success.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - NoRecording, 2 - Uploading, 3 - Uploaded, 4 - Transcoding, 5 - TranscriptionInProgress, 6 - TranscriptionCompleted'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Audio, 2 - Video, 3 - Transcription'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     Error:
       properties:
         http_status:
@@ -792,57 +846,3 @@ components:
       required:
       - success
       - http_status
-    updateMediaInput:
-      properties:
-        activity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked appointment or task, or empty when not linked to an activity.
-        call_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked call, or empty when not linked.
-        data:
-          type: object
-          description: Provider-specific metadata about the media (e.g. transcription identifiers, recording parameters), as a JSON object.
-        description:
-          type: string
-          example: string
-          description: Free-text description of the media.
-        error_code:
-          type: integer
-          format: int32
-          example: 1
-          description: Error code reported by the calling/recording provider when processing failed; empty on success.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - NoRecording, 2 - Uploading, 3 - Uploaded, 4 - Transcoding, 5 - TranscriptionInProgress, 6 - TranscriptionCompleted'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Audio, 2 - Video, 3 - Transcription'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.

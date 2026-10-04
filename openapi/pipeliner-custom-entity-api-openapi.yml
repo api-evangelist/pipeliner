@@ -1758,176 +1758,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createEntitySettingsInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        default_list_columns:
-          type: string
-          format: binary
-          example: blob
-          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
-        is_published:
-          type: boolean
-          example: false
-          description: True when the settings are published; false while they exist only as an unpublished draft.
-          readOnly: true
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - default_list_columns
-    createCustomEntityTypeInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-      required:
-      - form_edit
-      - is_readonly
-      - name
-      - settings
-    CustomEntityType:
-      properties:
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        is_published:
-          type: boolean
-          example: false
-          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
-          readOnly: true
-        entity_api_name:
-          type: string
-          example: string
-          description: API name of the custom entity type (e.g. "Vehicle", "Project_Phase"). Used as the entity name when calling REST endpoints or selecting a concrete custom entity in GraphQL.
-      required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
-      - form_edit
-      - is_readonly
-      - name
-      - settings
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     batchEntitySettingsInput:
       properties:
         default_list_columns:
@@ -2060,28 +1890,6 @@ components:
       - has_draft
       - access_mode
       - icon
-    batchCustomEntityTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createCustomEntityInput:
       properties:
         modified:
@@ -2341,6 +2149,227 @@ components:
       - owner_id
       - table_name
       - is_favorite
+    updateEntitySettingsInput:
+      properties:
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    EntitySettings:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        default_list_columns:
+          type: string
+          format: binary
+          example: blob
+          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
+        is_published:
+          type: boolean
+          example: false
+          description: True when the settings are published; false while they exist only as an unpublished draft.
+          readOnly: true
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - has_draft
+      - id
+      - default_list_columns
+    CustomEntityType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly form definition. Returns the published form merged with any pending draft changes; read via this field, modify via the underlying form_edit / form_lost field through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity type (e.g. "Vehicle", "Project_Phase"). Used as the entity name when calling REST endpoints or selecting a concrete custom entity in GraphQL.
+      required:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - form_edit
+      - is_readonly
+      - name
+      - settings
+    createCustomEntityTypeInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        is_published:
+          type: boolean
+          example: false
+          description: True when the entity configuration is published; false while it exists only as an unpublished draft.
+          readOnly: true
+      required:
+      - form_edit
+      - is_readonly
+      - name
+      - settings
+    updateCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+    batchCustomEntityTypeInput:
+      properties:
+        form_edit:
+          type: object
+          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: string
+          format: binary
+          example: blob
+          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     updateCustomEntityInput:
       properties:
         currency_exchange_rates_list_id:
@@ -2429,36 +2458,6 @@ components:
                 format: uri
             description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
           description: Tag labels applied to this custom entity record.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateCustomEntityTypeInput:
-      properties:
-        form_edit:
-          type: object
-          description: JSON definition of the form layout used by the UI when creating or editing records of this custom entity type.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the custom entity type is system-managed and cannot be edited or deleted by users.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: string
-          format: binary
-          example: blob
-          description: Per-type configuration for records of this entity type, e.g. allowed task and appointment types that may be linked to records of this type.
-    updateEntitySettingsInput:
-      properties:
-        default_list_columns:
-          type: string
-          format: binary
-          example: blob
-          description: Default column configuration applied to list views of this entity (which fields are shown, their widths, frozen state, and whether to push the configuration to existing users).
         revision:
           type: integer
           format: int32
@@ -2561,28 +2560,32 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    EntitySettings:
+    Error:
       properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        id:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
           type: boolean
           example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
+      required:
+      - success
+      - http_status
+    createEntitySettingsInput:
+      properties:
         modified:
           type: string
           format: date-time
@@ -2611,7 +2614,4 @@ components:
           example: 1
           description: Revision when entity was lastly changed.
       required:
-      - is_delete_protected
-      - has_draft
-      - id
       - default_list_columns

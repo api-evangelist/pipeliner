@@ -1156,6 +1156,318 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    createReportScheduleInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the scheduled report.
+        settings:
+          type: object
+          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to scheduled emails sent for this report.
+      required:
+      - owner_id
+      - report_id
+      - settings
+    ReportSchedule:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the schedule. The schedule sends emails on behalf of this user.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        report:
+          type: string
+          format: uri
+          description: 'Report whose delivery is scheduled.
+
+
+            Relation to Report. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Report'' object for properties.'
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the scheduled report.
+        settings:
+          type: object
+          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to scheduled emails sent for this report.
+        sender_email:
+          type: string
+          example: string
+          description: Email address used to send the scheduled report (company email when configured, otherwise the owner's personal email).
+        report_name:
+          type: string
+          example: string
+          description: Name of the scheduled report (mirror of the linked Report.name).
+        report_owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the user who owns the scheduled report.
+        report_type:
+          type: integer
+          description: 'Kind of the scheduled report (e.g. TableReport, AdvancedReport, DashboardReport).
+
+
+            Integer enum value: 0 - TableReport, 1 - DashboardReport, 2 - ForecastReport, 3 - AdvancedReport'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - report
+      - owner_id
+      - report_id
+      - settings
+      - report_name
+      - report_owner_id
+      - report_type
+    updateReportScheduleInput:
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the scheduled report.
+        settings:
+          type: object
+          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to scheduled emails sent for this report.
+    ReportFolder:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        parent_report_folder:
+          type: string
+          format: uri
+          description: 'Parent report folder, when this folder is nested. Empty for top-level folders.
+
+
+            Relation to ReportFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ReportFolder'' object for properties.'
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        parent_report_folder_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the parent folder, or empty for top-level folders.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    ReportSharingSalesUnitRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        report:
+          type: string
+          format: uri
+          description: 'Report being shared.
+
+
+            Relation to Report. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Report'' object for properties.'
+        unit:
+          type: string
+          format: uri
+          description: 'Sales unit granted shared access to the report.
+
+
+            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
+        report_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the shared report.
+        role:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Watcher, 2 - Editor'
+          example: 1
+          enum:
+          - 1
+          - 2
+        unit_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales unit.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - report
+      - unit
+      - report_id
+      - unit_id
     ReportSharingClientRelation:
       properties:
         is_delete_protected:
@@ -1416,166 +1728,6 @@ components:
       required:
       - success
       - http_status
-    ReportSchedule:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner:
-          type: string
-          format: uri
-          description: 'User who owns the schedule. The schedule sends emails on behalf of this user.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        report:
-          type: string
-          format: uri
-          description: 'Report whose delivery is scheduled.
-
-
-            Relation to Report. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Report'' object for properties.'
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the scheduled report.
-        settings:
-          type: object
-          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Files attached to scheduled emails sent for this report.
-        sender_email:
-          type: string
-          example: string
-          description: Email address used to send the scheduled report (company email when configured, otherwise the owner's personal email).
-        report_name:
-          type: string
-          example: string
-          description: Name of the scheduled report (mirror of the linked Report.name).
-        report_owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the user who owns the scheduled report.
-        report_type:
-          type: integer
-          description: 'Kind of the scheduled report (e.g. TableReport, AdvancedReport, DashboardReport).
-
-
-            Integer enum value: 0 - TableReport, 1 - DashboardReport, 2 - ForecastReport, 3 - AdvancedReport'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - report
-      - owner_id
-      - report_id
-      - settings
-      - report_name
-      - report_owner_id
-      - report_type
-    ReportFolder:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        parent_report_folder:
-          type: string
-          format: uri
-          description: 'Parent report folder, when this folder is nested. Empty for top-level folders.
-
-
-            Relation to ReportFolder. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ReportFolder'' object for properties.'
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        parent_report_folder_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the parent folder, or empty for top-level folders.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - name
     batchReportScheduleInput:
       properties:
         owner_id:
@@ -1610,155 +1762,3 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    updateReportScheduleInput:
-      properties:
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the scheduled report.
-        settings:
-          type: object
-          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to scheduled emails sent for this report.
-    createReportScheduleInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the scheduled report.
-        settings:
-          type: object
-          description: 'Schedule configuration: cadence, timezone, recipients, email body and report attachment options. Stored as a JSON document.'
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Files attached to scheduled emails sent for this report.
-      required:
-      - owner_id
-      - report_id
-      - settings
-    ReportSharingSalesUnitRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        report:
-          type: string
-          format: uri
-          description: 'Report being shared.
-
-
-            Relation to Report. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Report'' object for properties.'
-        unit:
-          type: string
-          format: uri
-          description: 'Sales unit granted shared access to the report.
-
-
-            Relation to SalesUnit. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesUnit'' object for properties.'
-        report_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the shared report.
-        role:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Watcher, 2 - Editor'
-          example: 1
-          enum:
-          - 1
-          - 2
-        unit_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales unit.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - report
-      - unit
-      - report_id
-      - unit_id

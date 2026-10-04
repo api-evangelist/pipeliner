@@ -1996,7 +1996,79 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    batchProcessActivityLogLineInput:
+    ProcessTemplate:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+        action_types:
+          type: array
+          items:
+            type: string
+            example: ArchiveRecord
+            enum:
+            - ArchiveRecord
+            - CreateRecord
+            - ManualTrigger
+            - RecordChangedTrigger
+            - ScheduledTrigger
+            - SendEmail
+            - SendWebhook
+            - UpdateRecord
+          description: Action-type icons present in the template schema, used for filtering templates by capability (e.g. SendEmail, CreateRecord, Webhook).
+      required:
+      - is_delete_protected
+      - id
+      - name
+      - settings
+    updateProcessActivityLogLineInput:
       properties:
         executed_at:
           type: string
@@ -2030,78 +2102,7 @@ components:
           - 3
           - 4
           - 5
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createProcessInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        ai_conversation:
-          type: object
-          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the process.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Personal, 2 - Space'
-          example: 1
-          enum:
-          - 1
-          - 2
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
-          description: Tags attached to the process for organisation/filtering.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the process (e.g. process documentation).
-      required:
-      - name
-      - owner_id
-      - type
-    updateProcessTemplateInput:
+    batchProcessTemplateInput:
       properties:
         description:
           type: string
@@ -2128,30 +2129,84 @@ components:
                 format: uri
             description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
           description: Files attached to the template (e.g. reference documents, screenshots).
-    Error:
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    createProcessActivityLogInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
+        modified:
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
           type: string
-        success:
-          description: Always false on error.
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
           type: boolean
           example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
       required:
-      - success
-      - http_status
+      - application_id
+      - process_id
+      - start_time
+      - status
     updateProcessInput:
       properties:
         ai_conversation:
@@ -2252,7 +2307,158 @@ components:
       required:
       - process_activity_log_id
       - sort_order
-    ProcessTemplate:
+    createProcessInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''createTagRelationInput'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+      required:
+      - name
+      - owner_id
+      - type
+    updateProcessTemplateInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description of what the template does.
+        is_recommended:
+          type: boolean
+          example: false
+          description: True when the platform recommends this template (highlighted in the template gallery).
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the template (e.g. reference documents, screenshots).
+    updateProcessActivityLogInput:
+      properties:
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        cpu_run_time:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total CPU time consumed by the run, in seconds.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was triggered as a test (results are not persisted to records).
+        parent_process_ids:
+          type: object
+          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
+        process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the process.
+        run_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the run started.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    Process:
       properties:
         is_delete_protected:
           type: boolean
@@ -2270,6 +2476,114 @@ components:
           example: false
           description: Specifies if the entity is considered deleted.
           readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the process.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
+        deactivation_reason:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - NoReason, 1 - Manual, 2 - TooManyErrors, 3 - DisabledFeature'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the process.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the process actively responds to its trigger; when false, the process is paused. Toggle via enable/disable mutations.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        settings:
+          type: object
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
+          description: Activity log runs (one per process execution) recorded for this process.
+        tags:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to TagRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TagRelation'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
+        activity:
+          type: object
+          description: Activity timeline for the last 24 hours showing per-hour counts of successful, warning, and error process runs.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - type
+      - activity
+    createProcessTemplateInput:
+      properties:
         modified:
           type: string
           format: date-time
@@ -2300,144 +2614,78 @@ components:
         documents:
           type: array
           items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
           description: Files attached to the template (e.g. reference documents, screenshots).
-        action_types:
-          type: array
-          items:
-            type: string
-            example: ArchiveRecord
-            enum:
-            - ArchiveRecord
-            - CreateRecord
-            - ManualTrigger
-            - RecordChangedTrigger
-            - ScheduledTrigger
-            - SendEmail
-            - SendWebhook
-            - UpdateRecord
-          description: Action-type icons present in the template schema, used for filtering templates by capability (e.g. SendEmail, CreateRecord, Webhook).
       required:
-      - is_delete_protected
-      - id
       - name
       - settings
-    ProcessActivityLogLine:
+    batchProcessActivityLogLineInput:
       properties:
-        formatted_text:
+        executed_at:
           type: string
-          example: string
-          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
-        is_delete_protected:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
           type: boolean
           example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
         id:
+          description: ID of object to update.
           type: string
           format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        process_activity_log:
-          type: string
-          format: uri
-          description: 'Activity log run this line belongs to.
-
-
-            Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        process_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - formatted_text
-      - is_delete_protected
-      - id
-      - process_activity_log
-      - process_activity_log_id
-      - sort_order
-    updateProcessActivityLogLineInput:
+    Error:
       properties:
-        executed_at:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
           type: boolean
           example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        process_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
+      required:
+      - success
+      - http_status
     ProcessActivityLog:
       properties:
         is_delete_protected:
@@ -2564,223 +2812,6 @@ components:
       - process_id
       - start_time
       - status
-    updateProcessActivityLogInput:
-      properties:
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        cpu_run_time:
-          type: number
-          format: double
-          example: '4.32'
-          description: Total CPU time consumed by the run, in seconds.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was triggered as a test (results are not persisted to records).
-        parent_process_ids:
-          type: object
-          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the process.
-        run_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the run started.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-    createProcessActivityLogInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        cpu_run_time:
-          type: number
-          format: double
-          example: '4.32'
-          description: Total CPU time consumed by the run, in seconds.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the run finished. Empty while the run is still in progress (e.g. waiting on scheduled actions).
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was triggered as a test (results are not persisted to records).
-        parent_process_ids:
-          type: object
-          description: Ids of parent processes that triggered this run, ordered from outermost to innermost. Empty for top-level runs.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the process.
-        run_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier grouping all activity logs that share the same root process run, including chained sub-process runs.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the run started.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - application_id
-      - process_id
-      - start_time
-      - status
-    batchProcessInput:
-      properties:
-        ai_conversation:
-          type: object
-          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the process.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
-        type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Personal, 2 - Space'
-          example: 1
-          enum:
-          - 1
-          - 2
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
-          description: Tags attached to the process for organisation/filtering.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the process (e.g. process documentation).
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchProcessTemplateInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description of what the template does.
-        is_recommended:
-          type: boolean
-          example: false
-          description: True when the platform recommends this template (highlighted in the template gallery).
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the template (e.g. reference documents, screenshots).
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     batchProcessActivityLogInput:
       properties:
         actor_id:
@@ -2842,35 +2873,47 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createProcessTemplateInput:
+    batchProcessInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
+        ai_conversation:
+          type: object
+          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
         description:
           type: string
           example: string
-          description: Free-text description of what the template does.
-        is_recommended:
-          type: boolean
-          example: false
-          description: True when the platform recommends this template (highlighted in the template gallery).
+          description: Free-text description shown alongside the process.
         name:
           type: string
           example: string
           description: Name of the entity and its default text representation.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
         settings:
           type: object
-          description: 'Process schema shipped by the template, as a JSON object conforming to the ProcessSchema type (trigger, nodes, settings). Validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
+        type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to TagRelation, see: ''updateTagRelationInput'' object for properties.'
+          description: Tags attached to the process for organisation/filtering.
         documents:
           type: array
           items:
@@ -2879,13 +2922,18 @@ components:
               id:
                 type: string
                 format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Files attached to the template (e.g. reference documents, screenshots).
-      required:
-      - name
-      - settings
-    Process:
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Files attached to the process (e.g. process documentation).
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    ProcessActivityLogLine:
       properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
         is_delete_protected:
           type: boolean
           example: false
@@ -2914,97 +2962,49 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        owner:
+        process_activity_log:
           type: string
           format: uri
-          description: 'User who owns the process.
+          description: 'Activity log run this line belongs to.
 
 
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        ai_conversation:
-          type: object
-          description: AI assistant conversation associated with the process (e.g. records of AI-driven schema generation).
-        deactivation_reason:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - NoReason, 1 - Manual, 2 - TooManyErrors, 3 - DisabledFeature'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        description:
+            Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
+        executed_at:
           type: string
-          example: string
-          description: Free-text description shown alongside the process.
-        is_enabled:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
           type: boolean
           example: false
-          description: When true, the process actively responds to its trigger; when false, the process is paused. Toggle via enable/disable mutations.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to settings.
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        owner_id:
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        process_activity_log_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        settings:
-          type: object
-          description: 'Process schema as a JSON object conforming to the ProcessSchema type — trigger, nodes and settings. Built via the process builder; validated on write. Full structure: https://graphql.api-doc.pipelinersales.com/latest/graphql/space/processschema.doc.html'
-        type:
+          description: Id of the activity log.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
           type: integer
           description: 'Field whose values are strictly defined with an enumeration of values.
 
 
-            Integer enum value: 1 - Personal, 2 - Space'
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
           example: 1
           enum:
           - 1
           - 2
-        activity_logs:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to ProcessActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''ProcessActivityLog'' object for properties.'
-          description: Activity log runs (one per process execution) recorded for this process.
-        tags:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to TagRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''TagRelation'' object for properties.'
-          description: Tags attached to the process for organisation/filtering.
-        activity:
-          type: object
-          description: Activity timeline for the last 24 hours showing per-hour counts of successful, warning, and error process runs.
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Files attached to the process (e.g. process documentation).
+          - 3
+          - 4
+          - 5
       required:
+      - formatted_text
       - is_delete_protected
       - id
-      - owner
-      - name
-      - owner_id
-      - type
-      - activity
+      - process_activity_log
+      - process_activity_log_id
+      - sort_order

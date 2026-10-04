@@ -508,30 +508,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     OpptyProductRelation:
       properties:
         is_delete_protected:
@@ -723,101 +699,6 @@ components:
       - oppty_product_relation_type
       - product
       - product_id
-    batchOpptyProductRelationInput:
-      properties:
-        paired_oppty_product_relation:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Counterpart line item on the paired record (e.g. matching line on the active quote when this line is on the opportunity, or vice versa). Empty when there is no pairing.
-
-
-            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
-        amount:
-          type: number
-          format: double
-          example: '4.32'
-          description: Total amount of the line item (price * quantity, with discounts applied).
-        comment:
-          type: string
-          example: string
-          description: Free-form note describing this line item.
-        currency_exchange_rates_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the currency exchange rate list.
-        online_form_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form field.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity.
-        oppty_product_relation_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the line-item type.
-        paired_oppty_product_relation_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the paired line item.
-        price:
-          type: number
-          format: double
-          example: '4.32'
-          description: Per-unit price of the line item. Defaults to the product price from the price list when not supplied explicitly.
-        quantity:
-          type: number
-          format: double
-          example: '4.32'
-          description: Number of product units on this line item.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote.
-        section_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Identifier of the product section this line belongs to (see the product_sections JSON layout on the parent opportunity or quote).
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Display order of the line item within its section. Maintained automatically when lines are added or moved.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        revenue_schedule:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Per-line revenue schedule splitting the line amount across periods. Available only when revenue scheduling is configured at product-amount level.
-
-
-            Relation to OpptyProductRelationRevenueSchedule, see: ''updateOpptyProductRelationRevenueScheduleInput'' object for properties.'
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
     createOpptyProductRelationInput:
       properties:
         modified:
@@ -929,6 +810,125 @@ components:
             Relation to OpptyProductRelationRevenueSchedule, see: ''createOpptyProductRelationRevenueScheduleInput'' object for properties.'
       required:
       - product_id
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    batchOpptyProductRelationInput:
+      properties:
+        paired_oppty_product_relation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Counterpart line item on the paired record (e.g. matching line on the active quote when this line is on the opportunity, or vice versa). Empty when there is no pairing.
+
+
+            Relation to OpptyProductRelation, see: ''updateOpptyProductRelationInput'' object for properties.'
+        amount:
+          type: number
+          format: double
+          example: '4.32'
+          description: Total amount of the line item (price * quantity, with discounts applied).
+        comment:
+          type: string
+          example: string
+          description: Free-form note describing this line item.
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the currency exchange rate list.
+        online_form_field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form field.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity.
+        oppty_product_relation_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the line-item type.
+        paired_oppty_product_relation_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the paired line item.
+        price:
+          type: number
+          format: double
+          example: '4.32'
+          description: Per-unit price of the line item. Defaults to the product price from the price list when not supplied explicitly.
+        quantity:
+          type: number
+          format: double
+          example: '4.32'
+          description: Number of product units on this line item.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote.
+        section_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Identifier of the product section this line belongs to (see the product_sections JSON layout on the parent opportunity or quote).
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Display order of the line item within its section. Maintained automatically when lines are added or moved.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        revenue_schedule:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Per-line revenue schedule splitting the line amount across periods. Available only when revenue scheduling is configured at product-amount level.
+
+
+            Relation to OpptyProductRelationRevenueSchedule, see: ''updateOpptyProductRelationRevenueScheduleInput'' object for properties.'
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     updateOpptyProductRelationInput:
       properties:
         paired_oppty_product_relation:

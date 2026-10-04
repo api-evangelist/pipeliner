@@ -3541,8 +3541,46 @@ components:
       required:
       - email_id
       - online_form_type_id
-    OnlineFormTypeEmailRelation:
+    updateOnlineFormActivityLogLineInput:
       properties:
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the submission.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    OnlineFormActivityLogLine:
+      properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
         is_delete_protected:
           type: boolean
           example: false
@@ -3571,109 +3609,94 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        account:
+        online_form:
           type: string
           format: uri
-          description: 'Account the email recipient belongs to, when applicable.
+          description: 'Online form submission this log line belongs to.
 
 
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        contact:
+            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
+        executed_at:
           type: string
-          format: uri
-          description: 'Contact the email was addressed to, when applicable.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        custom_entity:
-          type: string
-          format: uri
-          description: 'Custom entity record the form was sent on, when applicable.
-
-
-            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
-        email:
-          type: string
-          format: uri
-          description: 'Email message used to deliver the form link to the recipient.
-
-
-            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
-        lead:
-          type: string
-          format: uri
-          description: 'Lead the form was sent on. Set when lead_oppty_id resolves to a Lead.
-
-
-            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity the form was sent on. Set when lead_oppty_id resolves to an Opportunity.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
-        online_form_type:
-          type: string
-          format: uri
-          description: 'Online form being shared with the recipient via email.
-
-
-            Relation to OnlineFormType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormType'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the form was sent on, when applicable.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        account_id:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        online_form_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
+          description: Id of the submission.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - formatted_text
+      - is_delete_protected
+      - id
+      - online_form
+      - online_form_id
+      - sort_order
+    updateOnlineFormStyleInput:
+      properties:
+        name:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        online_form_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
       required:
-      - is_delete_protected
-      - id
-      - email
-      - online_form_type
-      - email_id
-      - online_form_type_id
+      - success
+      - http_status
     batchOnlineFormRelationInput:
       properties:
         account_id:
@@ -3715,560 +3738,6 @@ components:
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the linked quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    OnlineFormType:
-      properties:
-        has_draft:
-          type: boolean
-          example: false
-          description: Set to True if draft for entity exists and can be published
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        form_edit_api:
-          type: object
-          description: API-friendly view of the form definition merged with any pending draft changes. Read-only; modify form_edit through drafts.
-        can_change_readonly:
-          type: boolean
-          example: false
-          description: Returns if user can change readonly flag on this entity_type.
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner:
-          type: string
-          format: uri
-          description: 'User who owns the online form.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        style:
-          type: string
-          format: uri
-          description: 'Visual style applied to the form when rendered.
-
-
-            Relation to OnlineFormStyle. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormStyle'' object for properties.'
-        auto_prefill_with_javascript:
-          type: boolean
-          example: false
-          description: When true, the embedded form JavaScript pre-fills fields from URL query parameters on load.
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the form definition in the UI.
-        entity_api_name:
-          type: string
-          example: string
-          description: API name of the custom entity the form targets. Set only when entity_type is CustomEntity; otherwise empty.
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        form_edit:
-          type: object
-          description: Definition of the form layout (fields, sections, settings) shown to respondents, as a JSON object conforming to the online-form layout schema. Validated on write.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When true, the form is published and accepts new submissions; when false, the form returns an error to respondents.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the form is system-managed and its schema cannot be edited by users.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to form_edit (form schema).
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        notifications_status:
-          type: object
-          description: Tracks which threshold-reached notifications have already been sent for the current form configuration. Reset when the configuration changes.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        style_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the form style.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        activity_logs:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
-          description: Submissions (one per response) recorded for this form.
-        link_id:
-          type: string
-          example: string
-          description: Short identifier used in the public form URL (see link). Stable across the lifetime of the form.
-        summarized_response_values:
-          type: integer
-          format: int32
-          example: 1
-          description: Sum of response values used to evaluate the response acceptance threshold (e.g. total responses, or evaluated value of the custom acceptance condition). Empty when no threshold is configured.
-        link:
-          type: string
-          example: string
-          description: Public URL for accessing the form (suitable for sharing with respondents).
-        has_custom_recaptcha:
-          type: boolean
-          example: false
-          description: True when the form is configured with custom reCAPTCHA credentials; false when using the platform default reCAPTCHA setup.
-      required:
-      - has_draft
-      - is_delete_protected
-      - form_edit_api
-      - id
-      - owner
-      - style
-      - entity_type
-      - form_edit
-      - is_enabled
-      - is_readonly
-      - name
-      - owner_id
-      - style_id
-      - link_id
-      - has_custom_recaptcha
-    updateOnlineFormStyleInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createOnlineFormActivityLogLineInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the submission.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - online_form_id
-      - sort_order
-    OnlineFormRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account:
-          type: string
-          format: uri
-          description: 'Account the submission is linked to, when applicable.
-
-
-            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
-        contact:
-          type: string
-          format: uri
-          description: 'Contact the submission is linked to, when applicable.
-
-
-            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
-        custom_entity:
-          type: string
-          format: uri
-          description: 'Custom entity record the submission is linked to, when applicable.
-
-
-            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
-        lead:
-          type: string
-          format: uri
-          description: 'Lead the submission is linked to. Set when lead_oppty_id resolves to a Lead.
-
-
-            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
-        oppty:
-          type: string
-          format: uri
-          description: 'Opportunity the submission is linked to. Set when lead_oppty_id resolves to an Opportunity.
-
-
-            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
-        online_form:
-          type: string
-          format: uri
-          description: 'Online form submission being linked.
-
-
-            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
-        project:
-          type: string
-          format: uri
-          description: 'Project the submission is linked to, when applicable.
-
-
-            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
-        quote:
-          type: string
-          format: uri
-          description: 'Quote the submission is linked to, when applicable.
-
-
-            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that points to the submission's primary record. There is at most one primary relation per submission and its entity must match the form's entity_type.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the submission.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - is_primary
-      - online_form_id
-    batchOnlineFormTypeInput:
-      properties:
-        auto_prefill_with_javascript:
-          type: boolean
-          example: false
-          description: When true, the embedded form JavaScript pre-fills fields from URL query parameters on load.
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the form definition in the UI.
-        entity_api_name:
-          type: string
-          example: string
-          description: API name of the custom entity the form targets. Set only when entity_type is CustomEntity; otherwise empty.
-        entity_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-        form_edit:
-          type: object
-          description: Definition of the form layout (fields, sections, settings) shown to respondents, as a JSON object conforming to the online-form layout schema. Validated on write.
-        is_enabled:
-          type: boolean
-          example: false
-          description: When true, the form is published and accepts new submissions; when false, the form returns an error to respondents.
-        is_readonly:
-          type: boolean
-          example: false
-          description: True when the form is system-managed and its schema cannot be edited by users.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to form_edit (form schema).
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        notifications_status:
-          type: object
-          description: Tracks which threshold-reached notifications have already been sent for the current form configuration. Reset when the configuration changes.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the owning user.
-        style_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the form style.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        custom_recaptcha:
-          type: string
-          format: binary
-          example: blob
-          description: ''
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    OnlineFormStyle:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - name
-    batchOnlineFormStyleInput:
-      properties:
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
         revision:
           type: integer
           format: int32
@@ -4411,6 +3880,124 @@ components:
       required:
       - field_ids
       - online_form_type_id
+    updateOnlineFormInput:
+      properties:
+        currency_exchange_rates_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the exchange rate list.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked email record, when available.
+        field_ids:
+          type: object
+          description: Ids of the fields included in the form when this submission was captured, as a JSON array of field ids (UUIDs).
+        online_form_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form definition.
+        product_currency_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the selected currency.
+        product_price_list_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the selected price list.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        account_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Accounts the submission was linked to.
+        contact_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Contacts the submission was linked to.
+        lead_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Leads the submission was linked to.
+        opportunity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Opportunities the submission was linked to.
+        quote_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Quotes the submission was linked to.
+        project_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Projects the submission was linked to.
+        custom_entity_relations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
+          description: Custom entity records the submission was linked to.
     updateOnlineFormTypeInput:
       properties:
         auto_prefill_with_javascript:
@@ -4565,6 +4152,50 @@ components:
       - data_id
       - data_set_id
       - online_form_id
+    updateOnlineFormDataExRelationInput:
+      properties:
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data set the linked fields belong to.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    batchOnlineFormStyleInput:
+      properties:
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     updateOnlineFormTypeEmailRelationInput:
       properties:
         account_id:
@@ -4607,6 +4238,130 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    createOnlineFormDataExRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data set the linked fields belong to.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - data_id
+      - data_set_id
+      - online_form_id
+    batchOnlineFormTypeInput:
+      properties:
+        auto_prefill_with_javascript:
+          type: boolean
+          example: false
+          description: When true, the embedded form JavaScript pre-fills fields from URL query parameters on load.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the form definition in the UI.
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity the form targets. Set only when entity_type is CustomEntity; otherwise empty.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        form_edit:
+          type: object
+          description: Definition of the form layout (fields, sections, settings) shown to respondents, as a JSON object conforming to the online-form layout schema. Validated on write.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the form is published and accepts new submissions; when false, the form returns an error to respondents.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the form is system-managed and its schema cannot be edited by users.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to form_edit (form schema).
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        notifications_status:
+          type: object
+          description: Tracks which threshold-reached notifications have already been sent for the current form configuration. Reset when the configuration changes.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the owning user.
+        style_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the form style.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        custom_recaptcha:
+          type: string
+          format: binary
+          example: blob
+          description: ''
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
     createOnlineFormTypeInput:
       properties:
         modified:
@@ -4710,128 +4465,139 @@ components:
       - owner_id
       - style_id
       - custom_recaptcha
-    batchOnlineFormInput:
+    OnlineFormTypeEmailRelation:
       properties:
-        currency_exchange_rates_list_id:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the exchange rate list.
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the email recipient belongs to, when applicable.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the email was addressed to, when applicable.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        custom_entity:
+          type: string
+          format: uri
+          description: 'Custom entity record the form was sent on, when applicable.
+
+
+            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
+        email:
+          type: string
+          format: uri
+          description: 'Email message used to deliver the form link to the recipient.
+
+
+            Relation to Email. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Email'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the form was sent on. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the form was sent on. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        online_form_type:
+          type: string
+          format: uri
+          description: 'Online form being shared with the recipient via email.
+
+
+            Relation to OnlineFormType. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormType'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the form was sent on, when applicable.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
         email_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked email record, when available.
-        field_ids:
-          type: object
-          description: Ids of the fields included in the form when this submission was captured, as a JSON array of field ids (UUIDs).
+          description: Id of the email message.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
         online_form_type_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form definition.
-        product_currency_id:
+          description: Id of the online form.
+        quote_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the selected currency.
-        product_price_list_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the selected price list.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
+          description: Id of the linked quote.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        account_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Accounts the submission was linked to.
-        contact_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Contacts the submission was linked to.
-        lead_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Leads the submission was linked to.
-        opportunity_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Opportunities the submission was linked to.
-        quote_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Quotes the submission was linked to.
-        project_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Projects the submission was linked to.
-        custom_entity_relations:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
-          description: Custom entity records the submission was linked to.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
+      required:
+      - is_delete_protected
+      - id
+      - email
+      - online_form_type
+      - email_id
+      - online_form_type_id
     batchOnlineFormActivityLogLineInput:
       properties:
         executed_at:
@@ -4870,6 +4636,52 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    updateOnlineFormRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that points to the submission's primary record. There is at most one primary relation per submission and its entity must match the form's entity_type.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the submission.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     OnlineForm:
       properties:
         is_delete_protected:
@@ -5054,198 +4866,6 @@ components:
       - field_ids
       - online_form_type_id
       - responded_by
-    updateOnlineFormActivityLogLineInput:
-      properties:
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the submission.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-    updateOnlineFormRelationInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked account.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked contact.
-        custom_entity_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked custom entity record.
-        is_primary:
-          type: boolean
-          example: false
-          description: True for the row that points to the submission's primary record. There is at most one primary relation per submission and its entity must match the form's entity_type.
-        lead_oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked lead or opportunity, or empty when not linked.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the submission.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked project.
-        quote_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the linked quote.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createOnlineFormStyleInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - name
-    OnlineFormActivityLogLine:
-      properties:
-        formatted_text:
-          type: string
-          example: string
-          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        online_form:
-          type: string
-          format: uri
-          description: 'Online form submission this log line belongs to.
-
-
-            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
-        executed_at:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the submission.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - formatted_text
-      - is_delete_protected
-      - id
-      - online_form
-      - online_form_id
-      - sort_order
     createOnlineFormRelationInput:
       properties:
         modified:
@@ -5307,34 +4927,173 @@ components:
       required:
       - is_primary
       - online_form_id
-    batchOnlineFormDataExRelationInput:
+    createOnlineFormStyleInput:
       properties:
-        data_id:
+        modified:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data record.
-        data_set_id:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data set the linked fields belong to.
-        online_form_id:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
           type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        id:
-          description: ID of object to update.
+      required:
+      - name
+    createOnlineFormActivityLogLineInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        executed_at:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp the step represented by this line was executed. Empty for scheduled steps that have not yet run.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        online_form_id:
           type: string
           format: uuid
-    batchOnlineFormTypeEmailRelationInput:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the submission.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - online_form_id
+      - sort_order
+    OnlineFormRelation:
       properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account:
+          type: string
+          format: uri
+          description: 'Account the submission is linked to, when applicable.
+
+
+            Relation to Account. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Account'' object for properties.'
+        contact:
+          type: string
+          format: uri
+          description: 'Contact the submission is linked to, when applicable.
+
+
+            Relation to Contact. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Contact'' object for properties.'
+        custom_entity:
+          type: string
+          format: uri
+          description: 'Custom entity record the submission is linked to, when applicable.
+
+
+            Relation to CustomEntity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CustomEntity'' object for properties.'
+        lead:
+          type: string
+          format: uri
+          description: 'Lead the submission is linked to. Set when lead_oppty_id resolves to a Lead.
+
+
+            Relation to Lead. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Lead'' object for properties.'
+        oppty:
+          type: string
+          format: uri
+          description: 'Opportunity the submission is linked to. Set when lead_oppty_id resolves to an Opportunity.
+
+
+            Relation to Opportunity. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Opportunity'' object for properties.'
+        online_form:
+          type: string
+          format: uri
+          description: 'Online form submission being linked.
+
+
+            Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
+        project:
+          type: string
+          format: uri
+          description: 'Project the submission is linked to, when applicable.
+
+
+            Relation to Project. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Project'' object for properties.'
+        quote:
+          type: string
+          format: uri
+          description: 'Quote the submission is linked to, when applicable.
+
+
+            Relation to Quote. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Quote'' object for properties.'
         account_id:
           type: string
           format: uuid
@@ -5350,21 +5109,25 @@ components:
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the linked custom entity record.
-        email_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email message.
+        is_primary:
+          type: boolean
+          example: false
+          description: True for the row that points to the submission's primary record. There is at most one primary relation per submission and its entity must match the form's entity_type.
         lead_oppty_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
           description: Id of the linked lead or opportunity, or empty when not linked.
-        online_form_type_id:
+        online_form_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
+          description: Id of the submission.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked project.
         quote_id:
           type: string
           format: uuid
@@ -5375,12 +5138,40 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - is_primary
+      - online_form_id
+    OnlineFormType:
+      properties:
+        has_draft:
+          type: boolean
+          example: false
+          description: Set to True if draft for entity exists and can be published
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        form_edit_api:
+          type: object
+          description: API-friendly view of the form definition merged with any pending draft changes. Read-only; modify form_edit through drafts.
+        can_change_readonly:
+          type: boolean
+          example: false
+          description: Returns if user can change readonly flag on this entity_type.
         id:
-          description: ID of object to update.
           type: string
           format: uuid
-    createOnlineFormDataExRelationInput:
-      properties:
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
         modified:
           type: string
           format: date-time
@@ -5393,53 +5184,136 @@ components:
           example: '2019-01-01T00:00:00'
           description: Creation time.
           readOnly: true
-        data_id:
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns the online form.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        style:
+          type: string
+          format: uri
+          description: 'Visual style applied to the form when rendered.
+
+
+            Relation to OnlineFormStyle. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineFormStyle'' object for properties.'
+        auto_prefill_with_javascript:
+          type: boolean
+          example: false
+          description: When true, the embedded form JavaScript pre-fills fields from URL query parameters on load.
+        description:
+          type: string
+          example: string
+          description: Free-text description shown alongside the form definition in the UI.
+        entity_api_name:
+          type: string
+          example: string
+          description: API name of the custom entity the form targets. Set only when entity_type is CustomEntity; otherwise empty.
+        entity_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Lead, 2 - Account, 3 - Contact, 4 - Opportunity, 5 - Task, 6 - Appointment, 7 - OpptyProductRelation, 8 - Project, 9 - Quote, 10 - OnlineForm, 11 - CustomEntity, 12 - Product'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+        form_edit:
+          type: object
+          description: Definition of the form layout (fields, sections, settings) shown to respondents, as a JSON object conforming to the online-form layout schema. Validated on write.
+        is_enabled:
+          type: boolean
+          example: false
+          description: When true, the form is published and accepts new submissions; when false, the form returns an error to respondents.
+        is_readonly:
+          type: boolean
+          example: false
+          description: True when the form is system-managed and its schema cannot be edited by users.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to form_edit (form schema).
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        notifications_status:
+          type: object
+          description: Tracks which threshold-reached notifications have already been sent for the current form configuration. Reset when the configuration changes.
+        owner_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data record.
-        data_set_id:
+          description: Id of the owning user.
+        style_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data set the linked fields belong to.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
+          description: Id of the form style.
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to OnlineForm. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''OnlineForm'' object for properties.'
+          description: Submissions (one per response) recorded for this form.
+        link_id:
+          type: string
+          example: string
+          description: Short identifier used in the public form URL (see link). Stable across the lifetime of the form.
+        summarized_response_values:
+          type: integer
+          format: int32
+          example: 1
+          description: Sum of response values used to evaluate the response acceptance threshold (e.g. total responses, or evaluated value of the custom acceptance condition). Empty when no threshold is configured.
+        link:
+          type: string
+          example: string
+          description: Public URL for accessing the form (suitable for sharing with respondents).
+        has_custom_recaptcha:
+          type: boolean
+          example: false
+          description: True when the form is configured with custom reCAPTCHA credentials; false when using the platform default reCAPTCHA setup.
       required:
-      - data_id
-      - data_set_id
-      - online_form_id
-    updateOnlineFormDataExRelationInput:
-      properties:
-        data_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data record.
-        data_set_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the data set the linked fields belong to.
-        online_form_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the online form.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    updateOnlineFormInput:
+      - has_draft
+      - is_delete_protected
+      - form_edit_api
+      - id
+      - owner
+      - style
+      - entity_type
+      - form_edit
+      - is_enabled
+      - is_readonly
+      - name
+      - owner_id
+      - style_id
+      - link_id
+      - has_custom_recaptcha
+    batchOnlineFormInput:
       properties:
         currency_exchange_rates_list_id:
           type: string
@@ -5557,3 +5431,129 @@ components:
                 format: uri
             description: 'Relation to OnlineFormRelation, see: ''updateOnlineFormRelationInput'' object for properties.'
           description: Custom entity records the submission was linked to.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    OnlineFormStyle:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: JSON definition of the style applied to the form (colors, fonts, layout). When null, the default style is used.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the style name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - name
+    batchOnlineFormDataExRelationInput:
+      properties:
+        data_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data record.
+        data_set_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the data set the linked fields belong to.
+        online_form_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchOnlineFormTypeEmailRelationInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked account.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked contact.
+        custom_entity_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked custom entity record.
+        email_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email message.
+        lead_oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked lead or opportunity, or empty when not linked.
+        online_form_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the online form.
+        quote_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the linked quote.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid

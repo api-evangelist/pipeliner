@@ -573,6 +573,33 @@ components:
       - name
       - settings
       - sort_order
+    updateEntityScoringInput:
+      properties:
+        is_enabled:
+          type: boolean
+          example: false
+          description: When false, the scoring configuration is defined but not evaluated for records.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        settings:
+          type: object
+          description: Entity scoring definition in json format.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
+        use_lang:
+          type: boolean
+          example: false
+          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
     Error:
       properties:
         http_status:
@@ -680,33 +707,6 @@ components:
       - name
       - settings
       - sort_order
-    updateEntityScoringInput:
-      properties:
-        is_enabled:
-          type: boolean
-          example: false
-          description: When false, the scoring configuration is defined but not evaluated for records.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        settings:
-          type: object
-          description: Entity scoring definition in json format.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of this scoring configuration among others for the same entity type. Configurations are evaluated in this order until one matches.
-        use_lang:
-          type: boolean
-          example: false
-          description: When true, the configuration name is treated as a translation key and localized in the UI; otherwise the literal name is shown.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
     batchEntityScoringInput:
       properties:
         is_enabled:

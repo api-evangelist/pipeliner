@@ -1996,67 +1996,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    createEmailSequenceActivityLogInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run finished. Empty for runs still in progress.
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was a dry-run / test execution and did not produce real-side effects.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run started.
-        status:
-          type: integer
-          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - application_id
-      - email_sequence_id
-      - start_time
-      - status
     updateEmailSequenceActivityLogLineInput:
       properties:
         email_sequence_activity_log_id:
@@ -2076,564 +2015,6 @@ components:
         status:
           type: integer
           description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-    EmailSequence:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        owner:
-          type: string
-          format: uri
-          description: 'User who owns this email sequence.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        deactivation_reason:
-          type: integer
-          description: 'Reason the sequence is currently disabled (e.g. Manual stop, system suspension). Read-only.
-
-
-            Integer enum value: 0 - NoReason, 1 - Manual, 2 - TooManyErrors, 3 - DisabledFeature'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-          - 3
-        description:
-          type: string
-          example: string
-          description: Free-form description of the sequence.
-        is_enabled:
-          type: boolean
-          example: false
-          description: Master switch for the sequence. Read-only on this surface — change it via the enable / disable mutations.
-        last_schema_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to settings. Read-only.
-        last_status_change:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp of the most recent change to is_enabled. Read-only.
-        name:
-          type: string
-          example: string
-          description: Display name of the email sequence.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence owner.
-        settings:
-          type: object
-          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
-        type:
-          type: integer
-          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
-
-
-            Integer enum value: 1 - Personal, 2 - Space'
-          example: 1
-          enum:
-          - 1
-          - 2
-        activity_logs:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to EmailSequenceActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLog'' object for properties.'
-          description: Run history of the sequence — one log per scheduled execution.
-        documents:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
-          description: Attachments and other documents linked to this sequence.
-        enrolled:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to EmailSequenceEnrolled. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceEnrolled'' object for properties.'
-          description: Enrolment records (recipients currently or previously running through the sequence).
-      required:
-      - is_delete_protected
-      - id
-      - owner
-      - name
-      - owner_id
-      - type
-    EmailSequenceActivityLog:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        actor:
-          type: string
-          format: uri
-          description: 'User who initiated the run, or empty for runs triggered by automation.
-
-
-            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
-        application:
-          type: string
-          format: uri
-          description: 'Application context the run was triggered in (e.g. browser, automation, third-party integration).
-
-
-            Relation to Application. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Application'' object for properties.'
-        email_sequence:
-          type: string
-          format: uri
-          description: 'Email sequence this activity log belongs to.
-
-
-            Relation to EmailSequence. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequence'' object for properties.'
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run finished. Empty for runs still in progress.
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was a dry-run / test execution and did not produce real-side effects.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run started.
-        status:
-          type: integer
-          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        lines:
-          type: array
-          items:
-            type: string
-            format: uri
-            description: 'Relation to EmailSequenceActivityLogLine. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLogLine'' object for properties.'
-          description: Step-by-step log lines produced during the run.
-        record_name:
-          type: string
-          example: string
-          description: Display name of the record this run enrolled (e.g. contact name). Read-only; computed by Coevera.
-        record_email:
-          type: string
-          example: string
-          description: Email address of the record this run enrolled. Read-only; computed by Coevera.
-      required:
-      - is_delete_protected
-      - id
-      - application
-      - email_sequence
-      - application_id
-      - email_sequence_id
-      - start_time
-      - status
-    updateEmailSequenceEnrolledInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled account.
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled contact.
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_reason:
-          type: integer
-          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
-
-
-            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
-        excluded_from_stats:
-          type: boolean
-          example: false
-          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
-        lead_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled lead.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled opportunity.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled project.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment started.
-    EmailSequenceActivityLogLine:
-      properties:
-        formatted_text:
-          type: string
-          example: string
-          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_sequence_activity_log:
-          type: string
-          format: uri
-          description: 'Activity log this line belongs to.
-
-
-            Relation to EmailSequenceActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLog'' object for properties.'
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - formatted_text
-      - is_delete_protected
-      - id
-      - email_sequence_activity_log
-      - email_sequence_activity_log_id
-      - sort_order
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    batchEmailSequenceActivityLogLineInput:
-      properties:
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    batchEmailSequenceEnrolledInput:
-      properties:
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled account.
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled contact.
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_reason:
-          type: integer
-          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
-
-
-            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
-        excluded_from_stats:
-          type: boolean
-          example: false
-          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
-        lead_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled lead.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled opportunity.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled project.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment started.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    updateEmailSequenceActivityLogInput:
-      properties:
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run finished. Empty for runs still in progress.
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was a dry-run / test execution and did not produce real-side effects.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run started.
-        status:
-          type: integer
-          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
 
 
             Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
@@ -2686,279 +2067,6 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createEmailSequenceEnrolledInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        account_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled account.
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        contact_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled contact.
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_reason:
-          type: integer
-          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
-
-
-            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
-          example: 0
-          enum:
-          - 0
-          - 1
-          - 2
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
-        excluded_from_stats:
-          type: boolean
-          example: false
-          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
-        lead_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled lead.
-        oppty_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled opportunity.
-        project_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the enrolled project.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the enrolment started.
-      required:
-      - application_id
-      - email_sequence_activity_log_id
-      - email_sequence_id
-      - start_time
-    updateEmailSequenceInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-form description of the sequence.
-        name:
-          type: string
-          example: string
-          description: Display name of the email sequence.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence owner.
-        settings:
-          type: object
-          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
-        type:
-          type: integer
-          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
-
-
-            Integer enum value: 1 - Personal, 2 - Space'
-          example: 1
-          enum:
-          - 1
-          - 2
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
-          description: Attachments and other documents linked to this sequence.
-    createEmailSequenceActivityLogLineInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        email_sequence_activity_log_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the activity log.
-        is_visible:
-          type: boolean
-          example: false
-          description: True when the line is shown in the activity log UI; false for internal-only lines.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the line within its log run.
-        status:
-          type: integer
-          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-      required:
-      - email_sequence_activity_log_id
-      - sort_order
-    batchEmailSequenceActivityLogInput:
-      properties:
-        actor_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the actor.
-        application_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the application.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        end_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run finished. Empty for runs still in progress.
-        is_test_run:
-          type: boolean
-          example: false
-          description: True when the run was a dry-run / test execution and did not produce real-side effects.
-        start_time:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Timestamp when the run started.
-        status:
-          type: integer
-          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
-
-
-            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
-    createEmailSequenceInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        description:
-          type: string
-          example: string
-          description: Free-form description of the sequence.
-        name:
-          type: string
-          example: string
-          description: Display name of the email sequence.
-        owner_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence owner.
-        settings:
-          type: object
-          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
-        type:
-          type: integer
-          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
-
-
-            Integer enum value: 1 - Personal, 2 - Space'
-          example: 1
-          enum:
-          - 1
-          - 2
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
-          description: Attachments and other documents linked to this sequence.
-      required:
-      - name
-      - owner_id
-      - type
     EmailSequenceEnrolled:
       properties:
         is_delete_protected:
@@ -3177,3 +2285,895 @@ components:
       - start_time
       - step_count
       - entity_name
+    updateEmailSequenceActivityLogInput:
+      properties:
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run finished. Empty for runs still in progress.
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was a dry-run / test execution and did not produce real-side effects.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run started.
+        status:
+          type: integer
+          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+    createEmailSequenceEnrolledInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled contact.
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_reason:
+          type: integer
+          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
+
+
+            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
+        excluded_from_stats:
+          type: boolean
+          example: false
+          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled opportunity.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled project.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment started.
+      required:
+      - application_id
+      - email_sequence_activity_log_id
+      - email_sequence_id
+      - start_time
+    batchEmailSequenceActivityLogLineInput:
+      properties:
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchEmailSequenceActivityLogInput:
+      properties:
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run finished. Empty for runs still in progress.
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was a dry-run / test execution and did not produce real-side effects.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run started.
+        status:
+          type: integer
+          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    batchEmailSequenceEnrolledInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled contact.
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_reason:
+          type: integer
+          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
+
+
+            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
+        excluded_from_stats:
+          type: boolean
+          example: false
+          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled opportunity.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled project.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment started.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateEmailSequenceInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-form description of the sequence.
+        name:
+          type: string
+          example: string
+          description: Display name of the email sequence.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence owner.
+        settings:
+          type: object
+          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
+        type:
+          type: integer
+          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''updateCloudObjectRelationInput'' object for properties.'
+          description: Attachments and other documents linked to this sequence.
+    updateEmailSequenceEnrolledInput:
+      properties:
+        account_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled account.
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        contact_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled contact.
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_reason:
+          type: integer
+          description: 'Why the enrolment ended (e.g. Reply, Unsubscribe, Bounce, Manual, Completed).
+
+
+            Integer enum value: 0 - NoReason, 1 - Unenrolled, 2 - Finished'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment ended (completed or unenrolled). Empty while the enrolment is active.
+        excluded_from_stats:
+          type: boolean
+          example: false
+          description: True when this enrolment is excluded from sequence statistics (e.g. after a stats reset).
+        lead_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled lead.
+        oppty_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled opportunity.
+        project_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the enrolled project.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the enrolment started.
+    EmailSequence:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        owner:
+          type: string
+          format: uri
+          description: 'User who owns this email sequence.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        deactivation_reason:
+          type: integer
+          description: 'Reason the sequence is currently disabled (e.g. Manual stop, system suspension). Read-only.
+
+
+            Integer enum value: 0 - NoReason, 1 - Manual, 2 - TooManyErrors, 3 - DisabledFeature'
+          example: 0
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        description:
+          type: string
+          example: string
+          description: Free-form description of the sequence.
+        is_enabled:
+          type: boolean
+          example: false
+          description: Master switch for the sequence. Read-only on this surface — change it via the enable / disable mutations.
+        last_schema_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to settings. Read-only.
+        last_status_change:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp of the most recent change to is_enabled. Read-only.
+        name:
+          type: string
+          example: string
+          description: Display name of the email sequence.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence owner.
+        settings:
+          type: object
+          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
+        type:
+          type: integer
+          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        activity_logs:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EmailSequenceActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLog'' object for properties.'
+          description: Run history of the sequence — one log per scheduled execution.
+        documents:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to CloudObjectRelation. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''CloudObjectRelation'' object for properties.'
+          description: Attachments and other documents linked to this sequence.
+        enrolled:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EmailSequenceEnrolled. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceEnrolled'' object for properties.'
+          description: Enrolment records (recipients currently or previously running through the sequence).
+      required:
+      - is_delete_protected
+      - id
+      - owner
+      - name
+      - owner_id
+      - type
+    createEmailSequenceActivityLogLineInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - email_sequence_activity_log_id
+      - sort_order
+    EmailSequenceActivityLog:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        actor:
+          type: string
+          format: uri
+          description: 'User who initiated the run, or empty for runs triggered by automation.
+
+
+            Relation to Client. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Client'' object for properties.'
+        application:
+          type: string
+          format: uri
+          description: 'Application context the run was triggered in (e.g. browser, automation, third-party integration).
+
+
+            Relation to Application. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''Application'' object for properties.'
+        email_sequence:
+          type: string
+          format: uri
+          description: 'Email sequence this activity log belongs to.
+
+
+            Relation to EmailSequence. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequence'' object for properties.'
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run finished. Empty for runs still in progress.
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was a dry-run / test execution and did not produce real-side effects.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run started.
+        status:
+          type: integer
+          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+        lines:
+          type: array
+          items:
+            type: string
+            format: uri
+            description: 'Relation to EmailSequenceActivityLogLine. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLogLine'' object for properties.'
+          description: Step-by-step log lines produced during the run.
+        record_name:
+          type: string
+          example: string
+          description: Display name of the record this run enrolled (e.g. contact name). Read-only; computed by Coevera.
+        record_email:
+          type: string
+          example: string
+          description: Email address of the record this run enrolled. Read-only; computed by Coevera.
+      required:
+      - is_delete_protected
+      - id
+      - application
+      - email_sequence
+      - application_id
+      - email_sequence_id
+      - start_time
+      - status
+    EmailSequenceActivityLogLine:
+      properties:
+        formatted_text:
+          type: string
+          example: string
+          description: Human-readable rendering of the log line, prefixed with the line's timestamp and (when applicable) the parent record id.
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        email_sequence_activity_log:
+          type: string
+          format: uri
+          description: 'Activity log this line belongs to.
+
+
+            Relation to EmailSequenceActivityLog. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''EmailSequenceActivityLog'' object for properties.'
+        email_sequence_activity_log_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the activity log.
+        is_visible:
+          type: boolean
+          example: false
+          description: True when the line is shown in the activity log UI; false for internal-only lines.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the line within its log run.
+        status:
+          type: integer
+          description: 'Outcome of the step the line represents (e.g. Ok, Error, Skipped).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - formatted_text
+      - is_delete_protected
+      - id
+      - email_sequence_activity_log
+      - email_sequence_activity_log_id
+      - sort_order
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    createEmailSequenceActivityLogInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        actor_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the actor.
+        application_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the application.
+        email_sequence_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence.
+        end_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run finished. Empty for runs still in progress.
+        is_test_run:
+          type: boolean
+          example: false
+          description: True when the run was a dry-run / test execution and did not produce real-side effects.
+        start_time:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Timestamp when the run started.
+        status:
+          type: integer
+          description: 'Outcome of the run (e.g. Ok, Error, Cancelled).
+
+
+            Integer enum value: 1 - Ok, 2 - Warning, 3 - Error, 4 - Scheduled, 5 - Expired'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+      required:
+      - application_id
+      - email_sequence_id
+      - start_time
+      - status
+    createEmailSequenceInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-form description of the sequence.
+        name:
+          type: string
+          example: string
+          description: Display name of the email sequence.
+        owner_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email sequence owner.
+        settings:
+          type: object
+          description: JSON schema describing the sequence trigger, nodes (steps) and global actions (e.g. on-reply, on-bounce, on-unsubscribe).
+        type:
+          type: integer
+          description: 'Process category of the sequence (e.g. EmailSequence vs other process types).
+
+
+            Integer enum value: 1 - Personal, 2 - Space'
+          example: 1
+          enum:
+          - 1
+          - 2
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectRelation, see: ''createCloudObjectRelationInput'' object for properties.'
+          description: Attachments and other documents linked to this sequence.
+      required:
+      - name
+      - owner_id
+      - type

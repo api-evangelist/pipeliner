@@ -746,32 +746,20 @@ components:
       - unit
       - client_id
       - unit_id
-    Error:
+    createSalesUnitInput:
       properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
+        modified:
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
           type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
-    updateSalesUnitInput:
-      properties:
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         picture:
           type: object
           properties:
@@ -781,7 +769,7 @@ components:
           description: 'Profile picture (logo) of the sales unit.
 
 
-            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
+            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
         name:
           type: string
           example: string
@@ -801,6 +789,8 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+      required:
+      - name
     SalesUnit:
       properties:
         is_delete_protected:
@@ -903,20 +893,8 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createSalesUnitInput:
+    updateSalesUnitInput:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
         picture:
           type: object
           properties:
@@ -926,7 +904,7 @@ components:
           description: 'Profile picture (logo) of the sales unit.
 
 
-            Relation to CloudObject, see: ''createCloudObjectInput'' object for properties.'
+            Relation to CloudObject, see: ''updateCloudObjectInput'' object for properties.'
         name:
           type: string
           example: string
@@ -946,5 +924,27 @@ components:
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
+    Error:
+      properties:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
+          type: string
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
       required:
-      - name
+      - success
+      - http_status

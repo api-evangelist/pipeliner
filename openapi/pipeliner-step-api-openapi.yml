@@ -1500,289 +1500,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    updateStepInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description shown in the step UI.
-        has_readonly_form:
-          type: boolean
-          example: false
-          description: When true, the record form is read-only while a record is in this step.
-        has_version_increment:
-          type: boolean
-          example: false
-          description: When true, transitioning a record into this step bumps its version counter.
-        lead_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead process.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        percent:
-          type: integer
-          format: int32
-          example: 1
-          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
-        quote_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the step within its pipeline or process; lower values appear first.
-        timeframe:
-          type: integer
-          format: int32
-          example: 1
-          description: Expected number of days a record should spend in this step. Used to flag overdue records.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
-          description: Files attached to the step (e.g. step-specific documentation or templates).
-        step_checklists:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
-          description: Checklist items the user must complete before moving a record out of this step.
-    StepChecklistSalesRoleRelation:
-      properties:
-        is_delete_protected:
-          type: boolean
-          example: false
-          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
-          readOnly: true
-        id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Unique identifier of entity.
-          readOnly: true
-        is_deleted:
-          type: boolean
-          example: false
-          description: Specifies if the entity is considered deleted.
-          readOnly: true
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        sales_role:
-          type: string
-          format: uri
-          description: 'Sales role that sees the checklist item.
-
-
-            Relation to SalesRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesRole'' object for properties.'
-        step_checklist:
-          type: string
-          format: uri
-          description: 'Checklist item the role is granted access to.
-
-
-            Relation to StepChecklist. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''StepChecklist'' object for properties.'
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        step_checklist_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the checklist item.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - is_delete_protected
-      - id
-      - sales_role
-      - step_checklist
-      - sales_role_id
-      - step_checklist_id
-    createStepChecklistInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        cloud_object_template:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uri
-          description: 'Cloud object template that the checklist item should fill and attach to the record.
-
-
-            Relation to CloudObjectTemplate, see: ''createCloudObjectTemplateInput'' object for properties.'
-        activity_type_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
-        cloud_object_format:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Default, 1 - Pdf'
-          example: 0
-          enum:
-          - 0
-          - 1
-        cloud_object_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the cloud object template.
-        description:
-          type: string
-          example: string
-          description: Free-text description shown alongside the checklist item.
-        email_sequence_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email sequence.
-        field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the related field.
-        item_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-        item_validation:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
-          example: 1
-          enum:
-          - 1
-          - 2
-          - 3
-        label:
-          type: string
-          example: string
-          description: Display label of the checklist item.
-        label_use_lang:
-          type: boolean
-          example: false
-          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
-        process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the related process.
-        send_email_field_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the recipient field.
-        send_email_template_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the email template.
-        step_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the step.
-        visibility_condition:
-          type: string
-          format: binary
-          example: blob
-          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
-        visibility_type:
-          type: integer
-          description: 'Field whose values are strictly defined with an enumeration of values.
-
-
-            Integer enum value: 0 - Always, 1 - Condition'
-          example: 0
-          enum:
-          - 0
-          - 1
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        sales_roles:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to StepChecklistSalesRoleRelation, see: ''createStepChecklistSalesRoleRelationInput'' object for properties.'
-          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
-      required:
-      - step_id
-      - visibility_condition
     StepChecklist:
       properties:
         is_delete_protected:
@@ -2008,30 +1725,6 @@ components:
       - sort_order
       - step_id
       - visibility_condition
-    Error:
-      properties:
-        http_status:
-          description: HTTP status code
-          type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
-        name:
-          description: Name of the API error
-          type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
-      required:
-      - success
-      - http_status
     batchStepChecklistSalesRoleRelationInput:
       properties:
         sales_role_id:
@@ -2053,6 +1746,349 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
+    updateStepInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+    createStepInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        pipeline_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the opportunity pipeline.
+          readOnly: true
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''createCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''createStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+      required:
+      - name
+    StepChecklistSalesRoleRelation:
+      properties:
+        is_delete_protected:
+          type: boolean
+          example: false
+          description: Tells if the entity instance is protected against delete (Entities that need to be present in the system at any time). Delete action still may fail if entity is deletable, due some other additional validations.
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Unique identifier of entity.
+          readOnly: true
+        is_deleted:
+          type: boolean
+          example: false
+          description: Specifies if the entity is considered deleted.
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        sales_role:
+          type: string
+          format: uri
+          description: 'Sales role that sees the checklist item.
+
+
+            Relation to SalesRole. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''SalesRole'' object for properties.'
+        step_checklist:
+          type: string
+          format: uri
+          description: 'Checklist item the role is granted access to.
+
+
+            Relation to StepChecklist. By default it is returned as URI to related resource. Using parameter ''expand'', it will return full entity. See: ''StepChecklist'' object for properties.'
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - is_delete_protected
+      - id
+      - sales_role
+      - step_checklist
+      - sales_role_id
+      - step_checklist_id
+    batchStepInput:
+      properties:
+        description:
+          type: string
+          example: string
+          description: Free-text description shown in the step UI.
+        has_readonly_form:
+          type: boolean
+          example: false
+          description: When true, the record form is read-only while a record is in this step.
+        has_version_increment:
+          type: boolean
+          example: false
+          description: When true, transitioning a record into this step bumps its version counter.
+        lead_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the lead process.
+        name:
+          type: string
+          example: string
+          description: Name of the entity and its default text representation.
+        percent:
+          type: integer
+          format: int32
+          example: 1
+          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
+        quote_process_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the quote process.
+        sort_order:
+          type: integer
+          format: int32
+          example: 1
+          description: Position of the step within its pipeline or process; lower values appear first.
+        timeframe:
+          type: integer
+          format: int32
+          example: 1
+          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
+          description: Files attached to the step (e.g. step-specific documentation or templates).
+        step_checklists:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uri
+            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
+          description: Checklist items the user must complete before moving a record out of this step.
+        id:
+          description: ID of object to update.
+          type: string
+          format: uuid
+    updateStepChecklistSalesRoleRelationInput:
+      properties:
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+    createStepChecklistSalesRoleRelationInput:
+      properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        sales_role_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the sales role.
+        step_checklist_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the checklist item.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
+      required:
+      - sales_role_id
+      - step_checklist_id
     Step:
       properties:
         is_delete_protected:
@@ -2175,8 +2211,20 @@ components:
       - is_delete_protected
       - id
       - name
-    updateStepChecklistInput:
+    createStepChecklistInput:
       properties:
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
         cloud_object_template:
           type: object
           properties:
@@ -2186,7 +2234,7 @@ components:
           description: 'Cloud object template that the checklist item should fill and attach to the record.
 
 
-            Relation to CloudObjectTemplate, see: ''updateCloudObjectTemplateInput'' object for properties.'
+            Relation to CloudObjectTemplate, see: ''createCloudObjectTemplateInput'' object for properties.'
         activity_type_id:
           type: string
           format: uuid
@@ -2307,8 +2355,11 @@ components:
               id:
                 type: string
                 format: uri
-            description: 'Relation to StepChecklistSalesRoleRelation, see: ''updateStepChecklistSalesRoleRelationInput'' object for properties.'
+            description: 'Relation to StepChecklistSalesRoleRelation, see: ''createStepChecklistSalesRoleRelationInput'' object for properties.'
           description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.
+      required:
+      - step_id
+      - visibility_condition
     batchStepChecklistInput:
       properties:
         cloud_object_template:
@@ -2447,192 +2498,155 @@ components:
           description: ID of object to update.
           type: string
           format: uuid
-    createStepInput:
+    Error:
       properties:
-        modified:
+        http_status:
+          description: HTTP status code
+          type: integer
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
+        name:
+          description: Name of the API error
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
           type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
+      required:
+      - success
+      - http_status
+    updateStepChecklistInput:
+      properties:
+        cloud_object_template:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uri
+          description: 'Cloud object template that the checklist item should fill and attach to the record.
+
+
+            Relation to CloudObjectTemplate, see: ''updateCloudObjectTemplateInput'' object for properties.'
+        activity_type_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the appointment or task type that satisfies the checklist item, or empty when the item is not activity-based.
+        cloud_object_format:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Default, 1 - Pdf'
+          example: 0
+          enum:
+          - 0
+          - 1
+        cloud_object_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the cloud object template.
         description:
           type: string
           example: string
-          description: Free-text description shown in the step UI.
-        has_readonly_form:
-          type: boolean
-          example: false
-          description: When true, the record form is read-only while a record is in this step.
-        has_version_increment:
-          type: boolean
-          example: false
-          description: When true, transitioning a record into this step bumps its version counter.
-        lead_process_id:
+          description: Free-text description shown alongside the checklist item.
+        email_sequence_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead process.
-        name:
+          description: Id of the email sequence.
+        field_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the related field.
+        item_type:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Default, 2 - ActivityType, 3 - FieldType, 4 - CreateNote, 5 - AttachDocument, 6 - SendEmail, 7 - UseDocumentTemplate, 8 - EnrollToEmailSequence, 9 - RunProcess, 10 - MapSalesRole, 11 - CreateInfluenceMap'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+        item_validation:
+          type: integer
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 1 - Required, 2 - RelatedActivityCompleted, 3 - RelatedActivityLinked'
+          example: 1
+          enum:
+          - 1
+          - 2
+          - 3
+        label:
           type: string
           example: string
-          description: Name of the entity and its default text representation.
-        percent:
-          type: integer
-          format: int32
-          example: 1
-          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
-        pipeline_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the opportunity pipeline.
-          readOnly: true
-        quote_process_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        sort_order:
-          type: integer
-          format: int32
-          example: 1
-          description: Position of the step within its pipeline or process; lower values appear first.
-        timeframe:
-          type: integer
-          format: int32
-          example: 1
-          description: Expected number of days a record should spend in this step. Used to flag overdue records.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-        documents:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to CloudObjectStepRelation, see: ''createCloudObjectStepRelationInput'' object for properties.'
-          description: Files attached to the step (e.g. step-specific documentation or templates).
-        step_checklists:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to StepChecklist, see: ''createStepChecklistInput'' object for properties.'
-          description: Checklist items the user must complete before moving a record out of this step.
-      required:
-      - name
-    updateStepChecklistSalesRoleRelationInput:
-      properties:
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        step_checklist_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the checklist item.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-    createStepChecklistSalesRoleRelationInput:
-      properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        sales_role_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the sales role.
-        step_checklist_id:
-          type: string
-          format: uuid
-          example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the checklist item.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
-      required:
-      - sales_role_id
-      - step_checklist_id
-    batchStepInput:
-      properties:
-        description:
-          type: string
-          example: string
-          description: Free-text description shown in the step UI.
-        has_readonly_form:
+          description: Display label of the checklist item.
+        label_use_lang:
           type: boolean
           example: false
-          description: When true, the record form is read-only while a record is in this step.
-        has_version_increment:
-          type: boolean
-          example: false
-          description: When true, transitioning a record into this step bumps its version counter.
-        lead_process_id:
+          description: When true, label is treated as a translation key and localized in the UI; otherwise the literal text is shown.
+        process_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the lead process.
-        name:
-          type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        percent:
-          type: integer
-          format: int32
-          example: 1
-          description: Probability percent associated with the step (0-100). Required for opportunity pipeline steps; null for lead/quote process steps.
-        quote_process_id:
+          description: Id of the related process.
+        send_email_field_id:
           type: string
           format: uuid
           example: 01234567-abcd-dcba-ffff-000000000000
-          description: Id of the quote process.
-        sort_order:
+          description: Id of the recipient field.
+        send_email_template_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the email template.
+        step_id:
+          type: string
+          format: uuid
+          example: 01234567-abcd-dcba-ffff-000000000000
+          description: Id of the step.
+        visibility_condition:
+          type: string
+          format: binary
+          example: blob
+          description: Filter expression that controls when the checklist item is shown. The item is visible only when the record matches this filter; defaults to a no-op filter matching all records.
+        visibility_type:
           type: integer
-          format: int32
-          example: 1
-          description: Position of the step within its pipeline or process; lower values appear first.
-        timeframe:
-          type: integer
-          format: int32
-          example: 1
-          description: Expected number of days a record should spend in this step. Used to flag overdue records.
+          description: 'Field whose values are strictly defined with an enumeration of values.
+
+
+            Integer enum value: 0 - Always, 1 - Condition'
+          example: 0
+          enum:
+          - 0
+          - 1
         revision:
           type: integer
           format: int32
           example: 1
           description: Revision when entity was lastly changed.
-        documents:
+        sales_roles:
           type: array
           items:
             type: object
@@ -2640,19 +2654,5 @@ components:
               id:
                 type: string
                 format: uri
-            description: 'Relation to CloudObjectStepRelation, see: ''updateCloudObjectStepRelationInput'' object for properties.'
-          description: Files attached to the step (e.g. step-specific documentation or templates).
-        step_checklists:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uri
-            description: 'Relation to StepChecklist, see: ''updateStepChecklistInput'' object for properties.'
-          description: Checklist items the user must complete before moving a record out of this step.
-        id:
-          description: ID of object to update.
-          type: string
-          format: uuid
+            description: 'Relation to StepChecklistSalesRoleRelation, see: ''updateStepChecklistSalesRoleRelationInput'' object for properties.'
+          description: Sales roles the checklist item is shown to. Empty means the item is shown to all roles.

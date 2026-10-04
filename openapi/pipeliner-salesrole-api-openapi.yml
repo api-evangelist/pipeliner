@@ -508,30 +508,37 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    createSalesRoleInput:
       properties:
-        http_status:
-          description: HTTP status code
+        modified:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Last modification time.
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          example: '2019-01-01T00:00:00'
+          description: Creation time.
+          readOnly: true
+        color_code:
           type: integer
-          example: 400
-        code:
-          description: Internal API error code
-          type: integer
-          example: 117
+          format: int32
+          example: 1
+          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
         name:
-          description: Name of the API error
           type: string
-          example: ERROR_PARAMETER_INVALID
-        message:
-          description: Description of the API error
-          type: string
-        success:
-          description: Always false on error.
-          type: boolean
-          example: false
+          example: string
+          description: Name of the entity and its default text representation.
+        revision:
+          type: integer
+          format: int32
+          example: 1
+          description: Revision when entity was lastly changed.
       required:
-      - success
-      - http_status
+      - color_code
+      - name
     batchSalesRoleInput:
       properties:
         color_code:
@@ -617,34 +624,27 @@ components:
       - id
       - color_code
       - name
-    createSalesRoleInput:
+    Error:
       properties:
-        modified:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Last modification time.
-          readOnly: true
-        created:
-          type: string
-          format: date-time
-          example: '2019-01-01T00:00:00'
-          description: Creation time.
-          readOnly: true
-        color_code:
+        http_status:
+          description: HTTP status code
           type: integer
-          format: int32
-          example: 1
-          description: 'Display color of the sales role, encoded as a 24-bit RGB integer: (red << 16) | (green << 8) | blue.'
+          example: 400
+        code:
+          description: Internal API error code
+          type: integer
+          example: 117
         name:
+          description: Name of the API error
           type: string
-          example: string
-          description: Name of the entity and its default text representation.
-        revision:
-          type: integer
-          format: int32
-          example: 1
-          description: Revision when entity was lastly changed.
+          example: ERROR_PARAMETER_INVALID
+        message:
+          description: Description of the API error
+          type: string
+        success:
+          description: Always false on error.
+          type: boolean
+          example: false
       required:
-      - color_code
-      - name
+      - success
+      - http_status
