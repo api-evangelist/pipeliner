@@ -1,0 +1,76 @@
+slug: pipeliner
+provider: Pipeliner CRM
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Lead & Opportunity
+  spec_file: pipeliner-lead-opportunity-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.95
+  evidence: 'GET /entities/Leads, GET /entities/LeadOppties; schemas: Lead, Opportunity, LeadOpptyStepCheckListRelation,
+    updateLeadProcessInput'
+  reason: Full CRUD over leads, opportunities, their steps/processes and related accounts/contacts — plainly
+    lead, opportunity and deal lifecycle management in a sales pipeline CRM.
+- tag: Pipeline
+  spec_file: pipeliner-pipeline-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.88
+  evidence: POST /entities/Pipelines  Pipelines.create; schemas 'Pipeline', 'batchStepInput'
+  reason: Manages sales pipeline definitions and their steps in a CRM whose stated purpose is a 'visual
+    sales pipeline'; this is squarely opportunity and pipeline lifecycle structure. Slight ambiguity only
+    between pipeline configuration and sales operations tooling.
+- tag: Quote
+  spec_file: pipeliner-quote-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.85
+  evidence: POST /entities/Quotes  Quotes.create; schemas QuoteType, QuoteProcess, createQuoteInput, QuoteAccountRelation
+  reason: CRM sales quote objects with types, processes and account/contact relations — this is quote
+    management in the lead-to-order flow, i.e. Quote & Configuration Management.
+- tag: Contact
+  spec_file: pipeliner-contact-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.8
+  evidence: POST /entities/Contacts/merge  Contacts.merge / ContactAccountAccountRoleRelations / ContactType
+  reason: Full lifecycle management of contact records including merge (duplicate resolution) and account-role
+    relationships — this is customer/contact master data maintenance, i.e. Customer Data Management. Some
+    ambiguity remains between customer data management and sales account management, hence 0.8.
+- tag: Account
+  spec_file: pipeliner-account-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.72
+  evidence: POST /entities/Accounts/merge  Accounts.merge ... Accounts.create / Accounts.update / AccountDataExRelations
+    / AccountKPIs
+  reason: CRUD, batch and merge/deduplication operations over CRM Account master records with relations
+    and types point to customer master/golden-record data management; an alternative reading as BC-410.20
+    Account Management keeps confidence moderate.
+- tag: Project
+  spec_file: pipeliner-project-api-openapi.yml
+  capability_id: BC-900.30
+  capability_id_l1: BC-900
+  capability_name: Project Management
+  confidence: 0.7
+  evidence: POST /entities/Projects  Projects.create; schemas 'ProjectObjective', 'createProjectKPIInput',
+    'ProjectType', 'ProjectContactRelation'
+  reason: Manages project records with objectives, KPIs and contact linkage — project planning and tracking
+    inside the CRM. Confidence tempered because the scope is customer-facing project tracking rather than
+    a full PPM tool.
