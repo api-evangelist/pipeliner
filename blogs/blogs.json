@@ -1,0 +1,21 @@
+{
+  "repo": "pipeliner",
+  "feeds": [
+    {
+      "source": "https://help.pipelinersales.com",
+      "feed_url": "https://help.pipelinersales.com/feed.xml",
+      "title": "",
+      "saved": 0,
+      "method": "discovered"
+    },
+    {
+      "source": "https://help.pipelinersales.com/feed.xml",
+      "feed_url": "https://help.pipelinersales.com/feed.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    }
+  ],
+  "post_count": 25,
+  "fetched": "2026-10-03T12:30:02Z"
+}
